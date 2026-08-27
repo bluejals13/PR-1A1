@@ -33,7 +33,7 @@
   - Token Blacklist: 로그아웃 요청 시 Access Token의 잔여 TTL 동안 Redis Blacklist에 등록하여 즉시 무효화 `[IMPLEMENTED]` `[VERIFIED]`
 - **인가 (Authorization & RBAC):**
   - `User - Role - Permission` M:N 다대다 매핑 구조 `[IMPLEMENTED]` `[VERIFIED]`
-  - DB Schema (Flyway V1~V5): `users`, `roles`, `permissions`, `user_roles`, `role_permissions`, `menus`, `role_menus` 테이블 구성 `[IMPLEMENTED]`
+  - DB Schema (Flyway V1~V5): `V1__init_schema.sql` ~ `V5__insert_test_users.sql` (`users`, `roles`, `permissions`, `user_roles`, `role_permissions`, `menus`, `role_menus`) `[IMPLEMENTED]`
   - Spring Security Custom Provider 및 `UserAuthorityService`를 통한 세부 엔드포인트 권한 인가 필터링 `[IMPLEMENTED]` `[VERIFIED]`
 - **응답 및 예외 처리 규격:**
   - Record 기반 불변 DTO 구조 `[IMPLEMENTED]`
@@ -42,7 +42,7 @@
 ---
 
 ### 2.2 Performance & Verification Metrics (`26-05adf`)
-- **k6 부하 테스트 실측 불변 지표 (Fact):**
+- **k6 부하 테스트 실측 불변 지표 (Fact - `docs/performance/k6-load-test.md` 70 VU 3회 평균):**
   - **Virtual Users (VU):** `70 VUs` `[VERIFIED]`
   - **Test Duration:** `1 minute (60s)` 지속 부하 `[VERIFIED]`
   - **Throughput:** `463 req/s` `[VERIFIED]`
@@ -60,7 +60,7 @@
 - **Container Topology (Docker Compose):**
   - `Nginx` (Port 80): 정적 자원 서빙 및 `/api/*` 리버스 프록시 단일 진입점 `[IMPLEMENTED]`
   - `Spring Boot App` (Port 8080): 내부 통신 격리 `[IMPLEMENTED]`
-  - `MySQL 8.0` (Port 3306): RDBMS `[IMPLEMENTED]`
+  - `MySQL 8.0` (Port 3306, 호스트 3307): RDBMS `[IMPLEMENTED]`
   - `Redis 7.0` (Port 6379): In-Memory Token & Cache Store `[IMPLEMENTED]`
   - `Prometheus` (Port 9090) / `VictoriaMetrics` (Port 8428) / `Grafana` (Port 3000): 메트릭 수집 및 시각화 `[IMPLEMENTED]` `[DOCUMENTED]`
 
@@ -80,7 +80,7 @@
 3. **[TS-003] Docker 환경 내 Redis localhost 바인딩 문제**
    - **Symptom:** Docker Compose 환경에서 Spring Boot가 Redis 컨테이너(`localhost:6379`)에 연결하지 못하고 커넥션 거부 발생 `[DOCUMENTED]`
    - **Root Cause:** 컨테이너 격리 환경에서 `localhost`는 컨테이너 자신을 가리키므로, Docker Network 서비스명(`redis`)을 지정해야 함 `[DOCUMENTED]`
-   - **Resolution:** Spring Boot `application.yml`의 Redis host 설정을 환경변수 기반(`SPRING_DATA_REDIS_HOST: redis`)으로 분리 `[VERIFIED]` `[DOCUMENTED]`
+   - **Resolution:** Spring Boot `application.yaml`의 Redis host 설정을 환경변수 기반(`SPRING_REDIS_HOST: redis`)으로 분리 `[VERIFIED]` `[DOCUMENTED]`
 
 ---
 

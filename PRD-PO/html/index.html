@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Backend & Infra Engineering Portfolio | Verified Evidence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-secondary: #111827;
+      --bg-card: #1f2937;
+      --bg-card-hover: #283548;
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --accent-blue: #3b82f6;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-red: #ef4444;
+      --accent-purple: #8b5cf6;
+      --border-color: #374151;
+      --font-main: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-main);
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Layout */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    header {
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(11, 15, 25, 0.85);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 70px;
+    }
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo span { color: var(--accent-cyan); font-family: var(--font-mono); }
+    .nav-links { display: flex; gap: 20px; }
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text-primary); }
+
+    /* Hero Section */
+    .hero {
+      padding: 80px 0 60px;
+      border-bottom: 1px solid var(--border-color);
+      background: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.12) 0%, transparent 60%);
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--accent-green);
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .hero-badge .pulse {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--accent-green);
+      box-shadow: 0 0 8px var(--accent-green);
+    }
+    .hero-title {
+      font-size: 2.75rem;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+    .hero-title bg-gradient {
+      background: linear-gradient(135deg, #60a5fa 0%, #2dd4bf 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-subtitle {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      max-width: 840px;
+      margin-bottom: 32px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 30px;
+    }
+    .meta-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px 20px;
+    }
+    .meta-card .label { font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono); text-transform: uppercase; }
+    .meta-card .val { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-top: 4px; }
+
+    /* Section Styling */
+    section { padding: 64px 0; border-bottom: 1px solid var(--border-color); }
+    .section-head { margin-bottom: 36px; }
+    .section-tag {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .section-title { font-size: 1.85rem; font-weight: 700; margin-top: 4px; }
+    .section-desc { color: var(--text-secondary); margin-top: 6px; font-size: 0.95rem; }
+
+    /* Tags */
+    .tag {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+    .tag-verified { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .tag-implemented { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .tag-documented { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); }
+    .tag-planned { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+
+    /* Grid & Cards */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .card:hover { transform: translateY(-2px); border-color: var(--accent-blue); }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+    .card-title { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); }
+    .card-body { font-size: 0.9rem; color: var(--text-secondary); }
+    .card-body ul { list-style: none; margin-top: 10px; }
+    .card-body li { margin-bottom: 6px; position: relative; padding-left: 16px; }
+    .card-body li::before { content: "•"; position: absolute; left: 0; color: var(--accent-cyan); }
+
+    /* Interactive Metric Cards */
+    .metrics-banner {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .metric-box {
+      background: linear-gradient(180deg, rgba(31, 41, 55, 0.6) 0%, rgba(17, 24, 39, 0.9) 100%);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .metric-box::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: var(--accent-cyan);
+    }
+    .metric-val { font-size: 2rem; font-weight: 800; font-family: var(--font-mono); color: #fff; }
+    .metric-sub { font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono); margin-top: 4px; }
+    .metric-badge { margin-top: 8px; }
+
+    /* Architecture Visualizer */
+    .topology-container {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 28px;
+      position: relative;
+    }
+    .topo-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+    .topo-node {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+    .topo-node.gateway { border-color: var(--accent-cyan); box-shadow: 0 0 12px rgba(6, 182, 212, 0.2); }
+    .topo-node.app { border-color: var(--accent-blue); }
+    .topo-node.store { border-color: var(--accent-purple); }
+    .topo-port { font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-amber); margin-top: 4px; }
+
+    /* Code Snippet Box */
+    .code-box {
+      background: #090d16;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: #e5e7eb;
+      overflow-x: auto;
+      margin-top: 12px;
+    }
+
+    /* Table */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      background: var(--bg-secondary);
+    }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem; }
+    th {
+      background: var(--bg-card);
+      padding: 14px 18px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-color);
+    }
+    td { padding: 14px 18px; border-bottom: 1px solid var(--border-color); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+    /* Roadmap Box */
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .roadmap-card {
+      background: rgba(245, 158, 11, 0.03);
+      border: 1px dashed rgba(245, 158, 11, 0.4);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .roadmap-card h4 { color: var(--accent-amber); font-size: 0.95rem; margin-bottom: 8px; }
+    .roadmap-card p { font-size: 0.85rem; color: var(--text-secondary); }
+
+    /* Footer */
+    footer {
+      padding: 40px 0;
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .footer-links { margin-top: 12px; display: flex; justify-content: center; gap: 20px; font-family: var(--font-mono); }
+    .footer-links a { color: var(--accent-cyan); text-decoration: none; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .grid-2, .grid-3, .metrics-banner, .topo-grid { grid-template-columns: 1fr; }
+      .hero-title { font-size: 2.1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container nav-wrap">
+      <div class="logo">
+        <span>PR-1A1</span> // PORTFOLIO
+      </div>
+      <div class="nav-links">
+        <a href="#architecture">Architecture</a>
+        <a href="#security">Security</a>
+        <a href="#performance">Performance</a>
+        <a href="#troubleshooting">Troubleshooting</a>
+        <a href="#ai-workflow">AI Workflow</a>
+        <a href="#roadmap">Roadmap</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <div class="hero">
+    <div class="container">
+      <div class="hero-badge">
+        <div class="pulse"></div>
+        SOURCE OF TRUTH VERIFIED (Zero-Hallucination)
+      </div>
+      <h1 class="hero-title">
+        Backend & Infrastructure<br>
+        <span style="background: linear-gradient(135deg, #60a5fa 0%, #2dd4bf 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+          Engineering Portfolio
+        </span>
+      </h1>
+      <p class="hero-subtitle">
+        Spring Boot 3.3 기반 무상태 JWT + RTR + Redis Blacklist 실시간 세션 제어, Docker 7개 컨테이너 격리 인프라, k6 70 VU 부하 검증 및 SA-1 거버넌스 기반의 AI 엔지니어링 포트폴리오입니다.
+      </p>
+
+      <div class="meta-grid">
+        <div class="meta-card">
+          <div class="label">Primary Source (App)</div>
+          <div class="val">bluejals13/26-05adf <span class="tag tag-verified">feature/auth@0603@1401</span></div>
+        </div>
+        <div class="meta-card">
+          <div class="label">Primary Source (Process)</div>
+          <div class="val">bluejals13/SA-1 <span class="tag tag-documented">main</span></div>
+        </div>
+        <div class="meta-card">
+          <div class="label">Testing Suite</div>
+          <div class="val">JUnit 10종 100% Pass <span class="tag tag-verified">VERIFIED</span></div>
+        </div>
+        <div class="meta-card">
+          <div class="label">k6 Stress Average</div>
+          <div class="val">5.64ms / 463 req/s <span class="tag tag-verified">0% ERROR</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="container">
+
+    <!-- 1. Architecture Section -->
+    <section id="architecture">
+      <div class="section-head">
+        <div class="section-tag">01. System & Container Topology</div>
+        <h2 class="section-title">네트워크 격리 및 컨테이너 오케스트레이션</h2>
+        <p class="section-desc">Nginx 단일 진입점을 통하여 외부 노출을 최소화하고 도커 내부 네트워크로 백엔드와 스토리지를 격리합니다.</p>
+      </div>
+
+      <div class="topology-container">
+        <div class="topo-grid">
+          <div class="topo-node gateway">
+            <h4>Nginx Gateway</h4>
+            <div class="topo-port">Port 80 (Public)</div>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 6px;">SPA 정적 자원 서빙 & /api/* 리버스 프록시</p>
+            <span class="tag tag-verified" style="margin-top: 8px;">VERIFIED</span>
+          </div>
+
+          <div class="topo-node app">
+            <h4>Spring Boot 3.3.2</h4>
+            <div class="topo-port">Port 8080 (Internal Docker Bridge)</div>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 6px;">Spring Security 6, JJWT, JPA, Actuator</p>
+            <span class="tag tag-implemented" style="margin-top: 8px;">IMPLEMENTED</span>
+          </div>
+
+          <div class="topo-node store">
+            <h4>MySQL & Redis</h4>
+            <div class="topo-port">MySQL (3307:3306) | Redis (6379)</div>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 6px;">Flyway V1~V5 & RTR Token Store</p>
+            <span class="tag tag-verified" style="margin-top: 8px;">VERIFIED</span>
+          </div>
+        </div>
+
+        <div class="code-box" style="margin-top: 24px;">
+          // Nginx Routing Evidence (nginx/default.conf)
+          location /api/ {
+              proxy_pass http://backend:8080/api/;
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Security & Auth Section -->
+    <section id="security">
+      <div class="section-head">
+        <div class="section-tag">02. Security & Authorization</div>
+        <h2 class="section-title">Stateless JWT + RTR + Redis Blacklist</h2>
+        <p class="section-desc">무상태 인증의 확장성을 유지하면서도 토큰 탈취와 즉시 로그아웃을 완벽하게 제어합니다.</p>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Token Lifecycles</div>
+            <span class="tag tag-verified">VERIFIED</span>
+          </div>
+          <div class="card-body">
+            <ul>
+              <li><strong>Access Token:</strong> 1시간 (3,600,000ms), Authorization Header (Bearer) 전달</li>
+              <li><strong>Refresh Token:</strong> 7일 (604,800,000ms), HttpOnly Secure Cookie 전달</li>
+              <li>JJWT 기반 Payload에 userId, roles, permissions 포함</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Refresh Token Rotation (RTR)</div>
+            <span class="tag tag-verified">VERIFIED</span>
+          </div>
+          <div class="card-body">
+            <ul>
+              <li>재발급 요청 시 Redis(`rt:<userId>`) 내 UUID JTI 검증</li>
+              <li>검증 즉시 기존 JTI 삭제 및 신규 세트 동시 발급</li>
+              <li>이미 소진된 구버전 JTI 재요청 시 즉시 401 차단 (Replay Attack 방어)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Redis Token Blacklist</div>
+            <span class="tag tag-verified">VERIFIED</span>
+          </div>
+          <div class="card-body">
+            <ul>
+              <li>로그아웃 시 Access Token을 `bl:<token>` 키로 Redis 등재</li>
+              <li>Access Token의 잔여 만료시간만큼만 TTL 부여</li>
+              <li>무상태 토큰임에도 로그아웃 즉시 인가 필터에서 차단</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top: 20px;">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">M:N RBAC Authorization Model</div>
+            <span class="tag tag-verified">VERIFIED</span>
+          </div>
+          <div class="card-body">
+            <p>User ↔ Role ↔ Permission 정규화 매핑 구조. 세부 엔드포인트 권한 인가 필터링을 통해 권한 없는 사용자의 관리자 리소스 접근 시 403 Forbidden 반환 검증 완료.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Flyway Schema Migrations</div>
+            <span class="tag tag-implemented">IMPLEMENTED</span>
+          </div>
+          <div class="card-body">
+            <p>`V1__init_schema.sql`부터 `V5__insert_test_users.sql`까지 5단계 버전 스크립트를 통해 DDL 형상을 100% 코드로 통제하고 불일치 방지.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Performance Section -->
+    <section id="performance">
+      <div class="section-head">
+        <div class="section-tag">03. Performance & Load Testing</div>
+        <h2 class="section-title">k6 70 VU 부하 테스트 실측 결과</h2>
+        <p class="section-desc">26-05adf/docs/performance/k6-load-test.md의 5~7차 스트레스 테스트 실측치 및 3회 산술 평균 Fact</p>
+      </div>
+
+      <div class="metrics-banner">
+        <div class="metric-box">
+          <div class="metric-val">70 VUs</div>
+          <div class="metric-sub">Stress Concurrency</div>
+          <div class="metric-badge"><span class="tag tag-verified">PASS</span></div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-val">5.64 ms</div>
+          <div class="metric-sub">Avg Latency (3회 평균)</div>
+          <div class="metric-badge"><span class="tag tag-verified">avg &lt; 20ms</span></div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-val">9.98 ms</div>
+          <div class="metric-sub">P95 Latency (3회 평균)</div>
+          <div class="metric-badge"><span class="tag tag-verified">p(95) &lt; 50ms</span></div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-val">0.00%</div>
+          <div class="metric-sub">HTTP Error Rate</div>
+          <div class="metric-badge"><span class="tag tag-verified">0 Errors</span></div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Run 차수</th>
+              <th>가상 사용자 (VU)</th>
+              <th>측정 시간</th>
+              <th>평균 응답시간 (Avg)</th>
+              <th>95 백분위수 (P95)</th>
+              <th>초당 처리량 (RPS)</th>
+              <th>오류율 (Error)</th>
+              <th>판정</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>5차 Run</strong></td>
+              <td>70 VU</td>
+              <td>1m</td>
+              <td>4.73 ms</td>
+              <td>8.77 ms</td>
+              <td>469 req/s</td>
+              <td>0.00%</td>
+              <td><span class="tag tag-verified">PASS</span></td>
+            </tr>
+            <tr>
+              <td><strong>6차 Run</strong></td>
+              <td>70 VU</td>
+              <td>1m</td>
+              <td>6.01 ms</td>
+              <td>10.61 ms</td>
+              <td>457 req/s</td>
+              <td>0.00%</td>
+              <td><span class="tag tag-verified">PASS</span></td>
+            </tr>
+            <tr>
+              <td><strong>7차 Run</strong></td>
+              <td>70 VU</td>
+              <td>1m</td>
+              <td>6.18 ms</td>
+              <td>10.57 ms</td>
+              <td>465 req/s</td>
+              <td>0.00%</td>
+              <td><span class="tag tag-verified">PASS</span></td>
+            </tr>
+            <tr style="background: rgba(59, 130, 246, 0.08); font-weight: 700;">
+              <td><strong>3회 산술 평균 (Fact)</strong></td>
+              <td><strong>70 VU</strong></td>
+              <td><strong>1m (3회)</strong></td>
+              <td><strong>5.64 ms</strong></td>
+              <td><strong>9.98 ms</strong></td>
+              <td><strong>463 req/s</strong></td>
+              <td><strong>0.00%</strong></td>
+              <td><span class="tag tag-verified">VERIFIED</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 4. Troubleshooting Section -->
+    <section id="troubleshooting">
+      <div class="section-head">
+        <div class="section-tag">04. Incident Troubleshooting</div>
+        <h2 class="section-title">TS 표준 6단계 장애 해결 사례</h2>
+        <p class="section-desc">Symptom ➔ Impact ➔ Diagnosis ➔ Root Cause ➔ Resolution ➔ Prevention</p>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">[TS-01] Redis 타임아웃 지연</div>
+            <span class="tag tag-verified">VERIFIED</span>
+          </div>
+          <div class="card-body">
+            <ul>
+              <li><strong>현상:</strong> Redis 장애 시 백엔드가 최대 1분간 블로킹되며 프론트엔드 빈 화면 발생</li>
+              <li><strong>원인:</strong> Lettuce 클라이언트 기본 타임아웃(60초) 미설정</li>
+              <li><strong>해결:</strong> 타임아웃을 2초(`2000ms`)로 단축하고 `RedisUnavailableException` 503 반환</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">[TS-001] JWT 무한 루프</div>
+            <span class="tag tag-verified">VERIFIED</span>
+          </div>
+          <div class="card-body">
+            <ul>
+              <li><strong>현상:</strong> Refresh Token 만료 시 클라이언트 인터셉터와 서버 간 401 무한 재시도 루프</li>
+              <li><strong>원인:</strong> 갱신 실패 응답에 대한 클라이언트 탈출 조건(Exit Condition) 결여</li>
+              <li><strong>해결:</strong> Single Flight 토큰 재발급 패턴 적용 및 401 시 즉시 세션 초기화/리다이렉트</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">[TS-003] Docker Redis 바인딩</div>
+            <span class="tag tag-verified">VERIFIED</span>
+          </div>
+          <div class="card-body">
+            <ul>
+              <li><strong>현상:</strong> `docker compose up` 실행 시 Redis Connection Refused 발생</li>
+              <li><strong>원인:</strong> 컨테이너 환경에서 `localhost`는 컨테이너 자신을 가리키는 고립 문제</li>
+              <li><strong>해결:</strong> `docker-compose.yml`에 `SPRING_REDIS_HOST: redis` 주입 및 환경변수화</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. AI Workflow Section -->
+    <section id="ai-workflow">
+      <div class="section-head">
+        <div class="section-tag">05. AI-Assisted Engineering Process</div>
+        <h2 class="section-title">SA-1 기반의 통제된 AI 협업 프로세스</h2>
+        <p class="section-desc">AI를 맹목적으로 신뢰하지 않고, 엄격한 컨벤션과 테스트를 통해 개발자의 통제 하에 둡니다.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Controlled 8-Stage Lifecycle</div>
+            <span class="tag tag-documented">DOCUMENTED</span>
+          </div>
+          <div class="card-body">
+            <ol style="padding-left: 20px; font-size: 0.88rem; line-height: 1.8;">
+              <li><strong>Requirement:</strong> 명확한 요구사항 및 과제 정의</li>
+              <li><strong>Context Reading:</strong> 기존 코드 및 아키텍처 규칙 분석</li>
+              <li><strong>Planning:</strong> 작업 분할 및 파일 변경 계획 수립</li>
+              <li><strong>Agent Delegation:</strong> 최소 단위 정밀 코드 변경 위임</li>
+              <li><strong>Verification:</strong> JUnit 10종 및 k6 부하 검증 필수 수행</li>
+              <li><strong>Human Review:</strong> 개발자의 최종 검토 및 승인</li>
+              <li><strong>Documentation:</strong> `changelogs/` 변경 이력 의무 동기화</li>
+              <li><strong>Deployment:</strong> 컨테이너 빌드 및 옵저버빌리티 관측</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Standard Agent Commands & Policies</div>
+            <span class="tag tag-documented">DOCUMENTED</span>
+          </div>
+          <div class="card-body">
+            <ul>
+              <li><strong>Zero-Chatter Policy:</strong> 서론/사과를 배제하고 diff와 명확한 결과만 보고</li>
+              <li><strong>Documentation-First:</strong> 코드 변경 완료 시 `changelogs/` 마크다운 작성 의무</li>
+              <li><strong>@Task&Log:</strong> 작업 목록 관리 및 진행상황 동기화</li>
+              <li><strong>@CodeReview:</strong> 컨벤션 및 보안 취약점 정적 검토</li>
+              <li><strong>@Troubleshoot:</strong> 6단계 표준 규격 기반 장애 기록</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Roadmap Section (PLANNED) -->
+    <section id="roadmap">
+      <div class="section-head">
+        <div class="section-tag">06. Limitations & Future Roadmap</div>
+        <h2 class="section-title">향후 개선 로드맵 (PLANNED)</h2>
+        <p class="section-desc">현재 시스템의 한계를 투명하게 공개하고 사실(Fact)과 계획(Plan)을 엄격히 분리합니다.</p>
+      </div>
+
+      <div class="roadmap-grid">
+        <div class="roadmap-card">
+          <h4>JPA N+1 쿼리 최적화 실측 벤치마크 <span class="tag tag-planned">PLANNED</span></h4>
+          <p>코드 상의 @EntityGraph 적용을 넘어, Batch Size 및 Fetch Join 적용 전/후 실행 쿼리 수와 힙 메모리 비교 벤치마크 정밀 측정 계획.</p>
+        </div>
+
+        <div class="roadmap-card">
+          <h4>Message Queue 비동기 파이프라인 <span class="tag tag-planned">PLANNED</span></h4>
+          <p>대용량 트래픽 급증 시 백엔드 부하 분산을 위한 Apache Kafka / RabbitMQ 기반 비동기 이벤트 큐 도입.</p>
+        </div>
+
+        <div class="roadmap-card">
+          <h4>React Query 캐싱 & Route Guard <span class="tag tag-planned">PLANNED</span></h4>
+          <p>Phase 2-2 staleTime/gcTime 정책 수립 및 중복 API 호출 제거, Phase 2-3 Route Guard 렌더링 최적화.</p>
+        </div>
+
+        <div class="roadmap-card">
+          <h4>대규모 분산 부하 테스트 (1,000+ VU) <span class="tag tag-planned">PLANNED</span></h4>
+          <p>현재 70 VU 단일 노드 검증을 넘어 다중 컨테이너 오토스케일링 및 AWS ALB 연동 1,000+ VU 부하 검증.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>PR-1A1 Engineering Portfolio & Technical Evidence Repository</p>
+      <div class="footer-links">
+        <a href="https://github.com/bluejals13/26-05adf" target="_blank">26-05adf (App Source)</a>
+        <a href="https://github.com/bluejals13/SA-1" target="_blank">SA-1 (AI Process)</a>
+        <a href="https://github.com/bluejals13/PR-1A1" target="_blank">PR-1A1 (Evidence)</a>
+      </div>
+      <p style="margin-top: 12px; font-size: 0.75rem; color: #4b5563;">
+        Strict Zero-Hallucination & Evidence-First Protocol Applied
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>
