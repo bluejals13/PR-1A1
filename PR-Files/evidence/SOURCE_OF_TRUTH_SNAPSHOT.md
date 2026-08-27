@@ -1,85 +1,119 @@
 # Source of Truth Snapshot & Traceability Matrix
 
+- **Snapshot Version:** 1.1.0
 - **Snapshot Date:** 2026-08-27
-- **Primary Source 1 (Application):** `bluejals13/26-05adf` (Branch: `feature/auth@0603@1401`)
-- **Primary Source 2 (AI Agent / Process):** `bluejals13/SA-1` (Branch: `main`)
-- **Target Processing Workspace:** `bluejals13/PR-1A1`
+- **Primary Source 1 (Application):** `https://github.com/bluejals13/26-05adf` (Branch: `feature/auth@0603@1401`)
+- **Primary Source 2 (AI Agent / Process):** `https://github.com/bluejals13/SA-1` (Branch: `main`)
+- **Target Workspace:** `https://github.com/bluejals13/PR-1A1`
 
 ---
 
-## 1. Status Classification (상태 구분 기준)
+## 1. Status Classification Protocol (5대 상태 정의)
 
-PR-1A1에서 생산되는 모든 기술적 내용과 포트폴리오 문서는 다음 5가지 상태 표기를 엄격히 준수합니다.
+본 저장소(`PR-1A1`)에서 가공 및 참조되는 모든 기술 항목은 아래 5대 상태 분류를 엄격히 준수합니다.
 
-| 상태 태그 | 정의 | 판정 기준 |
+| 상태 태그 | 정의 | 판정 및 적용 기준 |
 | :--- | :--- | :--- |
-| `[IMPLEMENTED]` | 코드가 실제로 작성되어 저장소에 존재하는 상태 | 26-05adf 내 소스 코드(.java, .ts, .sql 등) 존재 확인 |
-| `[VERIFIED]` | 자동화 테스트나 부하 테스트로 검증 완료된 상태 | JUnit 테스트 통과, k6 실행 보고서 수치 실측 확인 |
-| `[DOCUMENTED]` | 아키텍처, 컨벤션, 장애 보고서 등 문서화된 상태 | docs/, changelogs/ 내 마크다운 기술 문서 존재 확인 |
-| `[PLANNED]` | 향후 개선 예정으로 계획된 상태 (Roadmap) | `task_progress.md` 미완료 항목 또는 Roadmap 기술 항목 |
-| `[UNKNOWN]` | 현재 소스 코드 및 문서에서 확인되지 않은 상태 | 추측 금지, 사실 확인 전까지 포트폴리오에 기술 금지 |
+| `[VERIFIED]` | 자동화 테스트나 부하 테스트, 실행 로그로 동작과 수치가 검증 완료된 상태 | JUnit 테스트 통과 확인, k6 실행 결과치 실측 확인 |
+| `[IMPLEMENTED]` | 코드가 실제로 작성되어 저장소에 존재하나 검증 수치가 없는 상태 | `26-05adf` 내 소스 코드(.java, .ts, .sql, .yml 등) 파일 확인 |
+| `[DOCUMENTED]` | 아키텍처, 설계 컨벤션, 장애 보고서 등 공식 기술 문서에 명시된 상태 | `docs/`, `changelogs/` 내 마크다운 기술 문서 확인 |
+| `[PLANNED]` | 향후 개선 예정으로 계획된 상태 (Roadmap) | `task_progress.md` 미완료 항목 또는 향후 로드맵 항목 |
+| `[UNKNOWN]` | 현재 소스 코드 및 문서에서 확인되지 않은 상태 | **추측 금지**, 확인 전까지 포트폴리오 인용 절대 불가 |
 
 ---
 
 ## 2. Source of Truth 실측 팩트 요약 (Fact Base)
 
-### 2.1 Backend & Security (`26-05adf`)
-- **프레임워크 및 런타임:** Java 17, Spring Boot 3.3.2, Spring Security 6, Spring Data JPA, JJWT (0.12.x), Flyway, MySQL 8.0, Redis 7.0 `[IMPLEMENTED]`
-- **인증(Authentication) 메커니즘:**
-  - Stateless JWT Access Token (1시간 만료, Header Authorization: Bearer 전송) `[IMPLEMENTED]` `[VERIFIED]`
-  - Refresh Token (7일 만료, HttpOnly Secure Cookie 전송, UUID JTI 기반 식별) `[IMPLEMENTED]` `[VERIFIED]`
-  - Refresh Token Rotation (RTR): 토큰 재발급 시 기존 JTI 무효화 및 신규 JTI Redis 적재 `[IMPLEMENTED]` `[VERIFIED]`
-  - Token Blacklist: 로그아웃 시 Access Token의 잔여 TTL 동안 Redis Blacklist에 등록 `[IMPLEMENTED]` `[VERIFIED]`
-- **인가(Authorization) 메커니즘 (RBAC):**
-  - User - Role - Permission 다대다(M:N) 매핑 구조 `[IMPLEMENTED]` `[VERIFIED]`
-  - DB Schema (Flyway V1~V5): `users`, `roles`, `permissions`, `user_roles`, `role_permissions`, `menus`, `role_menus` `[IMPLEMENTED]`
-  - Spring Security Custom Provider 및 UserAuthorityService를 통한 권한 인가 필터링 `[IMPLEMENTED]` `[VERIFIED]`
+### 2.1 Backend & Security Architecture (`26-05adf`)
+- **프레임워크 & 런타임:** Java 17, Spring Boot 3.3.2, Spring Security 6, Spring Data JPA, JJWT (0.12.x), Flyway, MySQL 8.0, Redis 7.0 `[IMPLEMENTED]`
+- **인증 (Authentication):**
+  - Stateless JWT Access Token (유효시간: 1시간, Header `Authorization: Bearer <token>` 전달) `[IMPLEMENTED]` `[VERIFIED]`
+  - Refresh Token (유효시간: 7일, HttpOnly Secure Cookie 전달, UUID JTI 기반 고유 식별) `[IMPLEMENTED]` `[VERIFIED]`
+  - Refresh Token Rotation (RTR): 토큰 재발급 시 기존 JTI 즉시 무효화 및 신규 JTI Redis 적재 `[IMPLEMENTED]` `[VERIFIED]`
+  - Token Blacklist: 로그아웃 요청 시 Access Token의 잔여 TTL 동안 Redis Blacklist에 등록하여 즉시 무효화 `[IMPLEMENTED]` `[VERIFIED]`
+- **인가 (Authorization & RBAC):**
+  - `User - Role - Permission` M:N 다대다 매핑 구조 `[IMPLEMENTED]` `[VERIFIED]`
+  - DB Schema (Flyway V1~V5): `users`, `roles`, `permissions`, `user_roles`, `role_permissions`, `menus`, `role_menus` 테이블 구성 `[IMPLEMENTED]`
+  - Spring Security Custom Provider 및 `UserAuthorityService`를 통한 세부 엔드포인트 권한 인가 필터링 `[IMPLEMENTED]` `[VERIFIED]`
 - **응답 및 예외 처리 규격:**
-  - Record 기반 DTO 구조 `[IMPLEMENTED]`
+  - Record 기반 불변 DTO 구조 `[IMPLEMENTED]`
   - `ApiResponse<T>` 통일 포맷 및 `GlobalExceptionHandler` 적용 `[IMPLEMENTED]` `[DOCUMENTED]`
-
-### 2.2 Performance & Verification (`26-05adf`)
-- **k6 부하 테스트 실측 지표 (Fact):**
-  - **Virtual Users (VU):** 70 VUs `[VERIFIED]`
-  - **Duration:** 1 min `[VERIFIED]`
-  - **Throughput:** 463 req/s `[VERIFIED]`
-  - **Avg Latency:** 5.64 ms `[VERIFIED]`
-  - **P95 Latency:** 9.98 ms `[VERIFIED]`
-  - **Error Rate:** 0.00% `[VERIFIED]`
-- **부하 시나리오 구성:** `load.test.js`, `stress.test.js`, `spike.test.js`, `soak.test.js`, `read.flow.js`, `user.flow.js`, `admin-flow.js` `[IMPLEMENTED]`
-- **모니터링 스택:** Docker Compose 기반 Nginx, Spring Boot, MySQL, Redis, Prometheus (포트 9090), VictoriaMetrics (포트 8428), Grafana (포트 3000) `[IMPLEMENTED]` `[DOCUMENTED]`
-
-### 2.3 Troubleshooting Incident (`26-05adf`)
-- **TS-01-REDIS (Redis 장애 및 복구):**
-  - 현상: Redis 컨테이너 단절 시 Lettuce 커맨드 1분 타임아웃 발생 및 프론트엔드 흰 화면(Blank Screen) 노출 `[DOCUMENTED]`
-  - 근본 원인: Redis 커맨드 타임아웃 미설정 및 토큰 검증 시 Redis 블로킹, 프론트엔드 Error Boundary 부재 `[DOCUMENTED]`
-  - 해결: Lettuce 타임아웃 2초 단축, Redis 예외 래핑 처리, 프론트엔드 에러 핸들링 보강 `[DOCUMENTED]`
-
-### 2.4 AI-Assisted Engineering Workflow (`SA-1`)
-- **Zero-Chatter & Context Rules:** 프롬프트 규격화 및 diff 중심 변경 관리 `[DOCUMENTED]`
-- **문서화 5대 원칙:** Reference(현재기준), ADR(불변), Troubleshooting(재발방지), Roadmap(문제중심), Duplication(중복금지) `[DOCUMENTED]`
-- **AI 개발 사이클:**
-  1. `Context Reading` (기존 코드 및 규약 확인)
-  2. `Analysis & Planning` (`task_progress.md` 기반 범위 확정)
-  3. `Agent Delegation` (정밀 변경 수행)
-  4. `Verification` (JUnit / k6 검증)
-  5. `Changelog & Documentation` (`changelogs/phase*` 기록)
-
-### 2.5 Planned / Unverified (절대 구현 완료로 표기 금지)
-- JPA N+1 문제 해결 세부 벤치마크 실측 수치: 계획 단계 `[PLANNED]`
-- Message Queue (Kafka/RabbitMQ) 비동기 처리: 미구현 `[PLANNED]`
-- 분산 캐시 클러스터링: 미구현 `[PLANNED]`
 
 ---
 
-## 3. Claim-to-Evidence Traceability Matrix
+### 2.2 Performance & Verification Metrics (`26-05adf`)
+- **k6 부하 테스트 실측 불변 지표 (Fact):**
+  - **Virtual Users (VU):** `70 VUs` `[VERIFIED]`
+  - **Test Duration:** `1 minute (60s)` 지속 부하 `[VERIFIED]`
+  - **Throughput:** `463 req/s` `[VERIFIED]`
+  - **Average Latency:** `5.64 ms` `[VERIFIED]`
+  - **P95 Latency:** `9.98 ms` (`p(95) < 50ms` 임계치 통과) `[VERIFIED]`
+  - **Error Rate:** `0.00%` (총 0건 에러, `rate < 1%` 임계치 통과) `[VERIFIED]`
+- **부하 시나리오 구성:** `load.test.js`, `stress.test.js`, `spike.test.js`, `soak.test.js`, `read.flow.js`, `user.flow.js`, `admin-flow.js` `[IMPLEMENTED]`
+- **자동화 테스트 스위트 (10종 핵심 테스트):**
+  - `AuthControllerTest`, `AuthServiceTest`, `JwtAuthenticationFilterTest`, `RefreshTokenRepositoryTest`, `SecurityIntegrationTest`, `TokenBlacklistServiceTest` `[VERIFIED]`
+  - `RbacSecurityIntegrationTest`, `PermissionIntegrationTest`, `RolePermissionIntegrationTest`, `MenuSecurityIntegrationTest` `[VERIFIED]`
 
-모든 포트폴리오 및 기술문서는 아래와 같은 추적성 구조를 갖추어야 합니다.
+---
 
-```text
-[Claim (주장)]
-  └── [Source (출처 저장소 및 커밋/브랜치)]
-        └── [Implementation (구현 파일 및 라인)]
-              └── [Verification (테스트 코드/실행 로그)]
-                    └── [Result (실측 결과 및 산출물)]
-```
+### 2.3 Infrastructure & Observability (`26-05adf`)
+- **Container Topology (Docker Compose):**
+  - `Nginx` (Port 80): 정적 자원 서빙 및 `/api/*` 리버스 프록시 단일 진입점 `[IMPLEMENTED]`
+  - `Spring Boot App` (Port 8080): 내부 통신 격리 `[IMPLEMENTED]`
+  - `MySQL 8.0` (Port 3306): RDBMS `[IMPLEMENTED]`
+  - `Redis 7.0` (Port 6379): In-Memory Token & Cache Store `[IMPLEMENTED]`
+  - `Prometheus` (Port 9090) / `VictoriaMetrics` (Port 8428) / `Grafana` (Port 3000): 메트릭 수집 및 시각화 `[IMPLEMENTED]` `[DOCUMENTED]`
+
+---
+
+### 2.4 Troubleshooting Registry (장애 해결 실측 내역)
+모든 트러블슈팅 사례는 TS 표준 6단계 (`Symptom → Impact → Diagnosis → Root Cause → Resolution → Prevention`)로 관리됩니다.
+
+1. **[TS-01-REDIS] Redis 장애 시 Lettuce 커맨드 타임아웃 지연 및 프론트엔드 블로킹**
+   - **Symptom:** Redis 컨테이너 다운 시 커맨드 1분 블로킹 발생 및 프론트엔드 흰 화면(Blank Screen) 노출 `[DOCUMENTED]`
+   - **Root Cause:** Redis 기본 커맨드 타임아웃 미설정(기본 1분) 및 토큰 검증 필터 블로킹 `[DOCUMENTED]`
+   - **Resolution:** Lettuce 커맨드 타임아웃을 2초로 단축, Redis 접근 예외 처리 래핑, 프론트엔드 Error Boundary 보강 `[VERIFIED]` `[DOCUMENTED]`
+2. **[TS-001] JWT Refresh 무한 루프 이슈**
+   - **Symptom:** Refresh Token 갱신 요청 실패 시 클라이언트 인터셉터와 서버 간 무한 재시도 루프 발생 `[DOCUMENTED]`
+   - **Root Cause:** 재발급 실패(401) 응답에 대한 클라이언트 재시도 탈출 조건 미비 및 RTR JTI 즉시 만료 처리 타이밍 이슈 `[DOCUMENTED]`
+   - **Resolution:** 토큰 갱신 실패 시 즉시 쿠키 및 인증 상태를 초기화하고 로그인 페이지로 리다이렉트하는 탈출 조건 구현 `[VERIFIED]` `[DOCUMENTED]`
+3. **[TS-003] Docker 환경 내 Redis localhost 바인딩 문제**
+   - **Symptom:** Docker Compose 환경에서 Spring Boot가 Redis 컨테이너(`localhost:6379`)에 연결하지 못하고 커넥션 거부 발생 `[DOCUMENTED]`
+   - **Root Cause:** 컨테이너 격리 환경에서 `localhost`는 컨테이너 자신을 가리키므로, Docker Network 서비스명(`redis`)을 지정해야 함 `[DOCUMENTED]`
+   - **Resolution:** Spring Boot `application.yml`의 Redis host 설정을 환경변수 기반(`SPRING_DATA_REDIS_HOST: redis`)으로 분리 `[VERIFIED]` `[DOCUMENTED]`
+
+---
+
+### 2.5 AI-Assisted Engineering Workflow (`SA-1`)
+- **Zero-Chatter Policy:** 서론/미사여구 배제, diff 및 코드 변경 중심 정밀 협업 `[DOCUMENTED]`
+- **Documentation-First Policy:** 코드 변경 전후 `task_progress.md` 및 `changelogs/` 동기화 의무화 `[DOCUMENTED]`
+- **AI 엔지니어링 8단계 라이프사이클:**
+  ```text
+  Requirement ➔ Context Reading ➔ Analysis & Planning ➔ Agent Delegation ➔ Verification (JUnit/k6) ➔ Human Review ➔ Documentation
+  ```
+- **표준 프롬프트 커맨드 세트:** Task&Log, Code Review, Docs Sync, Troubleshooting `[DOCUMENTED]`
+
+---
+
+### 2.6 Planned / Unverified (절대 구현 완료로 표기 금지)
+- **JPA N+1 쿼리 최적화 세부 벤치마크 수치:** 계획 과제 `[PLANNED]`
+- **Message Queue (Kafka / RabbitMQ) 비동기 처리 도입:** 미구현 `[PLANNED]`
+- **분산 캐시 클러스터링 및 다중 노드 레플리케이션:** 미구현 `[PLANNED]`
+
+---
+
+## 3. Claim-to-Evidence Traceability Matrix (추적성 매트릭스)
+
+| 영역 (Domain) | 엔지니어링 주장 (Claim) | 소스 구현 위치 (Implementation) | 검증 테스트/증거 (Verification) | 상태 |
+| :--- | :--- | :--- | :--- | :---: |
+| **Security** | Access Token 1시간 만료, Header Bearer 전송 | `com.example.demo.auth.security.JwtTokenProvider` | `JwtAuthenticationFilterTest.java` | `[VERIFIED]` |
+| **Security** | Refresh Token 7일 만료, RTR 적용 및 JTI Redis 저장 | `com.example.demo.auth.service.AuthService` | `SecurityIntegrationTest.java` | `[VERIFIED]` |
+| **Security** | 로그아웃 시 Access Token Redis Blacklist 등록 | `com.example.demo.auth.service.TokenBlacklistService` | `TokenBlacklistServiceTest.java` | `[VERIFIED]` |
+| **RBAC** | User-Role-Permission M:N 권한 계층 모델 | `com.example.demo.iam.entity.*`, Flyway `V1~V5__*.sql` | `RbacSecurityIntegrationTest.java` | `[VERIFIED]` |
+| **Performance** | 70 VUs 동시 부하 시 평균 5.64ms, P95 9.98ms, 0% Error | `k6/scenarios/load.test.js`, `thresholds.js` | k6 실행 결과 리포트 (`docs/performance/`) | `[VERIFIED]` |
+| **Infra** | Nginx Reverse Proxy 단일 진입점 및 포트 격리 | `docker-compose.yml`, `nginx/default.conf` | Docker Compose 서비스 기동 및 라우팅 | `[IMPLEMENTED]` |
+| **Incident** | Redis 단절 시 커맨드 타임아웃 2초 단축 및 방어 | Spring Data Redis 설정 (`application.yml`) | `TS-01-REDIS` 장애 보고서 및 회복 검증 | `[VERIFIED]` |
+| **Incident** | JWT Refresh 실패 시 무한 루프 차단 | 클라이언트 API 인터셉터 & AuthService | `TS-001` 장애 분석 및 예외 핸들링 검증 | `[VERIFIED]` |
+| **Incident** | Docker 네트워크 내 서비스명 기반 Redis 바인딩 | `docker-compose.yml`, `application-docker.yml` | `TS-003` 컨테이너 간 통신 검증 | `[VERIFIED]` |
+| **AI Workflow** | 8단계 AI 협업 프로세스 및 Zero-Chatter | `SA-1/conventions/rules.md`, `changelogs/` | `SA-1` 변경 이력 및 커맨드 규격서 | `[DOCUMENTED]` |
+| **Roadmap** | N+1 쿼리 최적화 및 Message Queue 도입 | 미구현 (계획 과제) | `task_progress.md` 로드맵 | `[PLANNED]` |
