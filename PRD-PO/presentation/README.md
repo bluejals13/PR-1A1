@@ -59,7 +59,7 @@ PRD-PO/presentation/
 | **08** | **Database Schema & Migration Governance (Flyway)** | `ddl-auto: validate` 및 Flyway V1~V5 마이그레이션을 통한 스키마 형상 통제 | `05_CORE_IMPLEMENTATION.md` | `[IMPLEMENTED]`<br>`[VERIFIED]` |
 | **09** | **Automated Security & Integration Verification** | 10종의 핵심 JUnit 단위/통합 테스트 스위트를 통한 보안 로직 무결성 검증 (100% Pass) | `07_TESTING.md`<br>`06_SECURITY.md` | `[VERIFIED]`<br>`[DOCUMENTED]` |
 | **10** | **Performance Validation (k6 Benchmarks)** | k6 70 VU 동시 부하 실측 결과 (Avg 5.64ms, P95 9.98ms, 463 req/s, Error 0.00%) | `08_PERFORMANCE.md` | `[VERIFIED]` |
-| **11** | **Real-World Incident Troubleshooting (TS 6-Step)** | TS 표준 6단계 프레임워크 기반 실측 장애 3건 (Redis, JWT Loop, Docker) 완벽 해결 | `09_TROUBLESHOOTING.md` | `[VERIFIED]`<br>`[DOCUMENTED]` |
+| **11** | **Real-World Incident Troubleshooting (TS 6-Step)** | TS 표준 6단계 프레임워크 기반 실측 장애 3건 (Redis, JWT Loop, Docker) 근본 원인 해결 | `09_TROUBLESHOOTING.md` | `[VERIFIED]`<br>`[DOCUMENTED]` |
 | **12** | **Controlled AI Workflow (SA-1 Governance)** | AI를 맹목적으로 믿지 않고 엄격한 컨벤션과 테스트로 통제하는 8단계 라이프사이클 | `10_AI_WORKFLOW.md` | `[DOCUMENTED]`<br>`[VERIFIED]` |
 | **13** | **Architectural Decisions & Technical Trade-offs** | 무상태성 vs 세션 제어, Redis 외부 의존성 결합 vs 시스템 복원력 최적점 도출 | `04_AUTH_AND_RBAC.md`<br>`09_TROUBLESHOOTING.md` | `[VERIFIED]`<br>`[DOCUMENTED]` |
 | **14** | **System Limitations & Future Roadmap (PLANNED)** | 현재 시스템 한계 인정 및 사실과 계획을 엄격히 분리한 `[PLANNED]` 로드맵 | `11_LIMITATIONS_AND_ROADMAP.md` | `[PLANNED]`<br>`[DOCUMENTED]` |

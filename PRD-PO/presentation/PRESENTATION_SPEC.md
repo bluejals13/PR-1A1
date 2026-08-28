@@ -33,7 +33,7 @@ Problem (도전 과제)
 ## 2. Core Messages
 
 1. **보안과 성능의 균형 (Security & Performance Balance):**
-   Stateless JWT의 고성능(P95 9.98ms)을 유지하면서도, RTR(Refresh Token Rotation)과 Redis Blacklist를 결합하여 완벽한 토큰 탈취 방어 및 실시간 세션 통제력을 확보했습니다.
+   Stateless JWT의 고성능(P95 9.98ms)을 유지하면서도, RTR(Refresh Token Rotation)과 Redis Blacklist를 결합하여 토큰 탈취 방어 및 안정적인 실시간 세션 통제력을 확보했습니다.
 2. **실측 기반의 무결성 검증 (Empirical Verification):**
    주관적 주장을 배제하고 10종의 자동화 단위/통합 테스트와 k6 70 VU 부하 테스트(평균 5.64ms, 에러율 0.00%)를 통해 기계적으로 검증된 사실만을 제시합니다.
 3. **장애 분석 및 통제된 엔지니어링 프로세스 (Resilience & Controlled AI):**
@@ -86,7 +86,7 @@ Problem (도전 과제)
 
 ### Slide 04: Backend Clean Architecture & DTO Isolation
 - **Purpose:** 불변 Record DTO를 통한 엔티티 캡슐화 및 통일된 API 응답 규격 제시.
-- **Key Message:** Entity의 외부 노출을 완벽히 차단하고 통일된 응답/예외 래퍼로 통신 안정성을 보장한다.
+- **Key Message:** Entity의 외부 직접 노출을 차단하고 통일된 응답/예외 래퍼로 통신 안정성을 보장한다.
 - **Required Evidence:** `05_CORE_IMPLEMENTATION.md`
 - **Visual Recommendation:** Controller ➔ Service ➔ Repository 계층 분리 다이어그램 및 `ApiResponse<T>` 구조 박스.
 - **Content:**
@@ -113,7 +113,7 @@ Problem (도전 과제)
 
 ### Slide 06: Advanced Token Security (RTR & Redis Blacklist)
 - **Purpose:** Refresh Token Rotation 및 Redis Blacklist의 동작 메커니즘 증명.
-- **Key Message:** 1회용 JTI 검증으로 재사용 공격을 원천 차단하고, 잔여 TTL 블랙리스트로 즉시 로그아웃을 달성한다.
+- **Key Message:** 1회용 JTI 검증으로 재사용 공격을 방어하고, 잔여 TTL 블랙리스트로 즉시 로그아웃 무효화를 달성한다.
 - **Required Evidence:** `04_AUTH_AND_RBAC.md`, `06_SECURITY.md`
 - **Visual Recommendation:** RTR 시퀀스 다이어그램 (토큰 갱신 시 JTI 교체 및 탈취 토큰 차단 흐름).
 - **Content:**

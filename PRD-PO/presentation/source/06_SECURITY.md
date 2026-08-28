@@ -10,7 +10,7 @@ XSS, Replay Attack, 토큰 위변조, 권한 우회 공격에 대응하는 다�
 ## How
 - **XSS 방어:** 민감한 Refresh Token은 JavaScript 접근이 불가능한 `HttpOnly`, `Secure`, `SameSite=Strict` Cookie로만 전송.
 - **Replay Attack 방어 (RTR):** Refresh Token 재발급 시 고유 UUID JTI를 1회용으로 검증 후 즉시 파기. 이미 사용된 JTI로 요청 시 즉시 세션 차단.
-- **즉시 세션 무효화 (Blacklist TTL):** 로그아웃 시 Access Token을 Redis에 등록하고, 잔여 유효시간(TTL)만큼만 키를 보관하여 메모리 낭비 없이 완벽 차단.
+- **즉시 세션 무효화 (Blacklist TTL):** 로그아웃 시 Access Token을 Redis에 등록하고, 잔여 유효시간(TTL)만큼만 키를 보관하여 메모리 낭비 없이 즉시 인가 차단.
 - **Spring Security 6 SecurityFilterChain:** `JwtAuthenticationFilter` ➔ `UsernamePasswordAuthenticationFilter` ➔ `UserAuthorityService` 순의 엄격한 인가 파이프라인.
 
 ## Evidence
