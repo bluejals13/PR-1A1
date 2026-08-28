@@ -27,11 +27,11 @@
 | # | 엔지니어링 주장 (Claim) | 소스 구현 위치 (Implementation) | 검증 테스트 / 증거 (Verification) | 판정 상태 |
 | :- | :--- | :--- | :--- | :---: |
 | 1 | Stateless JWT Access Token (1시간 만료, Header Bearer 전송) | `com.example.demo.auth.security.JwtTokenProvider` | `JwtAuthenticationFilterTest.java` | `[VERIFIED]` |
-| 2 | Refresh Token (7일 만료, HttpOnly Secure Cookie 전송, UUID JTI 기반) | `com.example.demo.auth.service.AuthService` | `RefreshTokenRepositoryTest.java` | `[VERIFIED]` |
-| 3 | Refresh Token Rotation (RTR): 토큰 갱신 시 기존 JTI 무효화 & 재발급 | `com.example.demo.auth.service.AuthService` | `SecurityIntegrationTest.java` (replayAttack_ShouldFail) | `[VERIFIED]` |
+| 2 | Refresh Token (7일 만료, HttpOnly Secure Cookie 전송, UUID JTI 기반) | `auth/security/RefreshTokenRepository.java` (`auth:refresh:user:{userId}`) | `RefreshTokenRepositoryTest.java` (save, delete) | `[VERIFIED]` |
+| 3 | Refresh Token Rotation (RTR): Lua Script 기반 1-RTT 원자적 JTI 교체 | `auth/security/RefreshTokenRepository.java` (Lua Script) | `RefreshTokenRepositoryTest.java` (rotateSuccess, rotateFail, rotateNull) | `[VERIFIED]` |
 | 4 | Token Blacklist: 로그아웃 시 Access Token 잔여 TTL 동안 Redis 블랙리스트 등록 | `com.example.demo.auth.service.TokenBlacklistService` | `TokenBlacklistServiceTest.java` (blacklistedToken_ShouldBeDenied) | `[VERIFIED]` |
 | 5 | RBAC (User-Role-Permission M:N 다대다 매핑 인가 필터링) | `com.example.demo.iam.entity.*`, `UserAuthorityService` | `RbacSecurityIntegrationTest.java` (403 Forbidden 확인) | `[VERIFIED]` |
-| 6 | Flyway V1~V5 DB 마이그레이션 스키마 관리 | `src/main/resources/db/migration/V1~V5__*.sql` | DB 구동 및 테이블 생성 로그 | `[IMPLEMENTED]` |
+| 6 | Flyway V1~V5 DB 마이그레이션 및 Composite PK/FK 스키마 무결성 | `src/main/resources/db/migration/V1~V5__*.sql` (`V2__init_authority_schema.sql`) | DB 구동 및 테이블 생성 로그, FK Cascade 무결성 | `[IMPLEMENTED]` |
 
 ### 2.2 Performance & Load Testing (k6)
 | # | 엔지니어링 주장 (Claim) | 소스 구현 위치 (Implementation) | 검증 테스트 / 증거 (Verification) | 판정 상태 |
