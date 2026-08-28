@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APMS.SR - Backend & Infrastructure Engineering Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #080c14;
+      --bg-secondary: #0f172a;
+      --bg-card: #1e293b;
+      --bg-card-alt: #162032;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-blue: #38bdf8;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-red: #ef4444;
+      --accent-purple: #a855f7;
+      --border-color: #334155;
+      --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-main);
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Progress Bar */
+    #progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #38bdf8, #10b981);
+      z-index: 1000;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 7.14%;
+    }
+
+    /* Main Slide Viewport */
+    #slide-container {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      height: calc(100vh - 64px);
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding: 1.75rem 2.5rem 1rem 2.5rem;
+      display: none;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      overflow-y: auto;
+    }
+
+    .slide.active {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Slide Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.6rem;
+      flex-shrink: 0;
+    }
+    .slide-title-wrap { display: flex; align-items: baseline; gap: 1rem; }
+    .slide-num {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--accent-cyan);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .slide-title {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+    .slide-desc-inline {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* Status Tags */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0.25rem 0.65rem;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .tag.verified { background: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.5); }
+    .tag.implemented { background: rgba(56, 189, 248, 0.18); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.5); }
+    .tag.documented { background: rgba(168, 85, 247, 0.18); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.5); }
+    .tag.partial { background: rgba(245, 158, 11, 0.18); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.5); }
+    .tag.planned { background: transparent; color: #fbbf24; border: 1px dashed rgba(245, 158, 11, 0.7); }
+
+    /* Layout Grids */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; flex: 1; min-height: 0; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; flex: 1; min-height: 0; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .card.highlight-blue { border-color: rgba(56, 189, 248, 0.5); background: var(--bg-card-alt); }
+    .card.highlight-green { border-color: rgba(16, 185, 129, 0.5); background: rgba(16, 185, 129, 0.05); }
+    .card.highlight-red { border-color: rgba(239, 68, 68, 0.5); background: rgba(239, 68, 68, 0.05); }
+    .card.highlight-amber { border-color: rgba(245, 158, 11, 0.5); background: rgba(245, 158, 11, 0.05); }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Typography & Code */
+    p { font-size: 1rem; color: var(--text-secondary); line-height: 1.5; }
+    ul { list-style: none; margin-top: 0.5rem; }
+    li { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 0.5rem; position: relative; padding-left: 1.25rem; line-height: 1.5; }
+    li::before { content: "•"; position: absolute; left: 0; color: var(--accent-cyan); font-weight: bold; }
+    code { font-family: var(--font-mono); font-size: 0.85rem; background: rgba(0,0,0,0.5); padding: 0.15rem 0.45rem; border-radius: 4px; color: #38bdf8; }
+    pre { font-family: var(--font-mono); background: #070a12; border: 1px solid var(--border-color); border-radius: 6px; padding: 0.85rem; font-size: 0.82rem; color: #e2e8f0; overflow-x: auto; line-height: 1.4; }
+
+    /* Hero Metric Box */
+    .metric-hero-wrap {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .metric-hero {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.25rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .metric-hero::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: var(--accent-cyan);
+    }
+    .metric-hero.green::before { background: var(--accent-green); }
+    .metric-val { font-family: var(--font-mono); font-size: 2.5rem; font-weight: 800; color: #fff; line-height: 1.1; }
+    .metric-sub { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-top: 0.4rem; }
+
+    /* Tables */
+    .table-container {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
+    th { background: var(--bg-card); padding: 0.85rem 1.1rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; border-bottom: 1px solid var(--border-color); }
+    td { padding: 0.85rem 1.1rem; border-bottom: 1px solid var(--border-color); color: var(--text-secondary); }
+    tr:last-child td { border-bottom: none; }
+    tr.fact-row { background: rgba(56, 189, 248, 0.08); font-weight: 600; color: var(--text-primary); }
+
+    /* SVG Diagram Containers */
+    .diagram-wrap {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      min-height: 0;
+    }
+    svg { width: 100%; height: 100%; }
+
+    /* Bottom Navigation Bar */
+    #nav-bar {
+      height: 64px;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2.5rem;
+      z-index: 900;
+      flex-shrink: 0;
+    }
+    .nav-left { display: flex; align-items: center; gap: 1rem; }
+    .nav-brand { font-family: var(--font-mono); font-size: 0.9rem; font-weight: 700; color: var(--accent-cyan); }
+    .nav-hint { font-size: 0.82rem; color: var(--text-muted); }
+    .nav-controls { display: flex; align-items: center; gap: 1rem; }
+    .nav-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      width: 38px;
+      height: 38px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover:not(:disabled) { border-color: var(--accent-blue); background: var(--bg-card-alt); color: var(--accent-blue); }
+    .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    #slide-counter { font-family: var(--font-mono); font-size: 0.9rem; font-weight: 600; color: var(--text-primary); min-width: 65px; text-align: center; }
+
+    .speaker-btn {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.5);
+      color: var(--accent-amber);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 0.45rem 0.9rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .speaker-btn:hover { background: rgba(245, 158, 11, 0.25); }
+
+    /* Speaker Notes Modal / Panel */
+    #speaker-panel {
+      position: fixed;
+      bottom: 74px;
+      right: 2.5rem;
+      width: 480px;
+      max-height: 280px;
+      background: #0f172a;
+      border: 1px solid var(--accent-amber);
+      border-radius: 8px;
+      padding: 1.25rem;
+      z-index: 1100;
+      box-shadow: 0 16px 36px rgba(0,0,0,0.7);
+      display: none;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    #speaker-panel.visible { display: flex; }
+    .speaker-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.6rem;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--accent-amber);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    #speaker-text { font-size: 0.92rem; color: #f1f5f9; line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Progress Bar -->
+  <div id="progress-bar"></div>
+
+  <!-- Slides Viewport -->
+  <main id="slide-container">
+
+    <!-- Slide 01: Title / Cover -->
+    <section class="slide" id="slide-01" data-speaker-note="반갑습니다. 백엔드 및 인프라 엔지니어링 포트폴리오 발표를 시작하겠습니다. 본 발표는 26-05adf 애플리케이션 저장소와 SA-1 AI 프로세스 저장소의 실측 팩트만을 근거로 작성되었으며, 단 하나의 허위 수치 없이 모든 주장이 테스트와 코드로 증명된 사실만을 전달합니다.">
+      <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; max-width: 1000px; margin: 0 auto; width: 100%;">
+        <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 18px; border-radius: 9999px; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.4); color: var(--accent-green); font-family: var(--font-mono); font-size: 0.88rem; font-weight: 700; margin-bottom: 1.5rem;">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green);"></span>
+          SOURCE OF TRUTH VERIFIED (Zero-Hallucination)
+        </div>
+        <h1 style="font-size: 3.5rem; font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; margin-bottom: 1.25rem;">
+          Backend & Infrastructure<br>
+          <span style="background: linear-gradient(135deg, #38bdf8 0%, #2dd4bf 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            Engineering Portfolio
+          </span>
+        </h1>
+        <p style="font-size: 1.2rem; color: var(--text-secondary); max-width: 820px; margin-bottom: 2.5rem; line-height: 1.6;">
+          Stateless JWT + RTR + Redis Blacklist 실시간 세션 제어, Docker 7개 컨테이너 격리 인프라, k6 70 VU 부하 검증 및 SA-1 거버넌스 기반 엔지니어링 포트폴리오
+        </p>
+
+        <div class="grid-4" style="width: 100%; text-align: left;">
+          <div class="card">
+            <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Application Source</span>
+            <span style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-top: 4px;">bluejals13/26-05adf</span>
+            <span class="tag verified" style="margin-top: 8px; width: fit-content;">feature/auth</span>
+          </div>
+          <div class="card">
+            <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">AI Process Source</span>
+            <span style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-top: 4px;">bluejals13/SA-1</span>
+            <span class="tag documented" style="margin-top: 8px; width: fit-content;">main</span>
+          </div>
+          <div class="card">
+            <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Testing Suite</span>
+            <span style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-top: 4px;">JUnit 10종 100% Pass</span>
+            <span class="tag verified" style="margin-top: 8px; width: fit-content;">VERIFIED</span>
+          </div>
+          <div class="card">
+            <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">k6 Load Benchmark</span>
+            <span style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-top: 4px;">70 VU / 5.64ms Avg</span>
+            <span class="tag verified" style="margin-top: 8px; width: fit-content;">0% ERROR</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 02: Problem & Goal (Visual-First 3-Card + Large Flow) -->
+    <section class="slide" id="slide-02" data-speaker-note="JWT 기반 인증은 서버의 세션 저장 부담을 덜어주지만, 발급된 토큰을 중간에 무효화할 수 없다는 치명적인 보안 맹점이 있습니다. 저희는 RTR과 Redis Blacklist를 결합하여 무상태의 확장성을 해치지 않으면서도 실시간 세션 통제력을 확보하는 아키텍처를 수립했습니다.">
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 02</span>
+          <h2 class="slide-title">무상태(Stateless) 인증의 3대 보안 딜레마 & 해결 아키텍처</h2>
+        </div>
+        <span class="tag verified">ARCHITECTURAL DECISION</span>
+      </div>
+
+      <!-- 3 Large Visual Problem Cards -->
+      <div class="grid-3" style="margin-bottom: 1.25rem; flex: 1.2;">
+        <div class="card highlight-red">
+          <div class="card-title" style="color: var(--accent-red);">
+            <span>1. Token Revocation Gap</span>
+            <span class="tag" style="background: rgba(239, 68, 68, 0.2); color: #f87171;">무효화 불가</span>
+          </div>
+          <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
+            로그아웃 후에도 토큰 유효
+          </div>
+          <p style="font-size: 0.92rem;">
+            순수 Stateless JWT는 사용자가 로그아웃해도 만료 시각(1시간)까지 서명이 유효하여 토큰 탈취 시 API 호출을 즉시 차단할 방법이 없음.
+          </p>
+        </div>
+
+        <div class="card highlight-red">
+          <div class="card-title" style="color: var(--accent-red);">
+            <span>2. Replay Attack Risk</span>
+            <span class="tag" style="background: rgba(239, 68, 68, 0.2); color: #f87171;">탈취 토큰 재사용</span>
+          </div>
+          <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
+            장기 Refresh Token 공격 노출
+          </div>
+          <p style="font-size: 0.92rem;">
+            7일간 유효한 Refresh Token이 고정되어 있으면 탈취 시 공격자가 무한히 새 Access Token을 발급받아 지속적인 비인가 접근 가능.
+          </p>
+        </div>
+
+        <div class="card highlight-amber">
+          <div class="card-title" style="color: var(--accent-amber);">
+            <span>3. Container Isolation</span>
+            <span class="tag" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">도커 루프백 실패</span>
+          </div>
+          <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
+            `localhost` 바인딩 거부
+          </div>
+          <p style="font-size: 0.92rem;">
+            Docker 격리 환경에서 컨테이너 간 통신 시 `localhost`는 자기 자신을 가리켜 Redis/DB 커넥션 거부(Connection Refused) 발생.
+          </p>
+        </div>
+      </div>
+
+      <!-- Large 5-Step Process Hero Banner -->
+      <div style="background: var(--bg-card-alt); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; flex: 0.8;">
+        <div style="text-align: center; flex: 1;">
+          <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-red); text-transform: uppercase; font-weight: 700;">Problem</div>
+          <div style="font-size: 1.1rem; font-weight: 800; color: var(--text-primary); margin-top: 2px;">Stateless 한계</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">즉시 회수 불가</div>
+        </div>
+        <div style="color: var(--text-muted); font-size: 1.25rem;">➔</div>
+        <div style="text-align: center; flex: 1;">
+          <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-blue); text-transform: uppercase; font-weight: 700;">Decision</div>
+          <div style="font-size: 1.1rem; font-weight: 800; color: var(--text-primary); margin-top: 2px;">RTR + Blacklist</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">1회용 토큰 & TTL</div>
+        </div>
+        <div style="color: var(--text-muted); font-size: 1.25rem;">➔</div>
+        <div style="text-align: center; flex: 1;">
+          <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-purple); text-transform: uppercase; font-weight: 700;">Implementation</div>
+          <div style="font-size: 1.1rem; font-weight: 800; color: var(--text-primary); margin-top: 2px;">Spring + Redis</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">JJWT / In-Memory</div>
+        </div>
+        <div style="color: var(--text-muted); font-size: 1.25rem;">➔</div>
+        <div style="text-align: center; flex: 1;">
+          <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-green); text-transform: uppercase; font-weight: 700;">Verification</div>
+          <div style="font-size: 1.1rem; font-weight: 800; color: var(--text-primary); margin-top: 2px;">JUnit 10종 + k6</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">70 VU 부하 테스트</div>
+        </div>
+        <div style="color: var(--text-muted); font-size: 1.25rem;">➔</div>
+        <div style="text-align: center; flex: 1;">
+          <div style="font-family: var(--font-mono); font-size: 0.75rem; color: #34d399; text-transform: uppercase; font-weight: 700;">Result</div>
+          <div style="font-size: 1.1rem; font-weight: 800; color: #34d399; margin-top: 2px;">5.64ms / 0% Err</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">실시간 제어 달성</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 03: Full System Architecture Diagram -->
+    <section class="slide" id="slide-03" data-speaker-note="전체 시스템은 7개의 도커 컨테이너로 구성됩니다. 외부로는 Nginx 포트 80만 노출되며, 모든 백엔드와 스토리지, 모니터링 스택은 도커 내부 브리지 네트워크로 격리되어 보안성과 가용성을 동시에 달성했습니다.">
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 03</span>
+          <h2 class="slide-title">전체 시스템 아키텍처 및 7-Container 구성</h2>
+        </div>
+        <span class="tag implemented">IMPLEMENTED</span>
+      </div>
+
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 920 360" xmlns="http://www.w3.org/2000/svg">
+          <rect x="140" y="15" width="760" height="330" rx="12" fill="#111827" stroke="#334155" stroke-width="1.5" stroke-dasharray="6,6"/>
+          <text x="155" y="36" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="600">Docker Bridge Network (apms-network) // Isolated Internal Scope</text>
+
+          <rect x="10" y="130" width="95" height="60" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
+          <text x="35" y="158" fill="#f8fafc" font-family="sans-serif" font-weight="700" font-size="13">Client</text>
+          <text x="22" y="175" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="10">Browser / k6</text>
+
+          <rect x="170" y="120" width="120" height="80" rx="8" fill="#1e293b" stroke="#06b6d4" stroke-width="2"/>
+          <text x="195" y="148" fill="#38bdf8" font-family="sans-serif" font-weight="700" font-size="13">Nginx Gateway</text>
+          <text x="190" y="166" fill="#f59e0b" font-family="'JetBrains Mono', monospace" font-size="11">Port 80 (Public)</text>
+          <text x="185" y="184" fill="#94a3b8" font-size="10">Reverse Proxy & SPA</text>
+
+          <rect x="360" y="120" width="150" height="80" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+          <text x="382" y="148" fill="#38bdf8" font-family="sans-serif" font-weight="700" font-size="13">Spring Boot 3.3.2</text>
+          <text x="390" y="166" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="11">Port 8080 (Internal)</text>
+          <text x="375" y="184" fill="#10b981" font-size="10">Security 6 / JJWT / JPA</text>
+
+          <rect x="580" y="50" width="130" height="70" rx="8" fill="#1e293b" stroke="#a855f7" stroke-width="1.5"/>
+          <text x="615" y="78" fill="#c084fc" font-family="sans-serif" font-weight="700" font-size="13">MySQL 8.0</text>
+          <text x="600" y="96" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="10">Port 3306 (Host 3307)</text>
+          <text x="605" y="110" fill="#64748b" font-size="10">Flyway V1~V5 DB</text>
+
+          <rect x="580" y="150" width="130" height="70" rx="8" fill="#1e293b" stroke="#ef4444" stroke-width="1.5"/>
+          <text x="620" y="178" fill="#f87171" font-family="sans-serif" font-weight="700" font-size="13">Redis 7.0</text>
+          <text x="605" y="196" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="10">Port 6379 (Internal)</text>
+          <text x="600" y="210" fill="#10b981" font-size="10">RTR & Blacklist Store</text>
+
+          <rect x="360" y="250" width="130" height="60" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="1.5"/>
+          <text x="390" y="275" fill="#34d399" font-family="sans-serif" font-weight="700" font-size="12">Prometheus</text>
+          <text x="395" y="293" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="10">Port 9090</text>
+
+          <rect x="530" y="250" width="130" height="60" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="1.5"/>
+          <text x="545" y="275" fill="#34d399" font-family="sans-serif" font-weight="700" font-size="12">VictoriaMetrics</text>
+          <text x="565" y="293" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="10">Port 8428</text>
+
+          <rect x="700" y="250" width="130" height="60" rx="8" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="735" y="275" fill="#fbbf24" font-family="sans-serif" font-weight="700" font-size="12">Grafana</text>
+          <text x="720" y="293" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="10">Port 3000 (Partial)</text>
+
+          <path d="M105 160 L170 160" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-cyan)"/>
+          <path d="M290 160 L360 160" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-blue)"/>
+          <path d="M510 140 L580 90" stroke="#a855f7" stroke-width="1.5" marker-end="url(#arrow-purple)"/>
+          <path d="M510 165 L580 180" stroke="#f87171" stroke-width="1.5" marker-end="url(#arrow-red)"/>
+          <path d="M425 200 L425 250" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrow-green)"/>
+          <path d="M490 280 L530 280" stroke="#34d399" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+          <path d="M660 280 L700 280" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrow-amber)"/>
+
+          <defs>
+            <marker id="arrow-cyan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#38bdf8"/></marker>
+            <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#38bdf8"/></marker>
+            <marker id="arrow-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#a855f7"/></marker>
+            <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#f87171"/></marker>
+            <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#34d399"/></marker>
+            <marker id="arrow-amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#fbbf24"/></marker>
+          </defs>
+        </svg>
+      </div>
+    </section>
+
+    <!-- Slide 04: Security Design Before / After (Visual-First 50:50 Hero Split) -->
+    <section class="slide" id="slide-04" data-speaker-note="단순 JWT 구조에서는 토큰이 탈취되면 서버가 대처할 방법이 없습니다. 이를 해결하기 위해 1회용 Refresh Token Rotation과 로그아웃 즉시 잔여 수명만큼만 메모리에 등재하는 Redis Blacklist를 도입하여 무상태 인증에 실시간 제어력을 부여했습니다.">
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 04</span>
+          <h2 class="slide-title">보안 아키텍처 Before vs After 비교</h2>
+        </div>
+        <span class="tag verified">VERIFIED</span>
+      </div>
+
+      <div class="grid-2" style="flex: 1;">
+        <!-- BEFORE: Simple JWT -->
+        <div class="card highlight-red" style="border-width: 2px;">
+          <div class="card-title" style="color: var(--accent-red); margin-bottom: 1rem;">
+            <span style="font-size: 1.3rem;">BEFORE // Simple JWT Only</span>
+            <span class="tag" style="background: rgba(239, 68, 68, 0.2); color: #f87171;">VULNERABLE GAP</span>
+          </div>
+
+          <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem;">
+            <div style="font-size: 1.1rem; font-weight: 700; color: #fca5a5; margin-bottom: 0.5rem;">
+              ⚠️ Stateless 제어 불능 상태
+            </div>
+            <p style="font-size: 0.95rem; color: #cbd5e1;">
+              서버에 상태 저장이 전혀 없어, 토큰이 탈취되거나 로그아웃을 수행해도 만료 시각까지 API 접근 차단 불가능.
+            </p>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: auto;">
+            <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-secondary); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-color);">
+              <span style="font-weight: 600; color: #fca5a5;">로그아웃 후 Access Token</span>
+              <span class="tag" style="background: rgba(239,68,68,0.2); color: #f87171;">차단 불가 (유효)</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-secondary); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-color);">
+              <span style="font-weight: 600; color: #fca5a5;">Refresh Token 탈취 시</span>
+              <span class="tag" style="background: rgba(239,68,68,0.2); color: #f87171;">무한 Replay Attack</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-secondary); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-color);">
+              <span style="font-weight: 600; color: #fca5a5;">인가 제어 계층</span>
+              <span class="tag" style="background: rgba(239,68,68,0.2); color: #f87171;">단순 Role 문자열</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- AFTER: 3-Layer Defense -->
+        <div class="card highlight-green" style="border-width: 2px;">
+          <div class="card-title" style="color: var(--accent-green); margin-bottom: 1rem;">
+            <span style="font-size: 1.3rem;">AFTER // 3-Layer Defense (JWT + RTR + Redis)</span>
+            <span class="tag verified">4-TIER ACTIVE</span>
+          </div>
+
+          <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem;">
+            <div style="font-size: 1.1rem; font-weight: 700; color: #86efac; margin-bottom: 0.5rem;">
+              🛡️ 무상태 확장성 + 실시간 세션 통제
+            </div>
+            <p style="font-size: 0.95rem; color: #cbd5e1;">
+              Access Token의 고속 무상태 서명 검증을 유지하면서, RTR 1회용 JTI 및 Redis Blacklist로 완벽한 세션 무효화 달성.
+            </p>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: auto;">
+            <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-secondary); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-color);">
+              <div>
+                <span style="font-weight: 600; color: #86efac;">Layer 1: Access Token (1h)</span>
+                <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">Header Bearer / JJWT Stateless</span>
+              </div>
+              <span class="tag verified">VERIFIED</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-secondary); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-color);">
+              <div>
+                <span style="font-weight: 600; color: #86efac;">Layer 2: RTR (7d, UUID JTI)</span>
+                <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">HttpOnly Cookie / Replay 시 401 차단</span>
+              </div>
+              <span class="tag verified">VERIFIED</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-secondary); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-color);">
+              <div>
+                <span style="font-weight: 600; color: #86efac;">Layer 3: Redis Blacklist (`bl:`)</span>
+                <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">로그아웃 시 잔여 TTL 등록 즉시 거부</span>
+              </div>
+              <span class="tag verified">VERIFIED</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 05: Sequence Diagram -->
+    <section class="slide" id="slide-05" data-speaker-note="토큰 라이프사이클의 핵심은 RTR 재발급 시 기존 토큰이 즉시 무효화된다는 점입니다. 공격자가 가로챈 구버전 토큰으로 접근할 경우 서버는 즉시 401 에러를 반환하고 세션을 종료시킵니다. 로그아웃 또한 잔여 TTL만큼만 블랙리스트를 유지하여 메모리 낭비를 원천 차단합니다.">
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 05</span>
+          <h2 class="slide-title">JWT / RTR / Blacklist 토큰 라이프사이클 흐름</h2>
+        </div>
+        <span class="tag verified">VERIFIED</span>
+      </div>
+
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 900 350" xmlns="http://www.w3.org/2000/svg">
+          <rect x="80" y="10" width="110" height="35" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
+          <text x="110" y="32" fill="#fff" font-family="sans-serif" font-weight="700" font-size="12">Client (App)</text>
+          <line x1="135" y1="45" x2="135" y2="330" stroke="#334155" stroke-dasharray="4,4"/>
+
+          <rect x="360" y="10" width="130" height="35" rx="6" fill="#1e293b" stroke="#10b981" stroke-width="1.5"/>
+          <text x="375" y="32" fill="#fff" font-family="sans-serif" font-weight="700" font-size="12">Spring Boot API</text>
+          <line x1="425" y1="45" x2="425" y2="330" stroke="#334155" stroke-dasharray="4,4"/>
+
+          <rect x="680" y="10" width="110" height="35" rx="6" fill="#1e293b" stroke="#ef4444" stroke-width="1.5"/>
+          <text x="710" y="32" fill="#fff" font-family="sans-serif" font-weight="700" font-size="12">Redis Store</text>
+          <line x1="735" y1="45" x2="735" y2="330" stroke="#334155" stroke-dasharray="4,4"/>
+
+          <!-- 1. Login Flow -->
+          <text x="150" y="68" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="11">1. POST /api/auth/login</text>
+          <path d="M135 75 L425 75" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-blue)"/>
+          <text x="445" y="85" fill="#10b981" font-family="'JetBrains Mono', monospace" font-size="11">SET rt:user1 = JTI_1 (TTL 7d)</text>
+          <path d="M425 90 L735 90" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+          <path d="M425 105 L135 105" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrow-blue)"/>
+          <text x="175" y="120" fill="#38bdf8" font-size="10">200 OK (Header: AccessToken / Cookie: RefreshToken)</text>
+
+          <!-- 2. RTR Refresh Flow -->
+          <text x="150" y="148" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="11">2. POST /api/auth/refresh (RTR Trigger)</text>
+          <path d="M135 155 L425 155" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-blue)"/>
+          <text x="445" y="165" fill="#f59e0b" font-family="'JetBrains Mono', monospace" font-size="11">Verify & DEL JTI_1 ➔ SET JTI_2</text>
+          <path d="M425 170 L735 170" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#arrow-amber)"/>
+          <path d="M425 185 L135 185" stroke="#10b981" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrow-green)"/>
+          <text x="190" y="200" fill="#34d399" font-size="10">200 OK (New Token Pair Issued)</text>
+
+          <!-- 3. Replay Attack Detection -->
+          <text x="150" y="228" fill="#f87171" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700">3. Replay Attack (Stolen JTI_1 Re-use)</text>
+          <path d="M135 235 L425 235" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-red)"/>
+          <text x="445" y="245" fill="#ef4444" font-family="'JetBrains Mono', monospace" font-size="11">GET rt:user1 ➔ Mismatch (JTI_1 != JTI_2)</text>
+          <path d="M425 250 L735 250" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrow-red)"/>
+          <path d="M425 265 L135 265" stroke="#ef4444" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#arrow-red)"/>
+          <text x="185" y="280" fill="#f87171" font-size="10" font-weight="700">401 UNAUTHORIZED (INVALID_REFRESH_TOKEN) [VERIFIED]</text>
+
+          <!-- 4. Logout Blacklist -->
+          <text x="150" y="308" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="11">4. POST /api/auth/logout</text>
+          <path d="M135 315 L425 315" stroke="#a855f7" stroke-width="2" marker-end="url(#arrow-purple)"/>
+          <text x="445" y="325" fill="#a855f7" font-family="'JetBrains Mono', monospace" font-size="11">SET bl:AccessToken (TTL = Remaining)</text>
+          <path d="M425 330 L735 330" stroke="#a855f7" stroke-width="1.5" marker-end="url(#arrow-purple)"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- Slide 06: Security Test Results -->
+    <section class="slide" id="slide-06" data-speaker-note="설계된 보안 기능은 10개의 단위 및 통합 테스트 스위트를 통해 100% 검증되었습니다. 특히 RTR 토큰 재사용 공격 차단과 로그아웃 토큰의 블랙리스트 필터링, 그리고 RBAC 권한 분기는 실제 MockMvc 통합 테스트로 무결성을 입증했습니다.">
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 06</span>
+          <h2 class="slide-title">보안 테스트 스위트 10종 100% Pass 및 코드 증거</h2>
+        </div>
+        <span class="tag verified">100% PASS</span>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">
+            <span>핵심 3대 검증 증거 (Top 3 Evidence)</span>
+            <span class="tag verified">VERIFIED</span>
+          </div>
+          <ul style="margin-bottom: 1rem;">
+            <li><span class="tag verified">PASS</span> <strong>SecurityIntegrationTest:</strong> 소진된 구버전 Refresh Token 재사용 시 401 및 `INVALID_REFRESH_TOKEN` 차단 확인.</li>
+            <li><span class="tag verified">PASS</span> <strong>TokenBlacklistServiceTest:</strong> 로그아웃 토큰 잔여 TTL 등록 후 인가 필터 즉시 차단 확인.</li>
+            <li><span class="tag verified">PASS</span> <strong>RbacSecurityIntegrationTest:</strong> `ROLE_USER` 권한 계정으로 관리자 엔드포인트 접근 시 403 Forbidden 차단 확인.</li>
+          </ul>
+
+          <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.75rem; margin-top: auto;">
+            <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.4rem;">기타 7종 테스트 스위트 (전원 PASS):</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+              <span class="tag verified" style="font-size: 0.7rem;">AuthControllerTest</span>
+              <span class="tag verified" style="font-size: 0.7rem;">AuthServiceTest</span>
+              <span class="tag verified" style="font-size: 0.7rem;">JwtAuthenticationFilterTest</span>
+              <span class="tag verified" style="font-size: 0.7rem;">RefreshTokenRepositoryTest</span>
+              <span class="tag verified" style="font-size: 0.7rem;">PermissionIntegrationTest</span>
+              <span class="tag verified" style="font-size: 0.7rem;">RolePermissionIntegrationTest</span>
+              <span class="tag verified" style="font-size: 0.7rem;">MenuSecurityIntegrationTest</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <span>실제 검증 코드 스니펫 (SecurityIntegrationTest.java)</span>
+            <span class="tag verified">EVIDENCE</span>
+          </div>
+          <pre style="flex: 1;"><code>@Test
+@DisplayName("소진된 Refresh Token 재사용 시 401 Unauthorized 반환")
+void replayAttack_ShouldFail() throws Exception {
+    // 1. 로그인 후 초기 토큰 세트 획득 (rt1)
+    TokenResponse initial = authService.login(loginRequest);
+    
+    // 2. 1회 재발급 성공 (rt1 소진 ➔ 신규 rt2 발급)
+    TokenResponse refreshed = 
+        authService.refreshToken(initial.refreshToken());
+    
+    // 3. 탈취된 구버전 rt1으로 재발급 시도 ➔ 401 검증
+    mockMvc.perform(post("/api/auth/refresh")
+            .cookie(new Cookie("refreshToken", 
+                               initial.refreshToken())))
+            .andExpect(status().isUnauthorized())
+            .andExpect(jsonPath("$.errorCode")
+               .value("INVALID_REFRESH_TOKEN"));
+}</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 07: Incident Analysis (Layered Engineering Response Map) -->
+    <section class="slide" id="slide-07" data-speaker-note="실제 개발 과정에서 발생한 세 가지 핵심 장애를 TS 표준 6단계 프로세스로 해결했습니다. Redis 다운 시 60초간 블로킹되던 문제를 2초 타임아웃으로 격리했고, 클라이언트의 무한 401 루프를 차단했으며, 도커 컨테이너 격리로 인한 호스트 바인딩 이슈를 환경변수 기반 아키텍처로 정상화했습니다.">
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 07</span>
+          <h2 class="slide-title">실제 장애 3건의 계층별 엔지니어링 대응 (Incident Map)</h2>
+        </div>
+        <span class="tag verified">TS 6-STEP STANDARD</span>
+      </div>
+
+      <div class="grid-3" style="flex: 1;">
+        <!-- Incident 1: App Data Layer -->
+        <div class="card highlight-amber" style="border-width: 2px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <span class="tag" style="background: rgba(245,158,11,0.2); color: #fbbf24;">APP DATA LAYER</span>
+            <span class="tag verified">TS-01-REDIS</span>
+          </div>
+          <div style="font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem;">
+            Redis 커맨드 타임아웃 블로킹
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.6rem; flex: 1;">
+            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-red);">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #f87171; font-weight: 700;">SYMPTOM</span>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 2px;">Redis 장애 시 백엔드 스레드가 최대 60초간 블로킹되어 프론트엔드 흰 화면(Blank Screen) 발생</p>
+            </div>
+            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-amber);">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #fbbf24; font-weight: 700;">ROOT CAUSE</span>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 2px;">Lettuce 클라이언트 기본 커맨드 타임아웃(60s) 미설정 및 스레드 고갈</p>
+            </div>
+            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-green);">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #34d399; font-weight: 700;">RESOLUTION</span>
+              <p style="font-size: 0.88rem; color: #86efac; margin-top: 2px; font-weight: 600;">타임아웃 2초(`2000ms`) 단축 및 503 `REDIS_UNAVAILABLE` 즉시 반환</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Incident 2: Client Interceptor Layer -->
+        <div class="card highlight-amber" style="border-width: 2px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <span class="tag" style="background: rgba(56,189,248,0.2); color: #38bdf8;">CLIENT / NETWORK LAYER</span>
+            <span class="tag verified">TS-001</span>
+          </div>
+          <div style="font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem;">
+            JWT Refresh 401 무한 루프
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.6rem; flex: 1;">
+            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-red);">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #f87171; font-weight: 700;">SYMPTOM</span>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 2px;">토큰 만료 시 클라이언트 인터셉터와 서버 간 초당 수십 회 401 재시도 루프로 CPU 급증</p>
+            </div>
+            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-amber);">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #fbbf24; font-weight: 700;">ROOT CAUSE</span>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 2px;">갱신 요청 실패(401)에 대한 클라이언트 탈출 조건(Exit Condition) 부재</p>
+            </div>
+            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-green);">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #34d399; font-weight: 700;">RESOLUTION</span>
+              <p style="font-size: 0.88rem; color: #86efac; margin-top: 2px; font-weight: 600;">갱신 401 수신 시 세션 즉시 초기화 및 로그인 리다이렉트 탈출 로직 구현</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Incident 3: Infra Container Layer -->
+        <div class="card highlight-amber" style="border-width: 2px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <span class="tag" style="background: rgba(168,85,247,0.2); color: #c084fc;">INFRA CONTAINER LAYER</span>
+            <span class="tag verified">TS-003</span>
+          </div>
+          <div style="font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem;">
+            Docker Redis 바인딩 거부
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.6rem; flex: 1;">
+            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-red);">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #f87171; font-weight: 700;">SYMPTOM</span>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 2px;">`docker compose up` 실행 시 Spring Boot가 Redis 연결에 실패하며 기동 중단</p>
+            </div>
+            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-amber);">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #fbbf24; font-weight: 700;">ROOT CAUSE</span>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 2px;">컨테이너 격리 환경에서 `localhost`는 컨테이너 자신(Loopback)을 가리키는 문제</p>
+            </div>
+            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-green);">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #34d399; font-weight: 700;">RESOLUTION</span>
+              <p style="font-size: 0.88rem; color: #86efac; margin-top: 2px; font-weight: 600;">`${SPRING_REDIS_HOST:localhost}` 환경변수화 및 서비스명(`redis`) 주입</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 08: Docker 7-Container Network Diagram (Visual Hero) -->
+    <section class="slide" id="slide-08" data-speaker-note="컨테이너 환경에서는 IP 주소가 유동적으로 변하므로 도커 내장 DNS 서비스명을 기반으로 상호 연결해야 합니다. TS-003을 해결하며 확립한 환경변수 주입 방식을 통해 로컬 환경과 도커 프로덕션 환경 간 무결한 네트워크 격리를 구축했습니다.">
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 08</span>
+          <h2 class="slide-title">Docker 7-Container 네트워크 격리 & DNS 통신 아키텍처</h2>
+        </div>
+        <span class="tag implemented">IMPLEMENTED</span>
+      </div>
+
+      <div class="diagram-wrap" style="flex: 1.5;">
+        <svg viewBox="0 0 940 380" xmlns="http://www.w3.org/2000/svg">
+          <!-- Host Boundary -->
+          <rect x="10" y="10" width="920" height="360" rx="14" fill="#0b1120" stroke="#334155" stroke-width="1.5"/>
+          <text x="25" y="32" fill="#64748b" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="700">HOST OS Scope (Ports 80 & 3000 Exposed)</text>
+
+          <!-- Docker Bridge Boundary -->
+          <rect x="130" y="45" width="780" height="310" rx="10" fill="#0f172a" stroke="#38bdf8" stroke-width="2" stroke-dasharray="6,6"/>
+          <text x="150" y="68" fill="#38bdf8" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="700">Docker Bridge Network // Internal DNS Resolution Scope ("apms-network")</text>
+
+          <!-- External Client -->
+          <rect x="25" y="150" width="85" height="70" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1.5"/>
+          <text x="45" y="180" fill="#fff" font-size="13" font-weight="700">Client</text>
+          <text x="32" y="200" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="10">Public Traffic</text>
+
+          <!-- Nginx Gateway -->
+          <rect x="160" y="140" width="135" height="90" rx="8" fill="#1e293b" stroke="#06b6d4" stroke-width="2.5"/>
+          <text x="180" y="170" fill="#38bdf8" font-size="14" font-weight="800">nginx</text>
+          <text x="175" y="190" fill="#f59e0b" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700">80:80 (Public GW)</text>
+          <text x="172" y="210" fill="#94a3b8" font-size="10">Reverse Proxy & SPA</text>
+
+          <!-- Spring Boot Backend -->
+          <rect x="365" y="140" width="160" height="90" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2.5"/>
+          <text x="390" y="170" fill="#38bdf8" font-size="14" font-weight="800">backend</text>
+          <text x="382" y="190" fill="#34d399" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700">DNS: "backend:8080"</text>
+          <text x="380" y="210" fill="#94a3b8" font-size="10">Spring Boot 3.3.2 App</text>
+
+          <!-- MySQL -->
+          <rect x="600" y="70" width="145" height="80" rx="8" fill="#1e293b" stroke="#a855f7" stroke-width="2"/>
+          <text x="645" y="98" fill="#c084fc" font-size="14" font-weight="800">mysql</text>
+          <text x="615" y="118" fill="#a855f7" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700">DNS: "mysql:3306"</text>
+          <text x="612" y="136" fill="#94a3b8" font-size="10">Flyway V1~V5 Schema</text>
+
+          <!-- Redis (TS-003 Highlight) -->
+          <rect x="600" y="175" width="145" height="80" rx="8" fill="#1e293b" stroke="#ef4444" stroke-width="2.5"/>
+          <text x="645" y="203" fill="#f87171" font-size="14" font-weight="800">redis</text>
+          <text x="615" y="223" fill="#fbbf24" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700">DNS: "redis:6379"</text>
+          <text x="612" y="241" fill="#34d399" font-size="10">TS-003 Env Resolved</text>
+
+          <!-- Monitoring Row -->
+          <rect x="365" y="265" width="130" height="65" rx="6" fill="#1e293b" stroke="#10b981" stroke-width="1.5"/>
+          <text x="390" y="290" fill="#34d399" font-size="12" font-weight="700">prometheus</text>
+          <text x="382" y="310" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="10">Port 9090 (Scrape)</text>
+
+          <rect x="525" y="265" width="140" height="65" rx="6" fill="#1e293b" stroke="#10b981" stroke-width="1.5"/>
+          <text x="545" y="290" fill="#34d399" font-size="12" font-weight="700">victoriametrics</text>
+          <text x="555" y="310" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="10">Port 8428 (Store)</text>
+
+          <rect x="695" y="265" width="135" height="65" rx="6" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+          <text x="735" y="290" fill="#fbbf24" font-size="12" font-weight="700">grafana</text>
+          <text x="710" y="310" fill="#f59e0b" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700">3000:3000 (Exposed)</text>
+
+          <!-- Traffic Arrows -->
+          <path d="M110 185 L160 185" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-cyan)"/>
+          <path d="M295 185 L365 185" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-blue)"/>
+          <path d="M525 165 L600 115" stroke="#a855f7" stroke-width="2" marker-end="url(#arrow-purple)"/>
+          <path d="M525 195 L600 210" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-red)"/>
+          <path d="M430 230 L430 265" stroke="#10b981" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrow-green)"/>
+          <path d="M495 295 L525 295" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+          <path d="M665 295 L695 295" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#arrow-amber)"/>
+        </svg>
+      </div>
+
+      <div style="display: flex; gap: 1rem; margin-top: 0.75rem; flex: 0.5;">
+        <div style="flex: 1; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.6rem 1rem; display: flex; align-items: center; gap: 0.75rem;">
+          <span style="font-size: 1.25rem;">🔒</span>
+          <div>
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary);">단일 공용 진입점 (Port 80)</div>
+            <div style="font-size: 0.78rem; color: var(--text-secondary);">외부 노출 최소화 및 백엔드/DB 완벽 격리</div>
+          </div>
+        </div>
+        <div style="flex: 1; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.6rem 1rem; display: flex; align-items: center; gap: 0.75rem;">
+          <span style="font-size: 1.25rem;">🌐</span>
+          <div>
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary);">Docker 내장 DNS 해석</div>
+            <div style="font-size: 0.78rem; color: var(--text-secondary);">서비스명(`backend`, `redis`, `mysql`) 기반 무결한 통신</div>
+          </div>
+        </div>
+        <div style="flex: 1; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.6rem 1rem; display: flex; align-items: center; gap: 0.75rem;">
+          <span style="font-size: 1.25rem;">⚙️</span>
+          <div>
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary);">12-Factor App 환경변수</div>
+            <div style="font-size: 0.78rem; color: var(--text-secondary);">${SPRING_REDIS_HOST:localhost} 프로파일 분리</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 09: MySQL vs Redis Role Comparison (Visual-First Split) -->
+    <section class="slide" id="slide-09" data-speaker-note="영속적인 비즈니스 도메인 데이터와 정규화된 권한 모델은 MySQL과 Flyway로 엄격히 통제하고, 밀리초 단위의 고속 조회가 필요한 RTR 토큰과 블랙리스트는 Redis의 TTL 기능을 활용하여 분리했습니다. 이로써 RDBMS 부하를 최소화하면서도 고속 인증을 달성했습니다.">
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 09</span>
+          <h2 class="slide-title">데이터 계층 분리: MySQL (영속) vs Redis (In-Memory)</h2>
+        </div>
+        <span class="tag implemented">IMPLEMENTED</span>
+      </div>
+
+      <div class="grid-2" style="flex: 1;">
+        <!-- Left: MySQL 8.0 -->
+        <div class="card highlight-blue" style="border-width: 2px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <div style="font-size: 1.75rem; font-weight: 800; color: #60a5fa; font-family: var(--font-mono);">
+              MySQL 8.0
+            </div>
+            <span class="tag" style="background: rgba(56,189,248,0.2); color: #38bdf8; font-size: 0.85rem; padding: 0.35rem 0.8rem;">
+              PERSISTENT RDBMS
+            </span>
+          </div>
+
+          <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+            <div style="font-family: var(--font-mono); font-size: 0.8rem; color: #38bdf8; text-transform: uppercase; font-weight: 700;">Stored Domain Schema (Flyway V1~V5)</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 0.5rem;">
+              <span class="tag" style="background: #1e293b; color: #f8fafc; border: 1px solid #475569;">users</span>
+              <span class="tag" style="background: #1e293b; color: #f8fafc; border: 1px solid #475569;">roles</span>
+              <span class="tag" style="background: #1e293b; color: #f8fafc; border: 1px solid #475569;">permissions</span>
+              <span class="tag" style="background: #1e293b; color: #f8fafc; border: 1px solid #475569;">role_permissions</span>
+              <span class="tag" style="background: #1e293b; color: #f8fafc; border: 1px solid #475569;">menus</span>
+            </div>
+          </div>
+
+          <ul style="margin-top: auto;">
+            <li><strong>영속성 & 정합성 보장:</strong> ACID 트랜잭션 및 외래키 제약조건 기반 데이터 무결성.</li>
+            <li><strong>Flyway 형상 관리:</strong> 5단계 버전 스크립트로 DB 스키마 100% 코드화.</li>
+            <li><strong>M:N RBAC 인가 모델:</strong> 사용자-역할-권한 다대다 정규화 매핑 테이블 구축.</li>
+            <li><strong>연결 관리:</strong> HikariCP 커넥션 풀링 제어로 안정적 RDBMS I/O.</li>
+          </ul>
+        </div>
+
+        <!-- Right: Redis 7.0 -->
+        <div class="card highlight-red" style="border-width: 2px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <div style="font-size: 1.75rem; font-weight: 800; color: #f87171; font-family: var(--font-mono);">
+              Redis 7.0
+            </div>
+            <span class="tag" style="background: rgba(239,68,68,0.2); color: #f87171; font-size: 0.85rem; padding: 0.35rem 0.8rem;">
+              EPHEMERAL IN-MEMORY
+            </span>
+          </div>
+
+          <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+            <div style="font-family: var(--font-mono); font-size: 0.8rem; color: #f87171; text-transform: uppercase; font-weight: 700;">Stored Ephemeral Token Keys</div>
+            <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 0.5rem;">
+              <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.85rem; color: #fecaca;">
+                <span><code>rt:&lt;userId&gt;</code> ➔ UUID JTI</span>
+                <span class="tag" style="background: rgba(239,68,68,0.3); color: #fca5a5;">TTL: 7 Days</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.85rem; color: #fecaca;">
+                <span><code>bl:&lt;accessToken&gt;</code> ➔ "logout"</span>
+                <span class="tag" style="background: rgba(239,68,68,0.3); color: #fca5a5;">TTL: Remaining</span>
+              </div>
+            </div>
+          </div>
+
+          <ul style="margin-top: auto;">
+            <li><strong>초고속 메모리 I/O:</strong> Sub-millisecond 단위 인증 필터 토큰 검증.</li>
+            <li><strong>RTR 1회용 토큰 소진:</strong> 토큰 갱신 시 기존 JTI 원자적(Atomic) 삭제.</li>
+            <li><strong>자동 만료 메커니즘 (TTL):</strong> 만료 시 자동 메모리 회수로 RDBMS 가비지 제거.</li>
+            <li><strong>장애 격리 (TS-01):</strong> Lettuce 타임아웃 2초 적용으로 장애 전파 방어.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 10: Performance Metric Hero + Run 5-7 Comparison -->
+    <section class="slide" id="slide-10" data-speaker-note="k6 부하 테스트 결과, 70명의 가상 사용자가 1분간 지속적으로 요청을 주입하는 환경에서 평균 응답속도 5.64ms, P95 9.98ms, 초당 463건의 처리량을 기록했습니다. 모든 차수에서 에러율 0.00%로 설정된 성능 임계치를 완벽히 충족했습니다.">
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 10</span>
+          <h2 class="slide-title">k6 70 VU 부하 테스트 실측 벤치마크 지표</h2>
+        </div>
+        <span class="tag verified">VERIFIED FACT</span>
+      </div>
+
+      <div class="metric-hero-wrap">
+        <div class="metric-hero">
+          <div class="metric-val">70 VUs</div>
+          <div class="metric-sub">Stress Concurrency</div>
+          <span class="tag verified" style="margin-top: 6px;">60s DURATION</span>
+        </div>
+        <div class="metric-hero green">
+          <div class="metric-val">5.64<span style="font-size: 1.4rem;">ms</span></div>
+          <div class="metric-sub">Average Latency (Fact)</div>
+          <span class="tag verified" style="margin-top: 6px;">avg &lt; 20ms PASS</span>
+        </div>
+        <div class="metric-hero green">
+          <div class="metric-val">9.98<span style="font-size: 1.4rem;">ms</span></div>
+          <div class="metric-sub">P95 Latency (Fact)</div>
+          <span class="tag verified" style="margin-top: 6px;">p(95) &lt; 50ms PASS</span>
+        </div>
+        <div class="metric-hero green">
+          <div class="metric-val">0.00%</div>
+          <div class="metric-sub">Error Rate (0 Errors)</div>
+          <span class="tag verified" style="margin-top: 6px;">rate &lt; 1% PASS</span>
+        </div>
+      </div>
+
+      <div class="table-container" style="flex: 1;">
+        <table>
+          <thead>
+            <tr>
+              <th>Run 차수 (60s 측정)</th>
+              <th>가상 사용자 (VU)</th>
+              <th>평균 응답시간 (Avg)</th>
+              <th>95 백분위수 (P95)</th>
+              <th>초당 처리량 (Throughput)</th>
+              <th>오류율 (Error Rate)</th>
+              <th>판정 (Status)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>5차 Run</strong></td>
+              <td>70 VU</td>
+              <td>4.73 ms</td>
+              <td>8.77 ms</td>
+              <td>469 req/s</td>
+              <td>0.00%</td>
+              <td><span class="tag verified">PASS</span></td>
+            </tr>
+            <tr>
+              <td><strong>6차 Run</strong></td>
+              <td>70 VU</td>
+              <td>6.01 ms</td>
+              <td>10.61 ms</td>
+              <td>457 req/s</td>
+              <td>0.00%</td>
+              <td><span class="tag verified">PASS</span></td>
+            </tr>
+            <tr>
+              <td><strong>7차 Run</strong></td>
+              <td>70 VU</td>
+              <td>6.18 ms</td>
+              <td>10.57 ms</td>
+              <td>465 req/s</td>
+              <td>0.00%</td>
+              <td><span class="tag verified">PASS</span></td>
+            </tr>
+            <tr class="fact-row">
+              <td><strong>3회 산술 평균 (불변 Fact)</strong></td>
+              <td><strong>70 VU</strong></td>
+              <td><strong>5.64 ms</strong></td>
+              <td><strong>9.98 ms</strong></td>
+              <td><strong>463 req/s</strong></td>
+              <td><strong>0.00%</strong></td>
+              <td><span class="tag verified">VERIFIED</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top: 0.6rem; font-size: 0.85rem; font-family: var(--font-mono); color: var(--text-muted);">
+        * 부하 시나리오: `/api/auth/login` ➔ `/api/users/me` ➔ `/api/menus` ➔ `/api/auth/refresh`
+      </p>
+    </section>
+
+    <!-- Slide 11: Observability Pipeline (Visual Hero & Strict Partial) -->
+    <section class="slide" id="slide-11" data-speaker-note="애플리케이션의 헬스체크와 메트릭은 Actuator와 Prometheus, VictoriaMetrics 시계열 DB로 수집됩니다. k6 부하 중에도 JVM Heap과 DB 커넥션 풀이 안정적으로 유지됨을 확인했습니다. 다만 Grafana 대시보드는 현재 구성 단계이므로 '부분 구현(PARTIAL)'으로 명확히 구분합니다.">
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 11</span>
+          <h2 class="slide-title">Observability 파이프라인 데이터 흐름</h2>
+        </div>
+        <span class="tag partial">[PARTIAL] DASHBOARD</span>
+      </div>
+
+      <!-- Large Pipeline SVG Hero -->
+      <div class="diagram-wrap" style="flex: 1.3;">
+        <svg viewBox="0 0 880 220" xmlns="http://www.w3.org/2000/svg">
+          <!-- Actuator -->
+          <rect x="20" y="80" width="160" height="85" rx="10" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+          <text x="45" y="115" fill="#34d399" font-size="14" font-weight="800">Spring Actuator</text>
+          <text x="35" y="138" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="11">/actuator/prometheus</text>
+          <text x="50" y="155" fill="#10b981" font-size="10" font-weight="700">JVM / CPU / HikariCP</text>
+
+          <path d="M180 122 L240 122" stroke="#10b981" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+          <text x="185" y="112" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="9">15s Scrape</text>
+
+          <!-- Prometheus -->
+          <rect x="240" y="80" width="160" height="85" rx="10" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+          <text x="270" y="115" fill="#34d399" font-size="14" font-weight="800">Prometheus</text>
+          <text x="280" y="138" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="11">Port 9090 (Pull)</text>
+          <text x="265" y="155" fill="#10b981" font-size="10" font-weight="700">[VERIFIED] Collection</text>
+
+          <path d="M400 122 L460 122" stroke="#10b981" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+          <text x="405" y="112" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="9">Remote Write</text>
+
+          <!-- VictoriaMetrics -->
+          <rect x="460" y="80" width="170" height="85" rx="10" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+          <text x="485" y="115" fill="#34d399" font-size="14" font-weight="800">VictoriaMetrics</text>
+          <text x="495" y="138" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="11">Port 8428 (Store)</text>
+          <text x="480" y="155" fill="#10b981" font-size="10" font-weight="700">Time-Series Storage</text>
+
+          <path d="M630 122 L690 122" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow-amber)"/>
+          <text x="635" y="112" fill="#fbbf24" font-family="'JetBrains Mono', monospace" font-size="9">DataSource Query</text>
+
+          <!-- Grafana (PARTIAL) -->
+          <rect x="690" y="70" width="165" height="105" rx="10" fill="#1e293b" stroke="#f59e0b" stroke-width="2.5" stroke-dasharray="6,6"/>
+          <text x="735" y="105" fill="#fbbf24" font-size="15" font-weight="800">Grafana</text>
+          <text x="720" y="128" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="11">Port 3000:3000</text>
+          <rect x="710" y="140" width="125" height="24" rx="4" fill="rgba(245,158,11,0.2)"/>
+          <text x="722" y="156" fill="#fbbf24" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700">[PARTIAL STATUS]</text>
+        </svg>
+      </div>
+
+      <!-- Concise Evidence Cards -->
+      <div class="grid-2" style="margin-top: 0.75rem; flex: 0.7;">
+        <div class="card highlight-green">
+          <div class="card-title" style="color: var(--accent-green);">
+            <span>[VERIFIED] 부하 주입 중 관측 실측 사실</span>
+            <span class="tag verified">FACT</span>
+          </div>
+          <p style="font-size: 0.95rem;">
+            70 VU k6 부하 주입(60초 지속) 중 <strong>JVM Heap 메모리 안정적 유지(GC 지연 없음)</strong> 및 <strong>HikariCP 커넥션 풀 고갈 0건</strong> 확인.
+          </p>
+        </div>
+
+        <div class="card highlight-amber">
+          <div class="card-title" style="color: var(--accent-amber);">
+            <span>[PARTIAL] 모니터링 상태 분류 투명성</span>
+            <span class="tag partial">PARTIAL</span>
+          </div>
+          <p style="font-size: 0.95rem;">
+            Prometheus 및 VictoriaMetrics 수집 파이프라인은 연동 완료되었으나, <strong>Grafana 대시보드의 실시간 알람 및 정밀 튜닝은 미검증</strong> 상태로 투명하게 분리.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 12: AI Engineering Workflow -->
+    <section class="slide" id="slide-12" data-speaker-note="SA-1 리포지토리의 거버넌스 규칙에 따라 AI Agent를 개발 프로세스에 통합했습니다. 요구사항 분석부터 검증, 문서화까지 8단계 라이프사이클을 거치며, AI가 작성한 코드는 반드시 JUnit과 k6 테스트를 거쳐 개발자의 승인 하에만 반영됩니다.">
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 12</span>
+          <h2 class="slide-title">SA-1 기반 통제된 AI 협업 8단계 라이프사이클</h2>
+        </div>
+        <span class="tag documented">DOCUMENTED</span>
+      </div>
+
+      <div class="card highlight-blue" style="margin-bottom: 1.25rem;">
+        <div style="font-size: 1.15rem; font-weight: 700; color: var(--accent-cyan); text-align: center;">
+          "AI가 단독으로 개발한 것이 아닌, 개발자가 통제된 엔지니어링 프로세스에서 AI를 정밀 도구로 활용"
+        </div>
+        <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 0.5rem;">
+          <span class="tag documented">Zero-Chatter Policy</span>
+          <span class="tag documented">Documentation-First</span>
+        </div>
+      </div>
+
+      <div class="diagram-wrap" style="padding: 0.75rem; flex: 1;">
+        <svg viewBox="0 0 880 120" xmlns="http://www.w3.org/2000/svg">
+          <rect x="5" y="35" width="95" height="45" rx="5" fill="#1e293b" stroke="#38bdf8"/>
+          <text x="18" y="55" fill="#fff" font-size="10" font-weight="700">1. Requirement</text>
+          <text x="22" y="68" fill="#94a3b8" font-size="8">과제 명세화</text>
+
+          <path d="M100 57 L115 57" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+
+          <rect x="115" y="35" width="95" height="45" rx="5" fill="#1e293b" stroke="#38bdf8"/>
+          <text x="125" y="55" fill="#fff" font-size="10" font-weight="700">2. Context Read</text>
+          <text x="135" y="68" fill="#94a3b8" font-size="8">기존 코드 분석</text>
+
+          <path d="M210 57 L225 57" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+
+          <rect x="225" y="35" width="95" height="45" rx="5" fill="#1e293b" stroke="#38bdf8"/>
+          <text x="245" y="55" fill="#fff" font-size="10" font-weight="700">3. Planning</text>
+          <text x="240" y="68" fill="#94a3b8" font-size="8">파일 변경 계획</text>
+
+          <path d="M320 57 L335 57" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+
+          <rect x="335" y="35" width="95" height="45" rx="5" fill="#1e293b" stroke="#a855f7"/>
+          <text x="345" y="55" fill="#fff" font-size="10" font-weight="700">4. Delegation</text>
+          <text x="345" y="68" fill="#c084fc" font-size="8">@Task&Log 위임</text>
+
+          <path d="M430 57 L445 57" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-purple)"/>
+
+          <rect x="445" y="35" width="95" height="45" rx="5" fill="#1e293b" stroke="#10b981"/>
+          <text x="455" y="55" fill="#fff" font-size="10" font-weight="700">5. Verification</text>
+          <text x="455" y="68" fill="#34d399" font-size="8">JUnit / k6 검증</text>
+
+          <path d="M540 57 L555 57" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+
+          <rect x="555" y="35" width="95" height="45" rx="5" fill="#1e293b" stroke="#f59e0b"/>
+          <text x="560" y="55" fill="#fff" font-size="10" font-weight="700">6. Human Review</text>
+          <text x="565" y="68" fill="#fbbf24" font-size="8">개발자 최종승인</text>
+
+          <path d="M650 57 L665 57" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-amber)"/>
+
+          <rect x="665" y="35" width="95" height="45" rx="5" fill="#1e293b" stroke="#38bdf8"/>
+          <text x="670" y="55" fill="#fff" font-size="10" font-weight="700">7. Documentation</text>
+          <text x="675" y="68" fill="#38bdf8" font-size="8">changelogs 동기화</text>
+
+          <path d="M760 57 L775 57" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+
+          <rect x="775" y="35" width="95" height="45" rx="5" fill="#1e293b" stroke="#10b981"/>
+          <text x="795" y="55" fill="#fff" font-size="10" font-weight="700">8. Deploy</text>
+          <text x="795" y="68" fill="#34d399" font-size="8">컨테이너 빌드</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- Slide 13: Claim -> Evidence Mapping -->
+    <section class="slide" id="slide-13" data-speaker-note="본 포트폴리오에서 제시하는 모든 보안, 성능, 인프라 주장은 소스 코드의 구현 위치와 이를 검증한 자동화 테스트 파일로 1:1 맵핑됩니다. 증거가 없는 주장은 일체 포함하지 않았습니다.">
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 13</span>
+          <h2 class="slide-title">Claim-to-Evidence 추적성 매트릭스</h2>
+        </div>
+        <span class="tag verified">TRACEABLE</span>
+      </div>
+
+      <div class="table-container" style="flex: 1;">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 25%;">엔지니어링 주장 (Claim)</th>
+              <th style="width: 32%;">소스 구현 위치 (Implementation)</th>
+              <th style="width: 33%;">검증 테스트 / 증거 (Verification)</th>
+              <th style="width: 10%;">판정</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>RTR 토큰 탈취 Replay Attack 방어</strong></td>
+              <td><code>AuthService.java</code> (JTI Redis 갱신)</td>
+              <td><code>SecurityIntegrationTest.java</code> (401 확인)</td>
+              <td><span class="tag verified">VERIFIED</span></td>
+            </tr>
+            <tr>
+              <td><strong>로그아웃 즉시 Access Token 차단</strong></td>
+              <td><code>TokenBlacklistService.java</code></td>
+              <td><code>TokenBlacklistServiceTest.java</code> (거부 확인)</td>
+              <td><span class="tag verified">VERIFIED</span></td>
+            </tr>
+            <tr>
+              <td><strong>User-Role-Permission M:N 인가</strong></td>
+              <td><code>UserAuthorityService.java</code></td>
+              <td><code>RbacSecurityIntegrationTest.java</code> (403 확인)</td>
+              <td><span class="tag verified">VERIFIED</span></td>
+            </tr>
+            <tr>
+              <td><strong>70 VU 부하 시 5.64ms / 0% Error</strong></td>
+              <td><code>k6/scenarios/load.test.js</code></td>
+              <td>k6 실행 요약 로그 (5~7차 실측치)</td>
+              <td><span class="tag verified">VERIFIED</span></td>
+            </tr>
+            <tr>
+              <td><strong>Nginx 프록시 & 내부 DNS 통신</strong></td>
+              <td><code>nginx/default.conf</code>, <code>docker-compose.yml</code></td>
+              <td>TS-003 해결 및 컨테이너 기동 로그</td>
+              <td><span class="tag verified">VERIFIED</span></td>
+            </tr>
+            <tr>
+              <td><strong>Redis 장애 시 2s 타임아웃 방어</strong></td>
+              <td><code>application.yml</code> (lettuce timeout)</td>
+              <td><code>TS-01-REDIS</code> 장애 회복 검증</td>
+              <td><span class="tag verified">VERIFIED</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Slide 14: FACT vs ROADMAP -->
+    <section class="slide" id="slide-14" data-speaker-note="마지막으로 구현 완료된 사실과 향후 계획을 명확히 분리합니다. 70 VU 부하 환경과 보안 메커니즘은 완벽히 검증되었으며, JPA N+1 정량 벤치마크나 분산 메시지 큐, 쿠버네티스 등은 다음 단계의 로드맵으로 관리하고 있습니다. 경청해 주셔서 감사합니다.">
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 14</span>
+          <h2 class="slide-title">검증된 FACT와 향후 ROADMAP의 엄격한 경계</h2>
+        </div>
+        <span class="tag verified">ZERO-HALLUCINATION</span>
+      </div>
+
+      <div class="grid-2" style="flex: 1;">
+        <div class="card highlight-green" style="border: 2px solid var(--accent-green);">
+          <div class="card-title" style="color: var(--accent-green); border-bottom: 1px solid rgba(16, 185, 129, 0.3); padding-bottom: 0.5rem;">
+            <span>VERIFIED FACT (검증 완료된 엔지니어링 자산)</span>
+            <span class="tag verified">FACT</span>
+          </div>
+          <ul style="margin-top: 0.75rem;">
+            <li>✔️ Stateless JWT + RTR + Redis Blacklist 실시간 세션 통제 <span class="tag verified" style="float: right;">VERIFIED</span></li>
+            <li>✔️ User-Role-Permission M:N 권한 계층 모델 <span class="tag verified" style="float: right;">VERIFIED</span></li>
+            <li>✔️ Docker Compose 7개 컨테이너 네트워크 격리 <span class="tag implemented" style="float: right;">IMPLEMENTED</span></li>
+            <li>✔️ k6 70 VU 스트레스 평균 5.64ms, 에러율 0.00% <span class="tag verified" style="float: right;">VERIFIED</span></li>
+            <li>✔️ JUnit 10종 자동화 테스트 스위트 100% Pass <span class="tag verified" style="float: right;">VERIFIED</span></li>
+            <li>✔️ 3대 핵심 장애 TS 표준 6단계 해결 <span class="tag verified" style="float: right;">VERIFIED</span></li>
+          </ul>
+        </div>
+
+        <div class="card highlight-amber" style="border: 2px dashed rgba(245, 158, 11, 0.6);">
+          <div class="card-title" style="color: var(--accent-amber); border-bottom: 1px dashed rgba(245, 158, 11, 0.4); padding-bottom: 0.5rem;">
+            <span>FUTURE ROADMAP (향후 개선 계획 과제)</span>
+            <span class="tag planned">PLANNED</span>
+          </div>
+          <ul style="margin-top: 0.75rem;">
+            <li>⏳ JPA N+1 쿼리 최적화 정량 벤치마크 실측 <span class="tag planned" style="float: right;">PLANNED</span></li>
+            <li>⏳ Apache Kafka / RabbitMQ 비동기 메시지 큐 도입 <span class="tag planned" style="float: right;">PLANNED</span></li>
+            <li>⏳ Redis Cluster 분산 캐시 및 다중화 <span class="tag planned" style="float: right;">PLANNED</span></li>
+            <li>⏳ OWASP ZAP 모의 침투 보안 테스트 자동화 <span class="tag planned" style="float: right;">PLANNED</span></li>
+            <li>⏳ Kubernetes 클러스터 오케스트레이션 및 HPA <span class="tag planned" style="float: right;">PLANNED</span></li>
+            <li>⏳ SSL/TLS Production 인증서 (HTTPS) 적용 <span class="tag planned" style="float: right;">PLANNED</span></li>
+            <li>⏳ 1,000+ VU 대규모 분산 부하 테스트 <span class="tag planned" style="float: right;">PLANNED</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bottom Navigation Bar -->
+  <footer id="nav-bar">
+    <div class="nav-left">
+      <div class="nav-brand">APMS.SR // PORTFOLIO PRESENTATION</div>
+      <div class="nav-hint">키보드: [← / →] 또는 [A / D] 이동 | [S] 스피커 노트 토글</div>
+    </div>
+
+    <div class="nav-controls">
+      <button class="speaker-btn" id="btn-speaker" title="Speaker Notes Toggle (S)">🎙️ Note (S)</button>
+      <button class="nav-btn" id="btn-prev" aria-label="Previous Slide">←</button>
+      <span id="slide-counter">1 / 14</span>
+      <button class="nav-btn" id="btn-next" aria-label="Next Slide">→</button>
+    </div>
+  </footer>
+
+  <!-- Speaker Notes Panel -->
+  <div id="speaker-panel">
+    <div class="speaker-head">
+      <span>🎙️ Speaker Note (발표자 구술 대본)</span>
+      <span style="cursor: pointer; color: var(--text-muted);" id="btn-close-speaker">✕</span>
+    </div>
+    <div id="speaker-text"></div>
+  </div>
+
+  <!-- Interactive JavaScript Logic -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const slides = document.querySelectorAll('.slide');
+      const totalSlides = slides.length;
+      let currentIndex = 0;
+
+      const btnPrev = document.getElementById('btn-prev');
+      const btnNext = document.getElementById('btn-next');
+      const counter = document.getElementById('slide-counter');
+      const progressBar = document.getElementById('progress-bar');
+      const speakerPanel = document.getElementById('speaker-panel');
+      const speakerText = document.getElementById('speaker-text');
+      const btnSpeaker = document.getElementById('btn-speaker');
+      const btnCloseSpeaker = document.getElementById('btn-close-speaker');
+
+      function updateSlide(index) {
+        if (index < 0 || index >= totalSlides) return;
+        
+        slides.forEach((slide, i) => {
+          if (i === index) {
+            slide.classList.add('active');
+            const note = slide.getAttribute('data-speaker-note');
+            speakerText.textContent = note || '본 슬라이드에 등록된 스피커 노트가 없습니다.';
+          } else {
+            slide.classList.remove('active');
+          }
+        });
+
+        currentIndex = index;
+        counter.textContent = `${currentIndex + 1} / ${totalSlides}`;
+        progressBar.style.width = `${((currentIndex + 1) / totalSlides) * 100}%`;
+
+        btnPrev.disabled = (currentIndex === 0);
+        btnNext.disabled = (currentIndex === totalSlides - 1);
+      }
+
+      function nextSlide() {
+        if (currentIndex < totalSlides - 1) updateSlide(currentIndex + 1);
+      }
+
+      function prevSlide() {
+        if (currentIndex > 0) updateSlide(currentIndex - 1);
+      }
+
+      function toggleSpeakerNotes() {
+        speakerPanel.classList.toggle('visible');
+      }
+
+      // Event Listeners
+      btnNext.addEventListener('click', nextSlide);
+      btnPrev.addEventListener('click', prevSlide);
+      btnSpeaker.addEventListener('click', toggleSpeakerNotes);
+      btnCloseSpeaker.addEventListener('click', () => speakerPanel.classList.remove('visible'));
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D' || e.key === ' ') {
+          nextSlide();
+        } else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+          prevSlide();
+        } else if (e.key === 's' || e.key === 'S') {
+          toggleSpeakerNotes();
+        } else if (e.key === 'Escape') {
+          speakerPanel.classList.remove('visible');
+        }
+      });
+
+      // Initial Call
+      updateSlide(0);
+    });
+  </script>
+</body>
+</html>
