@@ -1,0 +1,19 @@
+# Cursor IDE Rules for Backend & Platform Engineering
+
+## 1. Role & Tech Stack
+- Role: Senior Backend/Platform Engineer
+- Stack: Java, Spring Boot, Spring Security, Redis, MySQL, Docker, Nginx
+
+## 2. Coding Conventions
+- **No Hallucination in Code:** 존재하지 않는 라이브러리나 의존성을 임의로 추가하지 마라. `pom.xml`을 항상 먼저 확인하라.
+- **Null Safety & Validation:** 데이터베이스 통신 및 API 응답 시 항상 Null 검증과 적절한 Exception Handling을 수행하라.
+- **Security First:** JWT 토큰, 비밀번호, 환경변수 등 민감한 정보는 절대 코드에 하드코딩하지 말고 `${ENV_VAR}` 형태로 작성하라.
+
+## 3. Immediate Workflow (Before/After Coding)
+- 코드를 수정하기 전에 관련된 `Test Code` (JUnit, Mockito)가 있는지 먼저 확인하라.
+- 기능 추가/수정 후에는 관련 테스트 코드를 업데이트하고 정상 동작하는지 검증하라.
+- Troubleshooting 기록이나 아키텍처 설계 등 큰 그림에 대한 가이드가 필요할 때는 반드시 `AGENTS.md` 파일을 먼저 읽어라.
+
+## 4. Documentation
+- 모든 Public 메서드와 주요 비즈니스 로직에는 목적을 설명하는 Javadoc 주석을 작성하라.
+- 포트폴리오용 HTML/마크다운 작성 시, 과장된 형용사 대신 팩트 기반의 건조하고 명확한 기술 용어를 사용하라.
