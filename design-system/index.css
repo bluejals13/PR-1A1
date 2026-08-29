@@ -1,0 +1,54 @@
+/**
+ * APMS.SR Unified Engineering Design System
+ * File: PR-1A1/design-system/index.css
+ * Description: Master entrypoint importing all tokens, components, and layout contracts
+ */
+
+/* 1. Design Tokens */
+@import "./tokens/colors.css";
+@import "./tokens/typography.css";
+@import "./tokens/spacing.css";
+
+/* 2. Atomic & Compound Components */
+@import "./components/badge.css";
+@import "./components/card.css";
+@import "./components/evidence.css";
+@import "./components/code.css";
+@import "./components/navigation.css";
+
+/* 3. Polymorphic Presentation Layouts */
+@import "./layouts/longform.css";
+@import "./layouts/feature.css";
+@import "./layouts/slide.css";
+
+/* 4. Global Baseline Resets & Utilities */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Accessibility Focus Ring */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}

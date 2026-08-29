@@ -1,0 +1,25 @@
+# Evidence Reference Schema
+# File: PR-1A1/content/schema/evidence-ref.schema.yaml
+# Description: Defines the schema for linking claims to verified evidence in evidence.yaml
+
+$schema: "http://json-schema.org/draft-07/schema#"
+title: "EvidenceReference"
+type: "object"
+required:
+  - "evidence_id"
+  - "source_ref"
+  - "status"
+properties:
+  evidence_id:
+    type: "string"
+    pattern: "^(ev|unev)-[a-z0-9-]+$"
+    description: "Unique identifier matching an entry in PR-1A1/registry/evidence.yaml"
+  source_ref:
+    type: "string"
+    description: "Direct file path or test method reference in 26-05adf or PR-1A1"
+  status:
+    type: "string"
+    enum: ["VERIFIED", "IMPLEMENTED", "DOCUMENTED", "PARTIAL", "PLANNED", "NOT_FOUND"]
+  description:
+    type: "string"
+    description: "Brief explanation of how this evidence supports the claim"

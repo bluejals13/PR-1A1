@@ -1,0 +1,263 @@
+# Document Registry for APMS.SR
+# Version: 1.0.0
+# Last Updated: 2026-08-29
+# Principle: Document Units are defined by Engineering Domain, NOT by PPT slides.
+
+documents:
+  - id: apms-auth
+    type: FEATURE
+    primary_domain: DOM-AUTH
+    title: "Stateless JWT + Redis Token Lifecycle & Session Control"
+    subtitle: "Refresh Token Rotation (RTR) 및 Redis Blacklist 기반 무상태 인증의 실시간 세션 통제"
+    state: FRESH
+    change_level: C3
+    supported_templates:
+      - FEATURE
+      - TECHNICAL
+      - SLIDE
+      - LONGFORM
+    sources:
+      - repo: 26-05adf
+        path: "backend/src/main/java/com/example/demo/auth/"
+      - repo: SA-1
+        path: "changelogs/phase1_backend/1-2_jwt_redis_optimization.md"
+      - repo: PR-1A1
+        path: "PR-Files/specification/AUTH_AND_SECURITY_SPEC.md"
+    evidences:
+      - ev-auth-rtr
+      - ev-auth-blacklist
+      - ev-auth-jwt-filter
+      - ev-ts-redis-timeout
+    summary: "무상태 JWT의 한계인 즉시 만료 불가 문제를 해결하기 위해 Lua Script 기반 RTR과 Redis Blacklist를 결합하여 확장성과 즉시 세션 제어를 양립한 핵심 인증 시스템."
+
+  - id: apms-rbac
+    type: FEATURE
+    primary_domain: DOM-RBAC
+    title: "User-Role-Permission M:N Dynamic Authorization"
+    subtitle: "다대다 권한 정규화 모델과 Spring Security 커스텀 인가 필터링"
+    state: FRESH
+    change_level: C3
+    supported_templates:
+      - FEATURE
+      - TECHNICAL
+      - SLIDE
+    sources:
+      - repo: 26-05adf
+        path: "backend/src/main/java/com/example/demo/iam/"
+      - repo: 26-05adf
+        path: "backend/src/main/resources/db/migration/V2__init_authority_schema.sql"
+    evidences:
+      - ev-rbac-security
+      - ev-menu-security
+      - ev-db-flyway
+    summary: "사용자, 역할, 세부 권한을 분리하여 확장 가능한 엔터프라이즈 IAM 권한 통제 체계를 구축하고 403 Forbidden 응답으로 인가 무결성을 검증."
+
+  - id: apms-jpa
+    type: TECHNICAL
+    primary_domain: DOM-DATA
+    title: "JPA Query Optimization & Schema Integrity"
+    subtitle: "@EntityGraph와 Fetch Join을 통한 지연 로딩 N+1 병목 방지 및 Flyway 형상 관리"
+    state: FRESH
+    change_level: C2
+    supported_templates:
+      - TECHNICAL
+      - EVIDENCE
+    sources:
+      - repo: 26-05adf
+        path: "backend/src/main/java/com/example/demo/iam/user/repository/UserRepository.java"
+      - repo: SA-1
+        path: "changelogs/phase1_backend/1-4_jpa_n1_query_optimization.md"
+      - repo: PR-1A1
+        path: "PR-Files/verification/DATA_LAYER_VERIFICATION.md"
+    evidences:
+      - ev-jpa-entitygraph
+      - ev-db-flyway
+    summary: "Set 컬렉션 기반의 중복 제거 및 @EntityGraph를 적용하여 User-Role-Permission 3단계 연관관계를 단 1회의 쿼리로 안전하게 일괄 로딩."
+
+  - id: apms-api
+    type: TECHNICAL
+    primary_domain: DOM-API
+    title: "Unified API Architecture & Global Exception Handling"
+    subtitle: "Record 기반 불변 DTO와 ApiResponse<T> 표준 응답 규격"
+    state: FRESH
+    change_level: C2
+    supported_templates:
+      - TECHNICAL
+    sources:
+      - repo: 26-05adf
+        path: "backend/src/main/java/com/example/demo/common/"
+      - repo: SA-1
+        path: "changelogs/phase1_backend/1-1. Entity와 DTO의 엄격한 분리.md"
+        path2: "changelogs/phase1_backend/1-3_global_response_exception_handling.md"
+    evidences:
+      - ev-db-flyway
+    summary: "도메인 엔티티와 DTO의 엄격한 분리 및 전역 예외 처리기를 통해 일관된 JSON 에러 응답 포맷 보장."
+
+  - id: apms-frontend-auth
+    type: FEATURE
+    primary_domain: DOM-FE-AUTH
+    title: "Frontend Client Authentication & State Resiliency"
+    subtitle: "Zustand persist, bootstrapAuth 게이트웨이 및 Single Flight 토큰 재발급"
+    state: FRESH
+    change_level: C3
+    supported_templates:
+      - FEATURE
+      - TECHNICAL
+    sources:
+      - repo: 26-05adf
+        path: "frontend/src/auth/"
+      - repo: 26-05adf
+        path: "frontend/src/store/auth.store.ts"
+      - repo: SA-1
+        path: "changelogs/phase2_frontend/2-1_zustand_auth_optimization.md"
+    evidences:
+      - ev-fe-bootstrap
+      - ev-fe-single-flight
+      - ev-ts-jwt-loop
+    summary: "새로고침 시 세션 증발 및 깜빡임을 방지하고, 다중 동시 401 발생 시 재발급 요청을 단 1건으로 병합 처리하여 클라이언트 복원력 강화."
+
+  - id: apms-infrastructure
+    type: TECHNICAL
+    primary_domain: DOM-INFRA
+    title: "Docker 8-Service Topology & Nginx Gateway Architecture"
+    subtitle: "리버스 프록시 단일 진입점과 컨테이너 내부 브리지 네트워크 격리"
+    state: FRESH
+    change_level: C4
+    supported_templates:
+      - TECHNICAL
+      - SLIDE
+    sources:
+      - repo: 26-05adf
+        path: "docker-compose.yml"
+      - repo: 26-05adf
+        path: "nginx/default.conf"
+      - repo: SA-1
+        path: "architecture/01_Architecture_and_Ports.md"
+    evidences:
+      - ev-infra-nginx
+      - ev-ts-docker-redis
+      - ev-obs-prometheus
+    summary: "Nginx를 외부 Port 80 단일 진입점으로 구성하여 백엔드/DB/Redis 내부 포트를 안전하게 은닉하고 트래픽을 단일화한 인프라 토폴로지."
+
+  - id: apms-performance
+    type: TECHNICAL
+    primary_domain: DOM-PERF
+    title: "k6 Load & Stress Verification Benchmark"
+    subtitle: "70 VU 피크 부하 실측치 (5.64ms 평균 지연시간, 0.00% 오류율)"
+    state: FRESH
+    change_level: C1
+    supported_templates:
+      - TECHNICAL
+      - EVIDENCE
+      - SLIDE
+    sources:
+      - repo: 26-05adf
+        path: "docs/performance/k6-load-test.md"
+      - repo: 26-05adf
+        path: "k6/scenarios/load.test.js"
+      - repo: PR-1A1
+        path: "PR-Files/performance/K6_LOAD_TEST_REPORT.md"
+    evidences:
+      - ev-perf-70vu
+      - ev-perf-50vu
+    summary: "50 VU 일반 부하(2,046 RPS) 및 70 VU 지속 스트레스 부하(463 RPS, 5.64ms) 환경에서 100% 가용성과 데이터 무결성을 검증한 실측 팩트."
+
+  - id: apms-incidents
+    type: TECHNICAL
+    primary_domain: DOM-INCIDENT
+    title: "Incident Troubleshooting & Defensive Engineering"
+    subtitle: "Redis 장애 격리(2s timeout), JWT 무한루프 탈출 및 Docker DNS 바인딩 해결"
+    state: FRESH
+    change_level: C2
+    supported_templates:
+      - TECHNICAL
+      - EVIDENCE
+    sources:
+      - repo: PR-1A1
+        path: "PR-Files/troubleshooting/"
+    evidences:
+      - ev-ts-redis-timeout
+      - ev-ts-jwt-loop
+      - ev-ts-docker-redis
+    summary: "실제 개발/테스트 과정에서 직면한 3대 장애를 TS 6단계 표준 프레임워크로 진단하고 코드/설정 레벨에서 근본 해결한 사례."
+
+  - id: apms-observability
+    type: TECHNICAL
+    primary_domain: DOM-OBS
+    title: "Observability Pipeline (Prometheus, VictoriaMetrics, Grafana)"
+    subtitle: "Spring Actuator 메트릭 수집 및 시계열 스토리지 파이프라인"
+    state: FRESH
+    change_level: C4
+    supported_templates:
+      - TECHNICAL
+    sources:
+      - repo: 26-05adf
+        path: "monitoring/prometheus.yml"
+      - repo: 26-05adf
+        path: "docker-compose.yml"
+    evidences:
+      - ev-obs-prometheus
+    summary: "Spring Boot Actuator와 Prometheus/VictoriaMetrics를 연동하여 JVM 및 시스템 메트릭을 15초 주기로 스크랩하고 영속화."
+
+  - id: apms-testing
+    type: TECHNICAL
+    primary_domain: DOM-TEST
+    title: "Automated Security & Regression Testing Strategy"
+    subtitle: "인증/인가/토큰 10종 자동화 테스트 스위트"
+    state: FRESH
+    change_level: C1
+    supported_templates:
+      - TECHNICAL
+      - EVIDENCE
+    sources:
+      - repo: 26-05adf
+        path: "backend/src/test/java/com/example/demo/"
+    evidences:
+      - ev-auth-rtr
+      - ev-auth-blacklist
+      - ev-auth-jwt-filter
+      - ev-rbac-security
+      - ev-menu-security
+    summary: "회귀 버그를 방지하고 보안 인가 정책의 무결성을 보장하기 위한 단위 및 SpringBootTest 통합 테스트 전략."
+
+  - id: apms-overview
+    type: LONGFORM
+    primary_domain: DOM-AUTH
+    title: "APMS.SR Full-Stack Engineering Portfolio"
+    subtitle: "인증/인가 아키텍처부터 컨테이너 격리, k6 성능 실측 및 장애 복구까지"
+    state: FRESH
+    change_level: C5
+    supported_templates:
+      - LONGFORM
+    sources:
+      - repo: PR-1A1
+        path: "system/DOMAINS.md"
+    evidences:
+      - ev-auth-rtr
+      - ev-auth-blacklist
+      - ev-rbac-security
+      - ev-perf-70vu
+      - ev-infra-nginx
+      - ev-ts-redis-timeout
+    summary: "채용담당자 및 기술 면접관을 위해 APMS.SR 시스템의 전 주기 엔지니어링 의사결정과 검증 결과를 스토리텔링으로 구성한 롱폼 포트폴리오."
+
+  - id: apms-presentation
+    type: SLIDE
+    primary_domain: DOM-AUTH
+    title: "APMS.SR Technical Presentation Deck (14 Slides)"
+    subtitle: "핵심 기술 의사결정과 실측 팩트 중심의 16:9 발표 자료"
+    state: FRESH
+    change_level: C5
+    supported_templates:
+      - SLIDE
+    sources:
+      - repo: PR-1A1
+        path: "APMS-SR_PPT_COMPOSITION.md"
+    evidences:
+      - ev-auth-rtr
+      - ev-auth-blacklist
+      - ev-rbac-security
+      - ev-perf-70vu
+      - ev-infra-nginx
+      - ev-obs-prometheus
+    summary: "1 Slide = 1 Message 원칙을 준수하여 시스템 아키텍처, 3중 보안 계층, k6 실측치 및 장애 분석을 시각화한 슬라이드 덱."

@@ -1,0 +1,81 @@
+/**
+ * Design System - Color Tokens
+ * File: PR-1A1/design-system/tokens/colors.css
+ * Description: Dark Engineering Minimalist Semantic Color Palette
+ */
+
+:root {
+  /* Surface & Background */
+  --bg-app: #0a0d14;
+  --bg-canvas: #0f1422;
+  --bg-surface: #151b2e;
+  --bg-surface-raised: #1c243c;
+  --bg-surface-glass: rgba(21, 27, 46, 0.85);
+
+  /* Borders & Dividers */
+  --border-subtle: #202945;
+  --border-muted: #2d385e;
+  --border-accent: #3d4f82;
+  --border-glow: rgba(56, 189, 248, 0.35);
+
+  /* Typography Colors */
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --text-inverse: #0a0d14;
+
+  /* Brand & Core Accents */
+  --color-primary: #38bdf8;
+  --color-primary-dark: #0284c7;
+  --color-accent: #818cf8;
+  --color-accent-dark: #4f46e5;
+  --color-cyan: #06b6d4;
+
+  /* Functional Status Colors */
+  --status-success: #10b981;
+  --status-success-bg: rgba(16, 185, 129, 0.12);
+  --status-success-border: rgba(16, 185, 129, 0.35);
+
+  --status-warning: #f59e0b;
+  --status-warning-bg: rgba(245, 158, 11, 0.12);
+  --status-warning-border: rgba(245, 158, 11, 0.35);
+
+  --status-error: #ef4444;
+  --status-error-bg: rgba(239, 68, 68, 0.12);
+  --status-error-border: rgba(239, 68, 68, 0.35);
+
+  --status-info: #3b82f6;
+  --status-info-bg: rgba(59, 130, 246, 0.12);
+  --status-info-border: rgba(59, 130, 246, 0.35);
+
+  /* Document Lifecycle State Tokens (CHANGE_POLICY.md) */
+  --doc-fresh: #10b981;
+  --doc-fresh-bg: rgba(16, 185, 129, 0.15);
+  --doc-stale: #f59e0b;
+  --doc-stale-bg: rgba(245, 158, 11, 0.15);
+  --doc-invalid: #ef4444;
+  --doc-invalid-bg: rgba(239, 68, 68, 0.15);
+  --doc-unverified: #64748b;
+  --doc-unverified-bg: rgba(100, 116, 139, 0.15);
+
+  /* Evidence State Tokens (evidence.yaml) */
+  --ev-verified: #06b6d4;
+  --ev-verified-bg: rgba(6, 182, 212, 0.12);
+  --ev-implemented: #3b82f6;
+  --ev-implemented-bg: rgba(59, 130, 246, 0.12);
+  --ev-documented: #a855f7;
+  --ev-documented-bg: rgba(168, 85, 247, 0.12);
+  --ev-partial: #f59e0b;
+  --ev-partial-bg: rgba(245, 158, 11, 0.12);
+  --ev-planned: #64748b;
+  --ev-planned-bg: rgba(100, 116, 139, 0.12);
+
+  /* Code Block Colors */
+  --code-bg: #0b0f19;
+  --code-border: #1e293b;
+  --code-keyword: #c084fc;
+  --code-string: #34d399;
+  --code-function: #38bdf8;
+  --code-comment: #64748b;
+}

@@ -1,0 +1,47 @@
+# EVIDENCE Template Contract
+# File: PR-1A1/templates/contracts/evidence.contract.yaml
+# Schema: PR-1A1/templates/contracts/template.contract.schema.yaml
+
+template_id: "EVIDENCE"
+template_name: "Verification & Evidence Traceability Ledger"
+purpose: "주장(Claim)에 대한 실제 테스트 코드, 실측 메트릭, 로그 파일 및 재현 경로를 최우선으로 증명하는 사실 기반 감사 문서"
+spatial_model: "VERIFICATION_LEDGER"
+target_audience: "감사관, QA 엔지니어, 팩트 체커, 시니어 코드 리뷰어"
+key_question: "이 주장은 실제 코드와 테스트와 런타임에서 어떻게 100% 입증되는가?"
+
+required_content_fields:
+  - "title"
+  - "claims"
+  - "template_projections.evidence.primary_evidences"
+
+optional_content_fields:
+  - "sources"
+  - "sections.verification"
+  - "sections.tradeoff"
+
+section_priority_order:
+  - "ledger_summary"
+  - "claim_matrix"
+  - "evidence_deep_dive"
+  - "test_methodology"
+  - "measured_metrics"
+  - "unverified_isolation_table"
+
+allowed_layout_nodes:
+  - "EVIDENCE_LEDGER_TABLE"
+  - "CLAIM_VERIFICATION_CARD"
+  - "SOURCE_CODE_INSPECTOR"
+  - "METRIC_TOLERANCE_GAUGE"
+  - "TEST_ASSERTION_BLOCK"
+  - "STATUS_AUDIT_BADGE"
+
+evidence_display_policy: "DIRECT_TABLE"
+navigation_policy: "FILTERABLE_GRID"
+
+validation_rules:
+  - rule_id: "REQ_CLAIMS_EVIDENCE_MAP"
+    condition: "claims.every(c => c.evidence_refs.length > 0)"
+    error_message: "EVIDENCE 템플릿에 등록된 모든 Claim은 최소 1개 이상의 Evidence ID와 매핑되어야 합니다."
+  - rule_id: "REQ_REAL_SOURCE_PATH"
+    condition: "claims.every(c => has_valid_source(c))"
+    error_message: "EVIDENCE 템플릿의 모든 증거는 26-05adf 또는 PR-1A1 내의 실재하는 파일 경로를 가리켜야 합니다."

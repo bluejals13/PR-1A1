@@ -1,0 +1,53 @@
+# Change Manifest Specification & Example
+# File: PR-1A1/verification/change-manifest.example.yaml
+# Description: Defines the schema and concrete example of an engineering change manifest
+
+change_manifest:
+  id: "change-2026-08-29-001"
+  timestamp: "2026-08-29T23:40:00Z"
+  author: "Antigravity AI Agent"
+  source_repository: "26-05adf"
+  branch: "feature/auth@0603@1401"
+  commit: "a1b2c3d4e5f678901234567890abcdef12345678"
+
+  change_level: "C4"  # C0: Cosmetic, C1: Presentation, C2: Content, C3: Evidence, C4: Implementation, C5: Structural
+  classification: "IMPLEMENTATION_AND_DESIGN_CHANGE"
+  summary: "JwtAuthenticationFilter 내의 이중 서명 파싱 제거 및 Token Type(access) 검증 추가"
+
+  changed_paths:
+    - "backend/src/main/java/com/example/demo/auth/security/JwtAuthenticationFilter.java"
+    - "backend/src/main/java/com/example/demo/auth/jwt/JwtProvider.java"
+
+  impact_analysis:
+    affected_domains:
+      - "DOM-AUTH"
+    affected_evidences:
+      - "ev-auth-jwt-filter"
+      - "ev-auth-blacklist"
+    affected_documents:
+      - "apms-auth"
+      - "apms-presentation"
+    unaffected_domains:
+      - "DOM-RBAC"
+      - "DOM-DATA"
+      - "DOM-PERF"
+      - "DOM-INFRA"
+
+  required_actions:
+    mark_stale_documents:
+      - "apms-auth"
+      - "apms-presentation"
+    revalidate_evidences:
+      - id: "ev-auth-jwt-filter"
+        test_method: "backend/src/test/.../JwtAuthenticationFilterTest.java"
+        action: "RUN_JUNIT_TEST"
+    rerender_templates:
+      - document_id: "apms-auth"
+        templates: ["FEATURE", "TECHNICAL", "SLIDE", "LONGFORM", "EVIDENCE"]
+
+  audit_trail:
+    evidence_status_before: "VERIFIED"
+    evidence_status_after: "VERIFIED"
+    document_state_before: "FRESH"
+    document_state_intermediate: "STALE"
+    document_state_final: "FRESH"

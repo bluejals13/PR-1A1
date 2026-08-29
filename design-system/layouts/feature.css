@@ -1,0 +1,95 @@
+/**
+ * Design System - Feature & Technical Layouts
+ * File: PR-1A1/design-system/layouts/feature.css
+ * Spatial Model: ONE_PAGE_CARD_STACK & DECISION_DEEP_DIVE
+ */
+
+/* 1. FEATURE Layout (One-Page Card Stack) */
+.layout-feature {
+  max-width: var(--width-container);
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.feature-header {
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.feature-grid-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.feature-step-row {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.feature-step-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  padding-top: var(--space-2);
+}
+
+@media (max-width: 768px) {
+  .feature-step-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+}
+
+/* 2. TECHNICAL Layout (Decision Deep-Dive) */
+.layout-technical {
+  max-width: var(--width-wide);
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.technical-decision-matrix {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-6);
+}
+
+.tradeoff-pro-con-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.pro-box {
+  background-color: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+.con-box {
+  background-color: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+@media (max-width: 768px) {
+  .tradeoff-pro-con-grid {
+    grid-template-columns: 1fr;
+  }
+}

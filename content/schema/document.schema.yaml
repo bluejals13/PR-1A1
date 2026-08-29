@@ -1,0 +1,159 @@
+# Document Content Schema
+# File: PR-1A1/content/schema/document.schema.yaml
+# Description: Defines the complete schema for an Engineering Document Content Unit
+
+$schema: "http://json-schema.org/draft-07/schema#"
+title: "DocumentContent"
+type: "object"
+required:
+  - "id"
+  - "domain"
+  - "title"
+  - "subtitle"
+  - "state"
+  - "change_level"
+  - "sources"
+  - "claims"
+  - "sections"
+  - "template_projections"
+properties:
+  id:
+    type: "string"
+    description: "Unique document identifier matching registry/documents.yaml"
+  domain:
+    type: "string"
+    pattern: "^DOM-[A-Z-]+$"
+    description: "Primary engineering domain matching system/DOMAINS.md"
+  title:
+    type: "string"
+    description: "Primary engineering title"
+  subtitle:
+    type: "string"
+    description: "Descriptive subtitle"
+  state:
+    type: "string"
+    enum: ["FRESH", "STALE", "INVALID", "UNVERIFIED"]
+    description: "Current lifecycle state per CHANGE_POLICY.md"
+  change_level:
+    type: "string"
+    enum: ["C0", "C1", "C2", "C3", "C4", "C5"]
+    description: "Change impact level per CHANGE_POLICY.md"
+  sources:
+    type: "array"
+    items:
+      type: "object"
+      required: ["repo", "path"]
+      properties:
+        repo:
+          type: "string"
+          enum: ["26-05adf", "SA-1", "PR-1A1"]
+        path:
+          type: "string"
+        description:
+          type: "string"
+  claims:
+    type: "array"
+    items:
+      $ref: "./claim.schema.yaml"
+  sections:
+    type: "array"
+    items:
+      $ref: "./section.schema.yaml"
+  decisions:
+    type: "array"
+    items:
+      type: "object"
+      required: ["decision", "why", "alternatives_rejected"]
+      properties:
+        decision:
+          type: "string"
+        why:
+          type: "string"
+        alternatives_rejected:
+          type: "array"
+          items:
+            type: "object"
+            required: ["option", "rejection_reason"]
+            properties:
+              option:
+                type: "string"
+              rejection_reason:
+                type: "string"
+  tradeoffs:
+    type: "array"
+    items:
+      type: "object"
+      required: ["aspect", "benefit", "cost", "mitigation"]
+      properties:
+        aspect:
+          type: "string"
+        benefit:
+          type: "string"
+        cost:
+          type: "string"
+        mitigation:
+          type: "string"
+  limitations:
+    type: "array"
+    items:
+      type: "object"
+      required: ["limitation", "status", "roadmap"]
+      properties:
+        limitation:
+          type: "string"
+        status:
+          type: "string"
+          enum: ["PLANNED", "PARTIAL", "ACCEPTABLE_RISK"]
+        roadmap:
+          type: "string"
+  template_projections:
+    type: "object"
+    required: ["longform", "feature", "technical", "slide", "evidence"]
+    properties:
+      longform:
+        type: "object"
+        required: ["section_order", "focus"]
+        properties:
+          section_order:
+            type: "array"
+            items: { type: "string" }
+          focus: { type: "string" }
+      feature:
+        type: "object"
+        required: ["section_order", "focus"]
+        properties:
+          section_order:
+            type: "array"
+            items: { type: "string" }
+          focus: { type: "string" }
+      technical:
+        type: "object"
+        required: ["section_order", "focus"]
+        properties:
+          section_order:
+            type: "array"
+            items: { type: "string" }
+          focus: { type: "string" }
+      slide:
+        type: "object"
+        required: ["slide_theses", "key_visual"]
+        properties:
+          slide_theses:
+            type: "array"
+            items:
+              type: "object"
+              required: ["slide_num", "headline", "takeaway", "section_ref"]
+              properties:
+                slide_num: { type: "integer" }
+                headline: { type: "string" }
+                takeaway: { type: "string" }
+                section_ref: { type: "string" }
+          key_visual: { type: "string" }
+      evidence:
+        type: "object"
+        required: ["primary_evidences", "verification_summary"]
+        properties:
+          primary_evidences:
+            type: "array"
+            items: { type: "string" }
+          verification_summary: { type: "string" }

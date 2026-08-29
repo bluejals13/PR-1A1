@@ -1,0 +1,269 @@
+# Evidence Registry for APMS.SR
+# Version: 1.0.0
+# Last Updated: 2026-08-29
+# Rule: Evidence without real source/tests must NEVER be marked as VERIFIED.
+
+evidences:
+  - id: ev-auth-rtr
+    type: TEST
+    domain: DOM-AUTH
+    title: "Refresh Token Rotation (RTR) Atomic Lua Script Test"
+    claim: "토큰 갱신 시 기존 JTI를 원자적으로 교체하여 동시성 레이스 및 재사용 공격을 차단한다."
+    status: VERIFIED
+    source:
+      repository: 26-05adf
+      path: "backend/src/test/java/com/example/demo/auth/security/RefreshTokenRepositoryTest.java"
+      test_methods:
+        - "rotate_Success_ShouldReturnTrueAndSetNewJti"
+        - "rotate_Fail_WhenCurrentJtiMismatch"
+        - "rotate_Fail_WhenKeyDoesNotExist"
+    target_documents:
+      - apms-auth
+      - apms-presentation
+
+  - id: ev-auth-blacklist
+    type: TEST
+    domain: DOM-AUTH
+    title: "Redis Blacklist Token Invalidation on Logout"
+    claim: "로그아웃 시 Access Token 잔여 TTL 동안 Redis 블랙리스트에 등록하여 즉시 접근을 차단한다."
+    status: VERIFIED
+    source:
+      repository: 26-05adf
+      path: "backend/src/test/java/com/example/demo/auth/security/TokenBlacklistServiceTest.java"
+      test_methods:
+        - "addToBlacklist_ShouldSetRedisKeyWithTtl"
+        - "isBlacklisted_ShouldReturnTrue_WhenTokenExists"
+    target_documents:
+      - apms-auth
+      - apms-presentation
+
+  - id: ev-auth-jwt-filter
+    type: TEST
+    domain: DOM-AUTH
+    title: "JWT Single-Pass Parsing & Token Type Verification"
+    claim: "Access Token의 type 클레임을 검증하여 Refresh Token을 통한 API 우회 접근을 차단한다."
+    status: VERIFIED
+    source:
+      repository: 26-05adf
+      path: "backend/src/test/java/com/example/demo/auth/security/JwtAuthenticationFilterTest.java"
+      test_methods:
+        - "doFilterInternal_ValidToken_SetsAuthentication"
+        - "doFilterInternal_InvalidTokenType_ShouldDeny"
+        - "doFilterInternal_BlacklistedToken_ShouldDeny"
+    target_documents:
+      - apms-auth
+
+  - id: ev-rbac-security
+    type: TEST
+    domain: DOM-RBAC
+    title: "RBAC M:N Multi-Level Authorization Integration Test"
+    claim: "사용자-역할-권한 M:N 다대다 매핑을 통해 인가되지 않은 엔드포인트 접근 시 403 Forbidden을 반환한다."
+    status: VERIFIED
+    source:
+      repository: 26-05adf
+      path: "backend/src/test/java/com/example/demo/iam/rbac/RbacSecurityIntegrationTest.java"
+      test_methods:
+        - "accessAdminEndpoint_WithoutRole_Returns403"
+        - "accessAdminEndpoint_WithRole_Returns200"
+    target_documents:
+      - apms-rbac
+      - apms-presentation
+
+  - id: ev-menu-security
+    type: TEST
+    domain: DOM-RBAC
+    title: "Menu Authorization Security Integration Test"
+    claim: "사용자의 부여된 역할에 매핑된 메뉴 목록만 조회/인가된다."
+    status: VERIFIED
+    source:
+      repository: 26-05adf
+      path: "backend/src/test/java/com/example/demo/menu/MenuSecurityIntegrationTest.java"
+    target_documents:
+      - apms-rbac
+
+  - id: ev-perf-70vu
+    type: PERFORMANCE
+    domain: DOM-PERF
+    title: "k6 70 VU Peak Load Test (3-Run Benchmark Fact)"
+    claim: "70 VU 1분 지속 부하에서 평균 5.64ms, P95 9.98ms, 처리량 463 req/s, 오류율 0.00%를 달성한다."
+    status: VERIFIED
+    source:
+      repository: 26-05adf
+      path: "docs/performance/k6-load-test.md"
+      script_path: "k6/scenarios/load.test.js"
+      thresholds_path: "k6/config/thresholds.js"
+      metrics:
+        vus: 70
+        duration: "1m"
+        avg_latency_ms: 5.64
+        p95_latency_ms: 9.98
+        throughput_rps: 463
+        error_rate_pct: 0.00
+    target_documents:
+      - apms-performance
+      - apms-presentation
+      - apms-overview
+
+  - id: ev-perf-50vu
+    type: PERFORMANCE
+    domain: DOM-PERF
+    title: "k6 50 VU Normal Sustained Load Test"
+    claim: "50 VU 2분 지속 부하에서 워밍업 이후 평균 24.30ms, P95 39.16ms, 최대 2,046 req/s를 유지한다."
+    status: VERIFIED
+    source:
+      repository: 26-05adf
+      path: "docs/performance/k6-load-test.md"
+      metrics:
+        vus: 50
+        duration: "2m"
+        avg_latency_ms: 24.30
+        p95_latency_ms: 39.16
+        throughput_rps: 2046
+        error_rate_pct: 0.00
+    target_documents:
+      - apms-performance
+
+  - id: ev-db-flyway
+    type: DATABASE
+    domain: DOM-DATA
+    title: "Flyway Database Schema Versioning (V1 to V5)"
+    claim: "Flyway 형상 관리를 통해 스키마 초기화, 권한 모델, 감사 로그 테이블을 재현 가능하게 마이그레이션한다."
+    status: IMPLEMENTED
+    source:
+      repository: 26-05adf
+      path: "backend/src/main/resources/db/migration/"
+      files:
+        - "V1__init_schema.sql"
+        - "V2__init_authority_schema.sql"
+        - "V3__init_common_schema.sql"
+        - "V4__insert_permissions.sql"
+        - "V5__insert_test_users.sql"
+    target_documents:
+      - apms-jpa
+      - apms-infrastructure
+
+  - id: ev-jpa-entitygraph
+    type: CODE
+    domain: DOM-DATA
+    title: "JPA @EntityGraph & Fetch Join N+1 Prevention"
+    claim: "@EntityGraph(attributePaths)를 통해 연관된 Role 및 Permission 컬렉션을 1회 쿼리로 일괄 조회한다."
+    status: IMPLEMENTED
+    source:
+      repository: 26-05adf
+      path: "backend/src/main/java/com/example/demo/iam/user/repository/UserRepository.java"
+      knowledge_ref: "SA-1/changelogs/phase1_backend/1-4_jpa_n1_query_optimization.md"
+    target_documents:
+      - apms-jpa
+
+  - id: ev-fe-bootstrap
+    type: CODE
+    domain: DOM-FE-AUTH
+    title: "Frontend Auth Bootstrap & FOUC Prevention"
+    claim: "앱 마운트 시 bootstrapAuth 게이트웨이를 통해 Refresh Token으로 사전 검증하여 화면 깜빡임과 토큰 증발을 방지한다."
+    status: IMPLEMENTED
+    source:
+      repository: 26-05adf
+      path: "frontend/src/auth/auth.bootstrap.ts"
+      store_path: "frontend/src/store/auth.store.ts"
+      knowledge_ref: "SA-1/changelogs/phase2_frontend/2-1_zustand_auth_optimization.md"
+    target_documents:
+      - apms-frontend-auth
+
+  - id: ev-fe-single-flight
+    type: CODE
+    domain: DOM-FE-AUTH
+    title: "Frontend Single Flight Refresh Token Request"
+    claim: "동시 다발적 401 발생 시 refreshPromise 싱글톤을 통해 토큰 재발급 요청을 단 1회로 병합한다."
+    status: IMPLEMENTED
+    source:
+      repository: 26-05adf
+      path: "frontend/src/api/http.ts"
+    target_documents:
+      - apms-frontend-auth
+      - apms-auth
+
+  - id: ev-infra-nginx
+    type: DEPLOYMENT
+    domain: DOM-INFRA
+    title: "Nginx Reverse Proxy & Port Isolation Topology"
+    claim: "Nginx를 단일 진입점(Port 80)으로 두어 백엔드 API(/api/*) 및 정적 SPA 서빙을 라우팅하고 내부 컨테이너 포트를 격리한다."
+    status: IMPLEMENTED
+    source:
+      repository: 26-05adf
+      path: "nginx/default.conf"
+      compose_path: "docker-compose.yml"
+    target_documents:
+      - apms-infrastructure
+      - apms-presentation
+
+  - id: ev-ts-redis-timeout
+    type: LOG
+    domain: DOM-INCIDENT
+    title: "TS-01: Redis Lettuce Timeout 2s Defense"
+    claim: "Redis 장애 시 커맨드 타임아웃을 2초로 제한하고 503 Service Unavailable로 격리하여 서버 스레드 블로킹을 방지한다."
+    status: DOCUMENTED
+    source:
+      repository: PR-1A1
+      path: "PR-Files/troubleshooting/TS-01-REDIS_TIMEOUT.md"
+      config_path: "26-05adf/backend/src/main/resources/application.yaml"
+    target_documents:
+      - apms-incidents
+      - apms-auth
+
+  - id: ev-ts-jwt-loop
+    type: LOG
+    domain: DOM-INCIDENT
+    title: "TS-001: JWT Refresh Infinite Retry Loop Escape"
+    claim: "토큰 갱신 실패(401) 시 클라이언트 인터셉터의 재시도를 즉시 차단하고 세션을 초기화하여 무한 루프를 방지한다."
+    status: DOCUMENTED
+    source:
+      repository: PR-1A1
+      path: "PR-Files/troubleshooting/TS-001_JWT_REFRESH_LOOP.md"
+      client_path: "26-05adf/frontend/src/api/http.ts"
+    target_documents:
+      - apms-incidents
+      - apms-frontend-auth
+
+  - id: ev-ts-docker-redis
+    type: LOG
+    domain: DOM-INCIDENT
+    title: "TS-003: Docker Container Hostname DNS Resolution"
+    claim: "Docker 브리지 네트워크 환경에서 localhost 바인딩 실패를 방지하기 위해 서비스명(redis) 기반 환경변수로 분리한다."
+    status: DOCUMENTED
+    source:
+      repository: PR-1A1
+      path: "PR-Files/troubleshooting/TS-003_DOCKER_REDIS_BINDING.md"
+      compose_path: "26-05adf/docker-compose.yml"
+    target_documents:
+      - apms-incidents
+      - apms-infrastructure
+
+  - id: ev-obs-prometheus
+    type: CONFIGURATION
+    domain: DOM-OBS
+    title: "Spring Boot Actuator & Prometheus Scrape Pipeline"
+    claim: "Prometheus가 15초 주기로 /actuator/prometheus 엔드포인트를 스크랩하여 JVM 및 애플리케이션 메트릭을 수집한다."
+    status: VERIFIED
+    source:
+      repository: 26-05adf
+      path: "monitoring/prometheus.yml"
+      compose_path: "docker-compose.yml"
+    target_documents:
+      - apms-observability
+
+# 미검증 / 계획 과제 격리 (과장 금지)
+unverified_evidences:
+  - id: unev-jpa-n1-benchmark
+    claim: "JPA N+1 Fetch Join 적용 전후의 쿼리 수 비교 실측치"
+    status: PLANNED
+    reason: "코드 최적화는 완료되었으나 정량적 before/after 벤치마크 미수행"
+
+  - id: unev-grafana-live-dashboard
+    claim: "Grafana 실시간 대시보드 표출 및 알람 룰 검증"
+    status: PARTIAL
+    reason: "Grafana 컨테이너 설정은 존재하나 실시간 스크린샷 및 알람 증거 미확보"
+
+  - id: unev-k6-raw-log-file
+    claim: "k6 CLI 실행 원본 stdout 로그 텍스트 파일"
+    status: NOT_FOUND
+    reason: "docs/performance/k6-load-test.md에 수치만 기록됨"

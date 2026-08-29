@@ -1,0 +1,99 @@
+/**
+ * Design System - Badges & Status Indicators
+ * File: PR-1A1/design-system/components/badge.css
+ * Description: Color + Icon + Text multi-channel accessibility compliant status indicators
+ */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0.2rem 0.55rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-none);
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  white-space: nowrap;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+}
+
+.badge-icon {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+}
+
+/* Document Lifecycle States (CHANGE_POLICY.md) */
+.badge-doc-fresh {
+  color: var(--doc-fresh);
+  background-color: var(--doc-fresh-bg);
+  border-color: rgba(16, 185, 129, 0.4);
+}
+.badge-doc-fresh::before { content: "● "; color: var(--doc-fresh); }
+
+.badge-doc-stale {
+  color: var(--doc-stale);
+  background-color: var(--doc-stale-bg);
+  border-color: rgba(245, 158, 11, 0.4);
+}
+.badge-doc-stale::before { content: "▲ "; color: var(--doc-stale); }
+
+.badge-doc-invalid {
+  color: var(--doc-invalid);
+  background-color: var(--doc-invalid-bg);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+.badge-doc-invalid::before { content: "✖ "; color: var(--doc-invalid); }
+
+.badge-doc-unverified {
+  color: var(--doc-unverified);
+  background-color: var(--doc-unverified-bg);
+  border-color: rgba(100, 116, 139, 0.4);
+}
+.badge-doc-unverified::before { content: "? "; color: var(--doc-unverified); }
+
+/* Evidence Verification States (evidence.yaml) */
+.badge-ev-verified {
+  color: var(--ev-verified);
+  background-color: var(--ev-verified-bg);
+  border-color: rgba(6, 182, 212, 0.4);
+}
+.badge-ev-verified::before { content: "✓ "; font-weight: bold; }
+
+.badge-ev-implemented {
+  color: var(--ev-implemented);
+  background-color: var(--ev-implemented-bg);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+.badge-ev-implemented::before { content: "⚙ "; }
+
+.badge-ev-documented {
+  color: var(--ev-documented);
+  background-color: var(--ev-documented-bg);
+  border-color: rgba(168, 85, 247, 0.4);
+}
+.badge-ev-documented::before { content: "📖 "; }
+
+.badge-ev-partial {
+  color: var(--ev-partial);
+  background-color: var(--ev-partial-bg);
+  border-color: rgba(245, 158, 11, 0.4);
+}
+.badge-ev-partial::before { content: "◐ "; }
+
+.badge-ev-planned {
+  color: var(--ev-planned);
+  background-color: var(--ev-planned-bg);
+  border-color: rgba(100, 116, 139, 0.4);
+}
+.badge-ev-planned::before { content: "⏳ "; }
+
+/* Change Level Badges (C0 - C5) */
+.badge-change-level {
+  background-color: var(--bg-surface-raised);
+  border-color: var(--border-muted);
+  color: var(--text-secondary);
+}

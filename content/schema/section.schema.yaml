@@ -1,0 +1,70 @@
+# Section Schema
+# File: PR-1A1/content/schema/section.schema.yaml
+# Description: Defines polymorphic modular sections used across templates
+
+$schema: "http://json-schema.org/draft-07/schema#"
+title: "ContentSection"
+type: "object"
+required:
+  - "id"
+  - "title"
+  - "role"
+  - "summary"
+properties:
+  id:
+    type: "string"
+    description: "Section anchor identifier"
+  title:
+    type: "string"
+    description: "Section header title"
+  role:
+    type: "string"
+    enum:
+      - "problem"            # 문제 정의 (Stateless 한계 등)
+      - "context"            # 시스템 배경 및 요구사항
+      - "decision"           # 아키텍처 의사결정 및 대안 비교
+      - "architecture"       # 구조, 토폴로지, 시퀀스
+      - "implementation"     # 핵심 코드 로직 및 패턴
+      - "verification"       # 테스트 및 실측 검증
+      - "tradeoff"           # 트레이드오프 분석
+      - "limitation"         # 한계 및 로드맵
+      - "slide_card"         # 슬라이드용 고밀도 요약 카드
+  target_templates:
+    type: "array"
+    items:
+      type: "string"
+      enum: ["LONGFORM", "FEATURE", "TECHNICAL", "SLIDE", "EVIDENCE"]
+    description: "Templates that consume this section"
+  summary:
+    type: "string"
+    description: "High-level takeaway (1-2 sentences)"
+  content_markdown:
+    type: "string"
+    description: "Detailed explanatory content in GitHub markdown"
+  diagram:
+    type: "object"
+    properties:
+      type:
+        type: "string"
+        enum: ["mermaid", "sequence", "ascii_box", "flowchart"]
+      code:
+        type: "string"
+    required: ["type", "code"]
+  code_snippets:
+    type: "array"
+    items:
+      type: "object"
+      required: ["source_file", "language", "code"]
+      properties:
+        source_file:
+          type: "string"
+        language:
+          type: "string"
+        code:
+          type: "string"
+        line_range:
+          type: "string"
+  claims_covered:
+    type: "array"
+    items:
+      type: "string"

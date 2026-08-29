@@ -1,0 +1,184 @@
+# Relations & Dependency Graph for APMS.SR
+# Version: 1.0.0
+# Last Updated: 2026-08-29
+# Principle: Bidirectional Traceability for Change Impact Analysis
+
+domain_relations:
+  - domain: DOM-AUTH
+    name: "Authentication & Token Lifecycle"
+    sources:
+      - "26-05adf/backend/src/main/java/com/example/demo/auth/"
+    knowledge:
+      - "SA-1/changelogs/phase1_backend/1-2_jwt_redis_optimization.md"
+    evidences:
+      - ev-auth-rtr
+      - ev-auth-blacklist
+      - ev-auth-jwt-filter
+    documents:
+      - apms-auth
+      - apms-overview
+      - apms-presentation
+
+  - domain: DOM-RBAC
+    name: "Authorization & RBAC"
+    sources:
+      - "26-05adf/backend/src/main/java/com/example/demo/iam/"
+      - "26-05adf/backend/src/main/resources/db/migration/V2__init_authority_schema.sql"
+    knowledge:
+      - "SA-1/architecture/01_Architecture_and_Ports.md"
+    evidences:
+      - ev-rbac-security
+      - ev-menu-security
+      - ev-db-flyway
+    documents:
+      - apms-rbac
+      - apms-overview
+      - apms-presentation
+
+  - domain: DOM-DATA
+    name: "Persistence & Schema Integrity"
+    sources:
+      - "26-05adf/backend/src/main/resources/db/migration/"
+      - "26-05adf/backend/src/main/java/com/example/demo/iam/user/repository/"
+      - "26-05adf/backend/src/main/java/com/example/demo/iam/role/repository/"
+    knowledge:
+      - "SA-1/changelogs/phase1_backend/1-4_jpa_n1_query_optimization.md"
+    evidences:
+      - ev-jpa-entitygraph
+      - ev-db-flyway
+    documents:
+      - apms-jpa
+      - apms-overview
+
+  - domain: DOM-API
+    name: "API Architecture & DTOs"
+    sources:
+      - "26-05adf/backend/src/main/java/com/example/demo/common/"
+      - "26-05adf/backend/src/main/java/com/example/demo/iam/user/dto/"
+    knowledge:
+      - "SA-1/changelogs/phase1_backend/1-1. Entity와 DTO의 엄격한 분리.md"
+      - "SA-1/changelogs/phase1_backend/1-3_global_response_exception_handling.md"
+      - "SA-1/conventions/03_Backend_Conventions.md"
+    evidences:
+      - ev-db-flyway
+    documents:
+      - apms-api
+
+  - domain: DOM-FE-AUTH
+    name: "Frontend Auth & State"
+    sources:
+      - "26-05adf/frontend/src/auth/"
+      - "26-05adf/frontend/src/store/auth.store.ts"
+      - "26-05adf/frontend/src/api/http.ts"
+    knowledge:
+      - "SA-1/changelogs/phase2_frontend/2-1_zustand_auth_optimization.md"
+    evidences:
+      - ev-fe-bootstrap
+      - ev-fe-single-flight
+      - ev-ts-jwt-loop
+    documents:
+      - apms-frontend-auth
+      - apms-overview
+
+  - domain: DOM-INFRA
+    name: "Infrastructure & Network"
+    sources:
+      - "26-05adf/docker-compose.yml"
+      - "26-05adf/nginx/default.conf"
+    knowledge:
+      - "SA-1/architecture/01_Architecture_and_Ports.md"
+    evidences:
+      - ev-infra-nginx
+      - ev-ts-docker-redis
+    documents:
+      - apms-infrastructure
+      - apms-presentation
+      - apms-overview
+
+  - domain: DOM-PERF
+    name: "Performance & Load Testing"
+    sources:
+      - "26-05adf/k6/"
+      - "26-05adf/docs/performance/k6-load-test.md"
+    knowledge: []
+    evidences:
+      - ev-perf-70vu
+      - ev-perf-50vu
+    documents:
+      - apms-performance
+      - apms-presentation
+      - apms-overview
+
+  - domain: DOM-INCIDENT
+    name: "Incident Troubleshooting"
+    sources:
+      - "PR-1A1/PR-Files/troubleshooting/"
+      - "26-05adf/backend/src/main/resources/application.yaml"
+      - "26-05adf/frontend/src/api/http.ts"
+    knowledge: []
+    evidences:
+      - ev-ts-redis-timeout
+      - ev-ts-jwt-loop
+      - ev-ts-docker-redis
+    documents:
+      - apms-incidents
+      - apms-overview
+      - apms-presentation
+
+  - domain: DOM-OBS
+    name: "Observability Pipeline"
+    sources:
+      - "26-05adf/monitoring/"
+      - "26-05adf/docker-compose.yml"
+    knowledge:
+      - "SA-1/pkm&infra/infra/Dash보드.json"
+    evidences:
+      - ev-obs-prometheus
+    documents:
+      - apms-observability
+
+  - domain: DOM-TEST
+    name: "Automated Testing Strategy"
+    sources:
+      - "26-05adf/backend/src/test/java/com/example/demo/"
+    knowledge: []
+    evidences:
+      - ev-auth-rtr
+      - ev-auth-blacklist
+      - ev-auth-jwt-filter
+      - ev-rbac-security
+      - ev-menu-security
+    documents:
+      - apms-testing
+      - apms-presentation
+      - apms-overview
+
+# Change Impact Lookup Table (File Path Pattern -> Affected Domains)
+change_impact_mappings:
+  - path_pattern: "backend/src/main/java/**/auth/**"
+    level: C3
+    domains: [DOM-AUTH]
+  - path_pattern: "backend/src/main/java/**/iam/**"
+    level: C2
+    domains: [DOM-RBAC, DOM-DATA]
+  - path_pattern: "backend/src/main/resources/db/migration/**"
+    level: C4
+    domains: [DOM-DATA, DOM-RBAC]
+  - path_pattern: "backend/src/main/java/**/common/**"
+    level: C2
+    domains: [DOM-API]
+  - path_pattern: "frontend/src/**"
+    level: C2
+    domains: [DOM-FE-AUTH]
+  - path_pattern: "k6/**"
+    level: C1
+    domains: [DOM-PERF]
+  - path_pattern: "docker-compose.yml"
+    level: C4
+    domains: [DOM-INFRA, DOM-OBS]
+  - path_pattern: "nginx/**"
+    level: C4
+    domains: [DOM-INFRA]
+  - path_pattern: "monitoring/**"
+    level: C2
+    domains: [DOM-OBS]

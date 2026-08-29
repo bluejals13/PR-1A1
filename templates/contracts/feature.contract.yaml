@@ -1,0 +1,49 @@
+# FEATURE Template Contract
+# File: PR-1A1/templates/contracts/feature.contract.yaml
+# Schema: PR-1A1/templates/contracts/template.contract.schema.yaml
+
+template_id: "FEATURE"
+template_name: "Feature Engineering Specification & Implementation Sheet"
+purpose: "특정 핵심 기능 하나의 문제 정의, 요구사항, 설계 흐름, 실제 구현 코드 및 단위 검증을 신속하게 전달하는 기능 중심 명세서"
+spatial_model: "ONE_PAGE_CARD_STACK"
+target_audience: "코드 리뷰어, 백엔드/프론트엔드 동료 개발자"
+key_question: "이 기능은 어떤 문제를 해결하기 위해 어떻게 구현되고 동작하는가?"
+
+required_content_fields:
+  - "title"
+  - "sections.problem"
+  - "sections.decision"
+  - "sections.architecture"
+  - "sections.implementation"
+  - "sections.verification"
+  - "sources"
+
+optional_content_fields:
+  - "tradeoffs"
+  - "claims"
+
+section_priority_order:
+  - "problem"
+  - "decision"
+  - "architecture"
+  - "implementation"
+  - "verification"
+  - "evidence_summary"
+
+allowed_layout_nodes:
+  - "FEATURE_HEADER"
+  - "FLOW_SEQUENCE_DIAGRAM"
+  - "IMPLEMENTATION_CODE_BLOCK"
+  - "UNIT_TEST_BADGE_LIST"
+  - "EVIDENCE_TRACE_CARD"
+
+evidence_display_policy: "SUMMARY_CARD"
+navigation_policy: "LINEAR_FLOW"
+
+validation_rules:
+  - rule_id: "REQ_IMPLEMENTATION_CODE"
+    condition: "has_code_snippets() || has_section('implementation')"
+    error_message: "FEATURE 템플릿은 실제 구현 코드 스니펫이나 implementation 섹션을 반드시 포함해야 합니다."
+  - rule_id: "REQ_ARCHITECTURE_FLOW"
+    condition: "has_diagram() || has_section('architecture')"
+    error_message: "FEATURE 템플릿은 아키텍처 흐름도 또는 시퀀스 다이어그램을 반드시 포함해야 합니다."

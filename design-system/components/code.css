@@ -1,0 +1,146 @@
+/**
+ * Design System - Source References, Code Blocks & Metrics
+ * File: PR-1A1/design-system/components/code.css
+ */
+
+/* Source Reference Link Component */
+.source-ref {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-primary);
+  text-decoration: none;
+  background-color: rgba(56, 189, 248, 0.08);
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-xs);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  transition: all var(--transition-fast);
+}
+
+.source-ref:hover {
+  background-color: rgba(56, 189, 248, 0.18);
+  border-color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.source-repo-tag {
+  color: var(--text-dim);
+  font-weight: var(--weight-bold);
+}
+
+/* Code Block Component */
+.code-block {
+  background-color: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: var(--radius-md);
+  margin: var(--space-4) 0;
+  overflow: hidden;
+  font-family: var(--font-mono);
+}
+
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--bg-surface-raised);
+  border-bottom: 1px solid var(--code-border);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.code-filename {
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+}
+
+.code-body {
+  padding: var(--space-4);
+  margin: 0;
+  overflow-x: auto;
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--text-secondary);
+}
+
+.code-body code {
+  font-family: var(--font-mono);
+  display: block;
+}
+
+/* Metric Display Component */
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-4);
+  margin: var(--space-4) 0;
+}
+
+.metric-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.metric-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+}
+
+.metric-value-container {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+}
+
+.metric-value {
+  font-family: var(--font-mono);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-extrabold);
+  color: var(--color-primary);
+  line-height: var(--leading-none);
+}
+
+.metric-unit {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.metric-status {
+  margin-top: var(--space-2);
+  font-size: var(--text-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* Diagram Container */
+.diagram-container {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin: var(--space-4) 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-x: auto;
+}
+
+.diagram-caption {
+  margin-top: var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+}

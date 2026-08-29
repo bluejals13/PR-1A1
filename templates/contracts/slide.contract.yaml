@@ -1,0 +1,58 @@
+# SLIDE Template Contract
+# File: PR-1A1/templates/contracts/slide.contract.yaml
+# Schema: PR-1A1/templates/contracts/template.contract.schema.yaml
+
+template_id: "SLIDE"
+template_name: "16:9 High-Density Presentation Deck"
+purpose: "발표자가 5~10분 내에 핵심 아키텍처와 검증 결과를 명확히 전달할 수 있도록 1 Slide = 1 Message 원칙을 구현한 16:9 비율의 발표용 슬라이드 덱"
+spatial_model: "DISCRETE_16_9_PAGES"
+target_audience: "발표 청중, 채용 인터뷰어, 경영진/리드"
+key_question: "이 프로젝트의 핵심 엔지니어링 성과와 아키텍처를 시각적으로 어떻게 증명할 것인가?"
+
+required_content_fields:
+  - "title"
+  - "template_projections.slide.slide_theses"
+
+optional_content_fields:
+  - "template_projections.slide.key_visual"
+  - "claims"
+  - "sources"
+
+section_priority_order:
+  - "title_slide"
+  - "problem_slide"
+  - "architecture_slide"
+  - "flow_sequence_slide"
+  - "metric_benchmark_slide"
+  - "verification_summary_slide"
+  - "roadmap_slide"
+
+allowed_layout_nodes:
+  - "SLIDE_CONTAINER_16_9"
+  - "SLIDE_HEADER_THESIS"
+  - "SPLIT_TWO_COLUMN"
+  - "FULL_CANVAS_DIAGRAM"
+  - "HERO_METRIC_CALLOUT"
+  - "EVIDENCE_BADGE_BAR"
+  - "PRESENTER_NOTES_DRAWER"
+
+evidence_display_policy: "FOOTNOTE_BADGE"
+navigation_policy: "PAGINATED_KEYS"
+
+# 지원 슬라이드 레이아웃 유형
+slide_layout_types:
+  - "LAYOUT_TITLE"
+  - "LAYOUT_SPLIT_PROBLEM_SOLUTION"
+  - "LAYOUT_FULL_ARCHITECTURE"
+  - "LAYOUT_SEQUENCE_FLOW"
+  - "LAYOUT_METRIC_HERO"
+  - "LAYOUT_EVIDENCE_TABLE"
+  - "LAYOUT_CONCLUSION"
+
+validation_rules:
+  - rule_id: "REQ_SLIDE_THESES"
+    condition: "template_projections.slide.slide_theses.length >= 1"
+    error_message: "SLIDE 템플릿은 최소 1개 이상의 명확한 슬라이드 명제(headline + takeaway)를 포함해야 합니다."
+  - rule_id: "REQ_SINGLE_MESSAGE_PER_SLIDE"
+    condition: "every_slide_has_single_headline()"
+    error_message: "각 슬라이드는 반드시 1개의 핵심 헤드라인과 테이크어웨이를 가져야 합니다 (1 Slide = 1 Message)."

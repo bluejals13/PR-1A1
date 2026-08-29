@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design System Prototype - DOM-AUTH (apms-auth)</title>
+  <link rel="stylesheet" href="./index.css">
+  <style>
+    /* Prototype Viewer Controller */
+    .proto-controls {
+      position: fixed;
+      top: var(--space-4);
+      right: var(--space-4);
+      background: var(--bg-surface-glass);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-muted);
+      border-radius: var(--radius-full);
+      padding: var(--space-2) var(--space-4);
+      display: flex;
+      gap: var(--space-2);
+      z-index: 9999;
+      box-shadow: var(--shadow-lg);
+    }
+    .proto-tab-btn {
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      cursor: pointer;
+    }
+    .proto-tab-btn.active {
+      background: var(--color-primary);
+      color: var(--text-inverse);
+      font-weight: bold;
+    }
+    .proto-view { display: none; }
+    .proto-view.active { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- Prototype Mode Switcher -->
+  <div class="proto-controls">
+    <span style="font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); display: flex; align-items: center;">TEMPLATE:</span>
+    <button class="proto-tab-btn active" onclick="switchView('longform')">LONGFORM</button>
+    <button class="proto-tab-btn" onclick="switchView('feature')">FEATURE</button>
+    <button class="proto-tab-btn" onclick="switchView('technical')">TECHNICAL</button>
+    <button class="proto-tab-btn" onclick="switchView('slide')">SLIDE</button>
+    <button class="proto-tab-btn" onclick="switchView('evidence')">EVIDENCE</button>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 1. LONGFORM PROJECTION PROTOTYPE                                          -->
+  <!-- ========================================================================= -->
+  <div id="view-longform" class="proto-view active">
+    <header class="longform-hero">
+      <div class="longform-hero-inner">
+        <div class="longform-meta-strip">
+          <span class="badge badge-doc-fresh">FRESH</span>
+          <span class="badge badge-change-level">LEVEL C3</span>
+          <span class="source-ref"><span class="source-repo-tag">26-05adf:</span> backend/auth/</span>
+        </div>
+        <h1 class="longform-hero-title">Stateless JWT + Redis Token Lifecycle</h1>
+        <p class="longform-hero-subtitle">Refresh Token Rotation (RTR) 및 Redis Blacklist 기반 무상태 인증의 실시간 세션 통제</p>
+      </div>
+    </header>
+
+    <div class="longform-main-container">
+      <!-- Sticky Table of Contents -->
+      <aside class="toc-sidebar">
+        <div class="toc-title">Table of Contents</div>
+        <a href="#sec-prob" class="toc-link">1. Problem & Context</a>
+        <a href="#sec-dec" class="toc-link">2. 3-Layer Defense Decision</a>
+        <a href="#sec-arch" class="toc-link">3. Architecture & Flow</a>
+        <a href="#sec-verif" class="toc-link">4. Verification & k6 Fact</a>
+        <a href="#sec-resil" class="toc-link">5. Resiliency & TS-01</a>
+      </aside>
+
+      <!-- Prose Content -->
+      <main class="longform-prose-content">
+        <section id="sec-prob" class="longform-section">
+          <div class="longform-section-title">
+            <span>1. 무상태(Stateless) 인증의 보안 딜레마</span>
+            <span class="badge badge-ev-documented">DOCUMENTED</span>
+          </div>
+          <p class="card-body">
+            Stateless JWT는 서명 검증만으로 인가가 가능하여 확장성이 높지만, <strong>'발급된 토큰의 즉시 회수 불가(Token Revocation Gap)'</strong>라는 태생적 보안 취약점이 존재합니다.
+          </p>
+          <div class="callout callout-problem">
+            <span class="callout-title">Core Dilemma</span>
+            <span>로그아웃 후에도 잔여 유효기간 동안 탈취된 토큰으로 비인가 접근이 가능한 보안 홀 발생.</span>
+          </div>
+        </section>
+
+        <section id="sec-dec" class="longform-section">
+          <div class="longform-section-title">
+            <span>2. 3중 방어선 의사결정</span>
+            <span class="badge badge-ev-verified">VERIFIED</span>
+          </div>
+          <div class="card card-highlight">
+            <h3 class="card-title">Stateless 서명 검증 + Redis In-Memory Blacklist 결합</h3>
+            <p class="card-body">
+              1시간 Access Token으로 대부분의 요청을 DB 없이 처리하고, 로그아웃 시에만 잔여 TTL 동안 Redis Blacklist에 등록하여 즉시 무효화.
+            </p>
+          </div>
+        </section>
+
+        <section id="sec-verif" class="longform-section">
+          <div class="longform-section-title">
+            <span>3. 검증 및 k6 70 VU 실측치</span>
+            <span class="badge badge-ev-verified">VERIFIED FACT</span>
+          </div>
+          <div class="metric-grid">
+            <div class="metric-card">
+              <span class="metric-label">Average Latency</span>
+              <div class="metric-value-container">
+                <span class="metric-value">5.64</span>
+                <span class="metric-unit">ms</span>
+              </div>
+              <span class="metric-status" style="color: var(--status-success);">✓ k6 70 VU 실측치</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">P95 Latency</span>
+              <div class="metric-value-container">
+                <span class="metric-value">9.98</span>
+                <span class="metric-unit">ms</span>
+              </div>
+              <span class="metric-status" style="color: var(--status-success);">✓ 임계치 50ms 통과</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">HTTP Error Rate</span>
+              <div class="metric-value-container">
+                <span class="metric-value">0.00</span>
+                <span class="metric-unit">%</span>
+              </div>
+              <span class="metric-status" style="color: var(--status-success);">✓ 0 errors</span>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 2. FEATURE PROJECTION PROTOTYPE                                           -->
+  <!-- ========================================================================= -->
+  <div id="view-feature" class="proto-view">
+    <div class="layout-feature">
+      <div class="feature-header">
+        <div style="display: flex; gap: var(--space-2); align-items: center;">
+          <span class="badge badge-ev-verified">VERIFIED FEATURE</span>
+          <span class="source-ref"><span class="source-repo-tag">DOM-AUTH</span></span>
+        </div>
+        <h1 style="font-size: var(--text-3xl);">Feature: Atomic Lua Script Refresh Token Rotation</h1>
+        <p style="color: var(--text-muted);">동시 다발 갱신 요청 시 레이스 컨디션을 방지하는 1-RTT 원자적 JTI 교체 메커니즘</p>
+      </div>
+
+      <div class="feature-grid-stack">
+        <!-- Step 1: Problem -->
+        <div class="feature-step-row">
+          <div class="feature-step-label">01. Problem</div>
+          <div class="callout callout-problem" style="margin: 0;">
+            <span class="callout-title">Replay Attack Risk</span>
+            <span>긴 수명의 Refresh Token이 탈취될 경우 다중 클라이언트에서 중복 갱신이 발생할 위험.</span>
+          </div>
+        </div>
+
+        <!-- Step 2: Implementation Code -->
+        <div class="feature-step-row">
+          <div class="feature-step-label">02. Code Snippet</div>
+          <div class="code-block" style="margin: 0;">
+            <div class="code-header">
+              <span class="code-filename">RefreshTokenRepository.java (Lua Script)</span>
+              <span class="source-ref">26-05adf L45-L65</span>
+            </div>
+            <pre class="code-body"><code>local current = redis.call('GET', KEYS[1])
+if not current then return -1 end
+if current == ARGV[1] then
+    redis.call('SETEX', KEYS[1], ARGV[3], ARGV[2])
+    return 1
+else
+    return 0
+end</code></pre>
+          </div>
+        </div>
+
+        <!-- Step 3: Verification Evidence -->
+        <div class="feature-step-row">
+          <div class="feature-step-label">03. Verification</div>
+          <div class="evidence-card" style="margin: 0;">
+            <div class="evidence-claim-text">단위 테스트 3종 전원 통과: rotateSuccess, rotateFail, rotateNull</div>
+            <div class="evidence-meta-grid">
+              <div class="evidence-meta-item">
+                <span class="evidence-meta-label">Test Suite</span>
+                <span class="evidence-meta-value">RefreshTokenRepositoryTest.java</span>
+              </div>
+              <div class="evidence-meta-item">
+                <span class="evidence-meta-label">Status</span>
+                <span class="badge badge-ev-verified">VERIFIED</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 3. TECHNICAL PROJECTION PROTOTYPE                                         -->
+  <!-- ========================================================================= -->
+  <div id="view-technical" class="proto-view">
+    <div class="layout-technical">
+      <div>
+        <span class="badge badge-ev-documented">DECISION DEEP DIVE</span>
+        <h1 style="font-size: var(--text-3xl); margin-top: var(--space-2);">Technical Deep-Dive: Stateful vs Stateless Trade-off</h1>
+      </div>
+
+      <!-- Trade-off Pro/Con Grid -->
+      <div class="tradeoff-pro-con-grid">
+        <div class="pro-box">
+          <h4 style="color: var(--status-success); margin-bottom: var(--space-2);">PROS (장점)</h4>
+          <ul>
+            <li>Access Token 서명 검증을 통한 무상태 인가로 초당 2,000+ RPS 처리 가능.</li>
+            <li>로그아웃 시 Redis 잔여 TTL 블랙리스트로 즉시 무효화 완결.</li>
+          </ul>
+        </div>
+        <div class="con-box">
+          <h4 style="color: var(--status-error); margin-bottom: var(--space-2);">CONS & MITIGATION (비용 및 완화)</h4>
+          <ul>
+            <li>Redis 인프라 장애 시 인증 서비스 블로킹 위험 발생.</li>
+            <li><strong>완화책 (TS-01):</strong> Lettuce 타임아웃을 2초로 단축하고 503 예외 래핑으로 WAS 격리.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 4. SLIDE PROJECTION PROTOTYPE (16:9)                                      -->
+  <!-- ========================================================================= -->
+  <div id="view-slide" class="proto-view">
+    <div class="slide-deck-viewport">
+      <div class="slide-canvas-16-9">
+        <div class="slide-header">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="badge badge-ev-verified">SLIDE 02 / 03</span>
+            <span style="font-family: var(--font-mono); font-size: 12px; color: var(--text-dim);">APMS.SR ARCHITECTURE</span>
+          </div>
+          <h2 class="slide-headline">3중 보안 방어선 & 원자적 Lua Script Refresh Token Rotation</h2>
+          <div class="slide-takeaway-badge">
+            Takeaway: 1h Access Token + 7d HttpOnly RTR + In-Memory Redis Blacklist의 하이브리드 결합
+          </div>
+        </div>
+
+        <div class="slide-content-stage">
+          <div class="slide-layout-split">
+            <div>
+              <p style="font-size: var(--slide-body); color: var(--text-secondary); line-height: 1.6;">
+                • <strong>1차 (Access):</strong> 1시간 무상태 JWT 고속 검증<br>
+                • <strong>2차 (Blacklist):</strong> 로그아웃 즉시 Redis 적재 및 차단<br>
+                • <strong>3차 (RTR):</strong> 1-RTT Lua Script로 재사용 공격 원천 봉쇄
+              </p>
+            </div>
+            <div style="background: var(--bg-app); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: var(--space-4); text-align: center;">
+              <span style="font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-primary);">[ Mermaid Sequence Flow Stage ]</span>
+              <div style="height: 140px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: var(--text-sm);">
+                Client ➔ Nginx:80 ➔ Spring Boot ➔ Redis 7 (TTL)
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <span>Evidence: ev-auth-rtr, ev-auth-blacklist</span>
+          <span>Source: 26-05adf/backend/auth/</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 5. EVIDENCE PROJECTION PROTOTYPE                                          -->
+  <!-- ========================================================================= -->
+  <div id="view-evidence" class="proto-view">
+    <div class="layout-evidence">
+      <div>
+        <span class="badge badge-ev-verified">AUDIT LEDGER</span>
+        <h1 style="font-size: var(--text-3xl); margin-top: var(--space-2);">Evidence Ledger: DOM-AUTH Verification Proof</h1>
+      </div>
+
+      <div class="evidence-table-container">
+        <table class="evidence-table">
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Claim</th>
+              <th>Evidence ID</th>
+              <th>Verification Method</th>
+              <th>Source Repository & Path</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge badge-ev-verified">VERIFIED</span></td>
+              <td>Access Token 1시간 무상태 인증 & Bearer 전송</td>
+              <td><code>ev-auth-jwt-filter</code></td>
+              <td>JUnit 5 단위 테스트</td>
+              <td><span class="source-ref">26-05adf: JwtAuthenticationFilterTest.java</span></td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-ev-verified">VERIFIED</span></td>
+              <td>Refresh Token Rotation 1-RTT Lua Script</td>
+              <td><code>ev-auth-rtr</code></td>
+              <td>JUnit 5 (동시성 3종 케이스)</td>
+              <td><span class="source-ref">26-05adf: RefreshTokenRepositoryTest.java</span></td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-ev-verified">VERIFIED</span></td>
+              <td>로그아웃 시 Redis Blacklist 즉시 차단</td>
+              <td><code>ev-auth-blacklist</code></td>
+              <td>JUnit 5 단위 테스트</td>
+              <td><span class="source-ref">26-05adf: TokenBlacklistServiceTest.java</span></td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-ev-documented">DOCUMENTED</span></td>
+              <td>Redis 장애 시 Lettuce 타임아웃 2초 단축</td>
+              <td><code>ev-ts-redis-timeout</code></td>
+              <td>TS 6단계 장애 분석 보고서</td>
+              <td><span class="source-ref">PR-1A1: TS-01-REDIS_TIMEOUT.md</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function switchView(viewName) {
+      document.querySelectorAll('.proto-view').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.proto-tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById('view-' + viewName).classList.add('active');
+      event.target.classList.add('active');
+    }
+  </script>
+</body>
+</html>

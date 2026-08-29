@@ -1,0 +1,51 @@
+# TECHNICAL Template Contract
+# File: PR-1A1/templates/contracts/technical.contract.yaml
+# Schema: PR-1A1/templates/contracts/template.contract.schema.yaml
+
+template_id: "TECHNICAL"
+template_name: "Technical Decision Deep-Dive & Architecture Benchmark"
+purpose: "구현 자체보다 기술 도입의 배경(Why), 기각된 대안 비교, 트레이드오프 분석 및 벤치마크/한계를 깊이 있게 다루는 엔지니어링 의사결정 문서"
+spatial_model: "DECISION_DEEP_DIVE"
+target_audience: "아키텍트, 테크 리드, 시니어 엔지니어"
+key_question: "왜 이 기술과 아키텍처를 선택했고, 어떤 대안을 버렸으며, 어떤 트레이드오프를 감수했는가?"
+
+required_content_fields:
+  - "title"
+  - "decisions"
+  - "tradeoffs"
+  - "sections.architecture"
+  - "sections.verification"
+  - "limitations"
+
+optional_content_fields:
+  - "claims"
+  - "code_snippets"
+  - "sources"
+
+section_priority_order:
+  - "decision_overview"
+  - "alternatives_matrix"
+  - "tradeoff_breakdown"
+  - "architecture_deep_dive"
+  - "resilience_and_edge_cases"
+  - "benchmark_verification"
+  - "limitations_and_roadmap"
+
+allowed_layout_nodes:
+  - "DECISION_BANNER"
+  - "ALTERNATIVES_COMPARISON_TABLE"
+  - "TRADEOFF_PRO_CON_CARD"
+  - "BENCHMARK_CHART_CONTAINER"
+  - "INCIDENT_DEFENSE_BOX"
+  - "ROADMAP_ITEM_LIST"
+
+evidence_display_policy: "EXPANDABLE_DRAWER"
+navigation_policy: "TAB_VIEW"
+
+validation_rules:
+  - rule_id: "REQ_DECISIONS_TRADEOFFS"
+    condition: "decisions.length > 0 && tradeoffs.length > 0"
+    error_message: "TECHNICAL 템플릿은 최소 1개 이상의 아키텍처 의사결정(decisions)과 트레이드오프(tradeoffs)를 포함해야 합니다."
+  - rule_id: "REQ_LIMITATIONS"
+    condition: "limitations.length > 0 || has_section('limitation')"
+    error_message: "TECHNICAL 템플릿은 한계점 및 로드맵을 반드시 정직하게 명시해야 합니다."

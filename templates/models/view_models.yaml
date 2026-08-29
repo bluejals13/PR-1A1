@@ -1,0 +1,118 @@
+# Template View Models Specification
+# File: PR-1A1/templates/models/view_models.yaml
+# Description: Defines the structured View Model schemas produced from Document Content for each Template
+
+view_models:
+  # 1. LONGFORM View Model
+  longform:
+    name: "LongformViewModel"
+    description: "Data structure for vertical continuous long-form portfolio"
+    properties:
+      header:
+        project_title: "string"
+        subtitle: "string"
+        state_badge: "string (FRESH/STALE/INVALID/UNVERIFIED)"
+        change_level: "string (C0-C5)"
+        repository_sources: "array of {repo, path}"
+      toc:
+        items: "array of {anchor_id, label, level}"
+      hero:
+        headline: "string"
+        core_problem_summary: "string"
+        key_metrics: "array of {label, value, unit, status}"
+      story_sections:
+        items: "array of {section_id, title, role, content_html, diagram_html, code_blocks}"
+      evidence_drawer:
+        items: "array of {evidence_id, claim_statement, test_method, status}"
+      limitations:
+        items: "array of {limitation, status, roadmap}"
+
+  # 2. FEATURE View Model
+  feature:
+    name: "FeatureViewModel"
+    description: "Data structure for 1-page feature specification sheet"
+    properties:
+      feature_meta:
+        feature_id: "string"
+        feature_name: "string"
+        domain: "string"
+      problem_box:
+        dilemma: "string"
+        requirement: "string"
+      decision_callout:
+        selected_approach: "string"
+        why_selected: "string"
+      sequence_canvas:
+        diagram_type: "string (mermaid)"
+        diagram_code: "string"
+      implementation_deck:
+        snippets: "array of {filename, language, code, highlight_lines}"
+      verification_strip:
+        test_suites: "array of {suite_name, status, pass_rate}"
+        performance_tag: "{latency, throughput, error_rate}"
+
+  # 3. TECHNICAL View Model
+  technical:
+    name: "TechnicalViewModel"
+    description: "Data structure for decision, trade-off & benchmark deep-dive"
+    properties:
+      architecture_context:
+        system_scope: "string"
+        decision_date: "string"
+      decisions_matrix:
+        items: "array of {decision, rationale, rejected_alternatives: array of {option, reason}}"
+      tradeoffs_ledger:
+        items: "array of {aspect, pro, con, mitigation_strategy}"
+      resilience_cases:
+        items: "array of {incident_id, symptom, root_cause, resolution, code_fix}"
+      benchmark_panel:
+        test_conditions: "object"
+        measured_results: "array of {metric, target, actual, status}"
+      honest_limitations:
+        items: "array of {known_issue, mitigation_plan, target_phase}"
+
+  # 4. SLIDE View Model
+  slide:
+    name: "SlideViewModel"
+    description: "Data structure for discrete 16:9 presentation slides"
+    properties:
+      deck_meta:
+        deck_title: "string"
+        total_slides: "integer"
+        aspect_ratio: "16:9"
+      slides:
+        items:
+          slide_index: "integer"
+          layout_type: "string (LAYOUT_TITLE | LAYOUT_SPLIT | LAYOUT_SEQUENCE | LAYOUT_METRIC | LAYOUT_CONCLUSION)"
+          headline: "string (Single message thesis)"
+          takeaway_badge: "string"
+          left_content_html: "string (Optional)"
+          right_visual_html: "string (Diagram, Chart or Code block)"
+          footnote_evidence: "array of {evidence_id, source_path}"
+          speaker_notes: "string"
+
+  # 5. EVIDENCE View Model
+  evidence:
+    name: "EvidenceViewModel"
+    description: "Data structure for verification-first audit ledger"
+    properties:
+      audit_meta:
+        target_document: "string"
+        total_claims_count: "integer"
+        verified_claims_count: "integer"
+        audit_pass_rate: "string"
+      claims_ledger:
+        items:
+          claim_id: "string"
+          statement: "string"
+          claim_type: "string"
+          evidence_entries:
+            items:
+              evidence_id: "string"
+              type: "string (TEST/PERFORMANCE/DATABASE/DEPLOYMENT/LOG/CODE)"
+              source_repository: "string"
+              source_file_path: "string"
+              test_identifier: "string"
+              verification_status: "string (VERIFIED/IMPLEMENTED/DOCUMENTED/PLANNED)"
+      unverified_quarantine:
+        items: "array of {id, claim, status, reason}"

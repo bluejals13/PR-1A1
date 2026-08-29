@@ -1,0 +1,64 @@
+# Template Contract Meta-Schema
+# File: PR-1A1/templates/contracts/template.contract.schema.yaml
+# Description: Defines the formal specification required for any Presentation Template
+
+$schema: "http://json-schema.org/draft-07/schema#"
+title: "TemplateContract"
+type: "object"
+required:
+  - "template_id"
+  - "template_name"
+  - "purpose"
+  - "spatial_model"
+  - "target_audience"
+  - "key_question"
+  - "required_content_fields"
+  - "allowed_layout_nodes"
+  - "validation_rules"
+properties:
+  template_id:
+    type: "string"
+    enum: ["LONGFORM", "FEATURE", "TECHNICAL", "SLIDE", "EVIDENCE"]
+  template_name:
+    type: "string"
+  purpose:
+    type: "string"
+  spatial_model:
+    type: "string"
+    enum:
+      - "VERTICAL_CONTINUOUS"   # 단일 긴 세로 스크롤 웹 문서 (Longform)
+      - "ONE_PAGE_CARD_STACK"   # 기능 단위 모듈러 카드 스택 (Feature)
+      - "DECISION_DEEP_DIVE"    # 의사결정/트레이드오프 심층 탐색 (Technical)
+      - "DISCRETE_16_9_PAGES"   # 16:9 비율의 불연속 페이지 슬라이드 (Slide)
+      - "VERIFICATION_LEDGER"   # 주장-증거-소스 검증 원장 (Evidence)
+  target_audience:
+    type: "string"
+  key_question:
+    type: "string"
+  required_content_fields:
+    type: "array"
+    items: { type: "string" }
+  optional_content_fields:
+    type: "array"
+    items: { type: "string" }
+  section_priority_order:
+    type: "array"
+    items: { type: "string" }
+  allowed_layout_nodes:
+    type: "array"
+    items: { type: "string" }
+  evidence_display_policy:
+    type: "string"
+    enum: ["INLINE_CHIPS", "SUMMARY_CARD", "EXPANDABLE_DRAWER", "DIRECT_TABLE", "FOOTNOTE_BADGE"]
+  navigation_policy:
+    type: "string"
+    enum: ["STICKY_TOC", "LINEAR_FLOW", "TAB_VIEW", "PAGINATED_KEYS", "FILTERABLE_GRID"]
+  validation_rules:
+    type: "array"
+    items:
+      type: "object"
+      required: ["rule_id", "condition", "error_message"]
+      properties:
+        rule_id: { type: "string" }
+        condition: { type: "string" }
+        error_message: { type: "string" }

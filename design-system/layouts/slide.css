@@ -1,0 +1,110 @@
+/**
+ * Design System - Slide & Evidence Layouts
+ * File: PR-1A1/design-system/layouts/slide.css
+ * Spatial Model: DISCRETE_16_9_PAGES & VERIFICATION_LEDGER
+ */
+
+/* 1. SLIDE Layout (16:9 Presentation Viewport) */
+.slide-deck-viewport {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #05070a;
+  overflow: hidden;
+}
+
+.slide-canvas-16-9 {
+  width: min(94vw, calc(94vh * 16 / 9));
+  height: min(calc(94vw * 9 / 16), 94vh);
+  aspect-ratio: 16 / 9;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-8) var(--space-10);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.slide-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.slide-headline {
+  font-size: var(--slide-headline);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  line-height: var(--leading-tight);
+}
+
+.slide-takeaway-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  background-color: rgba(56, 189, 248, 0.12);
+  border-left: 3px solid var(--color-primary);
+  color: var(--color-primary);
+  font-size: var(--slide-takeaway);
+  font-weight: var(--weight-medium);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  max-width: fit-content;
+}
+
+.slide-content-stage {
+  flex: 1;
+  display: flex;
+  margin: var(--space-4) 0;
+  overflow: hidden;
+}
+
+/* Slide Layout Variations */
+.slide-layout-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-8);
+  align-items: center;
+  width: 100%;
+}
+
+.slide-layout-sequence {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.slide-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+}
+
+/* 2. EVIDENCE Layout (Verification Ledger) */
+.layout-evidence {
+  max-width: var(--width-wide);
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.evidence-audit-summary-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
+}
