@@ -351,7 +351,7 @@
     </section>
 
     <!-- Slide 02: Problem & Goal (Visual-First 3-Card + Large Flow) -->
-    <section class="slide" id="slide-02" data-speaker-note="JWT 기반 인증은 서버의 세션 저장 부담을 덜어주지만, 발급된 토큰을 중간에 무효화할 수 없다는 치명적인 보안 맹점이 있습니다. 저희는 RTR과 Redis Blacklist를 결합하여 무상태의 확장성을 해치지 않으면서도 실시간 세션 통제력을 확보하는 아키텍처를 수립했습니다.">
+    <section class="slide" id="slide-02" data-speaker-note="JWT 기반 인증은 서버의 세션 저장 부담을 덜어주지만, 발급된 토큰을 중간에 무효화할 수 없다는 치명적인 보안 맹점이 있습니다. 저희는 RTR과 Redis Blacklist를 결합하여 무상태의 확장성을 해치지 않으면서도 토큰 상태 제어을 확보하는 아키텍처를 수립했습니다.">
       <div class="slide-header">
         <div class="slide-title-wrap">
           <span class="slide-num">SLIDE 02</span>
@@ -430,18 +430,18 @@
         <div style="color: var(--text-muted); font-size: 1.25rem;">➔</div>
         <div style="text-align: center; flex: 1;">
           <div style="font-family: var(--font-mono); font-size: 0.75rem; color: #34d399; text-transform: uppercase; font-weight: 700;">Result</div>
-          <div style="font-size: 1.1rem; font-weight: 800; color: #34d399; margin-top: 2px;">5.64ms / 0% Err</div>
-          <div style="font-size: 0.8rem; color: var(--text-muted);">실시간 제어 달성</div>
+          <div style="font-size: 1.1rem; font-weight: 800; color: #34d399; margin-top: 2px;">성능 검증 결과 : 5.64ms / 0% Err</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">70 VU 부하 조건 성능 검증</div>
         </div>
       </div>
     </section>
 
     <!-- Slide 03: Full System Architecture Diagram -->
-    <section class="slide" id="slide-03" data-speaker-note="전체 시스템은 7개의 도커 컨테이너로 구성됩니다. 외부로는 Nginx 포트 80만 노출되며, 모든 백엔드와 스토리지, 모니터링 스택은 도커 내부 브리지 네트워크로 격리되어 보안성과 가용성을 동시에 달성했습니다.">
+    <section class="slide" id="slide-03" data-speaker-note="전체 시스템의 도커 컨테이너 구성입니다. 외부로는 Nginx 포트 80만 노출되며, 모든 백엔드와 스토리지, 모니터링 스택은 도커 내부 브리지 네트워크로 격리되며 도커 기반으로 애플리케이션과 데이터 저장소, 관측 구성요소를 분리하고 컨테이너 네트워크를 통해 연결했습니다..">
       <div class="slide-header">
         <div class="slide-title-wrap">
           <span class="slide-num">SLIDE 03</span>
-          <h2 class="slide-title">전체 시스템 아키텍처 및 7-Container 구성</h2>
+          <h2 class="slide-title">전체 시스템 아키텍처 및 Container 구성</h2>
         </div>
         <span class="tag implemented">IMPLEMENTED</span>
       </div>
@@ -468,7 +468,7 @@
           <rect x="580" y="50" width="130" height="70" rx="8" fill="#1e293b" stroke="#a855f7" stroke-width="1.5"/>
           <text x="615" y="78" fill="#c084fc" font-family="sans-serif" font-weight="700" font-size="13">MySQL 8.0</text>
           <text x="600" y="96" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="10">Port 3306 (Host 3307)</text>
-          <text x="605" y="110" fill="#64748b" font-size="10">Flyway V1~V5 DB</text>
+          <text x="605" y="110" fill="#64748b" font-size="10">Flyway DB Migration</text>
 
           <rect x="580" y="150" width="130" height="70" rx="8" fill="#1e293b" stroke="#ef4444" stroke-width="1.5"/>
           <text x="620" y="178" fill="#f87171" font-family="sans-serif" font-weight="700" font-size="13">Redis 7.0</text>
