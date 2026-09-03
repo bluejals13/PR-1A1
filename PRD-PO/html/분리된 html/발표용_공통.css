@@ -1,0 +1,200 @@
+/* ===== Presentation Shell ===== */
+:root {
+  --present-bg: #080c14;
+  --present-panel: #0f172a;
+  --present-border: #334155;
+  --present-text: #f8fafc;
+  --present-muted: #64748b;
+  --present-cyan: #06b6d4;
+  --present-blue: #38bdf8;
+  --present-amber: #f59e0b;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+body.presentation-mode {
+  overflow: hidden;
+  background: var(--present-bg);
+  color: var(--present-text);
+}
+
+/* Top progress */
+#presentation-progress {
+  position: fixed;
+  z-index: 2000;
+  top: 0;
+  left: 0;
+  width: 33.333%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--present-blue), #10b981);
+  transition: width .25s ease;
+}
+
+/* Slide viewport */
+#presentation-viewport {
+  position: fixed;
+  inset: 0 0 64px 0;
+  overflow: hidden;
+}
+
+.presentation-slide {
+  position: absolute !important;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: none !important;
+  padding: 1.75rem 2.5rem 1rem;
+  overflow-y: auto;
+}
+
+.presentation-slide.active {
+  display: flex !important;
+}
+
+/* Bottom navigation */
+#presentation-nav {
+  position: fixed;
+  z-index: 1900;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2.5rem;
+  background: var(--present-panel);
+  border-top: 1px solid var(--present-border);
+}
+
+.presentation-nav-left,
+.presentation-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.presentation-brand {
+  color: var(--present-cyan);
+  font: 700 .9rem/1 'JetBrains Mono', monospace;
+}
+
+.presentation-hint {
+  color: var(--present-muted);
+  font-size: .82rem;
+}
+
+.presentation-btn {
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--present-border);
+  border-radius: 6px;
+  background: #1e293b;
+  color: var(--present-text);
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: .2s;
+}
+
+.presentation-btn:hover:not(:disabled) {
+  border-color: var(--present-blue);
+  color: var(--present-blue);
+}
+
+.presentation-btn:disabled {
+  opacity: .3;
+  cursor: not-allowed;
+}
+
+#presentation-counter {
+  min-width: 65px;
+  text-align: center;
+  color: var(--present-text);
+  font: 600 .9rem/1 'JetBrains Mono', monospace;
+}
+
+/* Speaker notes */
+#speaker-toggle {
+  border: 1px solid rgba(245,158,11,.5);
+  border-radius: 6px;
+  padding: .45rem .9rem;
+  background: rgba(245,158,11,.12);
+  color: var(--present-amber);
+  cursor: pointer;
+  font: 600 .82rem/1 'JetBrains Mono', monospace;
+}
+
+#speaker-panel {
+  position: fixed;
+  z-index: 3000;
+  right: 2.5rem;
+  bottom: 74px;
+  width: 480px;
+  max-height: 280px;
+  display: none;
+  flex-direction: column;
+  gap: .6rem;
+  padding: 1.25rem;
+  overflow-y: auto;
+  background: #0f172a;
+  border: 1px solid var(--present-amber);
+  border-radius: 8px;
+  box-shadow: 0 16px 36px rgba(0,0,0,.7);
+}
+
+#speaker-panel.visible {
+  display: flex;
+}
+
+.speaker-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--present-amber);
+  font: 700 .82rem/1 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+}
+
+#speaker-text {
+  color: #f1f5f9;
+  font-size: .92rem;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+#speaker-close {
+  border: 0;
+  background: transparent;
+  color: var(--present-muted);
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+@media (max-width: 800px) {
+  #presentation-nav {
+    padding: 0 1rem;
+  }
+
+  .presentation-hint {
+    display: none;
+  }
+
+  .presentation-slide {
+    padding: 1.25rem 1rem .75rem;
+  }
+
+  #speaker-panel {
+    left: 1rem;
+    right: 1rem;
+    width: auto;
+  }
+}
