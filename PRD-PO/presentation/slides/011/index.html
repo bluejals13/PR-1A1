@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APMS.SR - Slide 11</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Presentation Design System -->
+  <link rel="stylesheet" href="../../common/css/reset.css">
+  <link rel="stylesheet" href="../../common/css/variables.css">
+  <link rel="stylesheet" href="../../common/css/typography.css">
+  <link rel="stylesheet" href="../../common/css/common.css">
+  
+  <!-- Slide Specific Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="presentation-mode" data-slide="011" data-slide-index="11">
+
+  <div id="presentation-progress"></div>
+
+  <main id="presentation-viewport">
+    <section class="slide active" id="slide-11" data-speaker-note="실제 개발 및 인프라 구성 과정에서 발생한 3건의 장애를 표준 6단계 절차로 분석하여 해결한 내역입니다. Redis 타임아웃 단축, JWT 무한 루프 차단, Docker 서비스 바인딩 분리를 통해 단일 장애가 전체 시스템 마비로 번지지 않도록 복원력을 강화했습니다.">
+      
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 11</span>
+          <h2 class="slide-title">실제 장애 분석 및 시스템 복원력 강화 (TS 6-Step)</h2>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <span class="tag verified">3 INCIDENTS RESOLVED</span>
+          <span class="tag documented">DOCUMENTED</span>
+        </div>
+      </div>
+
+      <!-- Top Intro Subhead -->
+      <div class="ts-intro-bar">
+        <span class="ts-intro-badge">Standard 6-Step</span>
+        <span class="ts-intro-text">
+          실제 개발 및 인프라 구성 과정에서 발생한 장애를 <strong>Symptom ➔ Impact ➔ Diagnosis ➔ Root Cause ➔ Resolution ➔ Prevention</strong> 표준 절차로 분석·해결
+        </span>
+      </div>
+
+      <!-- 3 Incident Case Cards Grid -->
+      <div class="ts-case-grid">
+        <!-- Case 1: TS-01-REDIS -->
+        <div class="card ts-card">
+          <div class="ts-card-header">
+            <span class="ts-tag red">TS-01-REDIS</span>
+            <span class="tag verified">VERIFIED</span>
+          </div>
+          <h3 class="ts-title">Redis 타임아웃 및 스레드 블로킹</h3>
+
+          <div class="ts-body">
+            <div class="ts-item">
+              <span class="ts-label">Symptom:</span>
+              <p>Redis 다운 시 60초 커맨드 대기로 프론트엔드 흰 화면(Blank Screen) 노출</p>
+            </div>
+            <div class="ts-item">
+              <span class="ts-label">Root Cause:</span>
+              <p>Lettuce 커맨드 타임아웃 기본값(60s) 미설정으로 인한 스레드 대기 전파</p>
+            </div>
+            <div class="ts-item resolve">
+              <span class="ts-label">Resolution:</span>
+              <p>타임아웃 <code>2000ms(2초)</code> 단축 및 <code>503 Service Unavailable</code> 에러 격리</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Case 2: TS-001 -->
+        <div class="card ts-card">
+          <div class="ts-card-header">
+            <span class="ts-tag red">TS-001</span>
+            <span class="tag verified">VERIFIED</span>
+          </div>
+          <h3 class="ts-title">JWT Refresh 401 무한 루프</h3>
+
+          <div class="ts-body">
+            <div class="ts-item">
+              <span class="ts-label">Symptom:</span>
+              <p>만료 토큰 요청 시 인터셉터와 서버 간 401 무한 재시도 루프 발생</p>
+            </div>
+            <div class="ts-item">
+              <span class="ts-label">Root Cause:</span>
+              <p>클라이언트 인터셉터 내 재시도 탈출 조건(Exit Condition) 결여</p>
+            </div>
+            <div class="ts-item resolve">
+              <span class="ts-label">Resolution:</span>
+              <p>Single-Flight 패턴 구축 및 401 수신 시 즉시 세션 초기화 ➔ 로그인 리다이렉트</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Case 3: TS-003 -->
+        <div class="card ts-card">
+          <div class="ts-card-header">
+            <span class="ts-tag amber">TS-003</span>
+            <span class="tag verified">VERIFIED</span>
+          </div>
+          <h3 class="ts-title">Docker Redis localhost 바인딩 실패</h3>
+
+          <div class="ts-body">
+            <div class="ts-item">
+              <span class="ts-label">Symptom:</span>
+              <p>Docker 환경에서 Spring Boot가 `localhost:6379` 접속 실패(Connection Refused)</p>
+            </div>
+            <div class="ts-item">
+              <span class="ts-label">Root Cause:</span>
+              <p>컨테이너 격리 네트워크 특성 (`localhost`는 컨테이너 자기 자신 참조)</p>
+            </div>
+            <div class="ts-item resolve">
+              <span class="ts-label">Resolution:</span>
+              <p><code>${SPRING_REDIS_HOST:localhost}</code> 환경변수 분리 및 Docker Compose <code>redis</code> 주입</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Speaker Notes Panel -->
+  <div id="speaker-panel">
+    <div class="speaker-head">
+      <span>Speaker Notes</span>
+      <button id="speaker-close" aria-label="발표 노트 닫기">✕</button>
+    </div>
+    <div id="speaker-text"></div>
+  </div>
+
+  <!-- Bottom Presentation Navigation Bar -->
+  <nav id="presentation-nav" aria-label="발표 네비게이션">
+    <div class="presentation-nav-left">
+      <span class="presentation-brand">APMS.SR / PRESENTATION</span>
+      <span class="presentation-hint">← → 방향키 · Space 다음 · N 발표 노트 · F 전체화면</span>
+    </div>
+
+    <div class="presentation-nav-right">
+      <button class="presentation-btn" id="prev-btn" aria-label="이전 슬라이드">‹</button>
+      <span id="presentation-counter">11 / 11</span>
+      <button class="presentation-btn" id="next-btn" aria-label="다음 슬라이드">›</button>
+      <button class="speaker-btn" id="speaker-toggle">SPEAKER</button>
+    </div>
+  </nav>
+
+  <!-- Presentation Runtime -->
+  <script src="../../common/js/presentation.js"></script>
+  <script src="../../common/js/export.js"></script>
+</body>
+</html>

@@ -1,23 +1,25 @@
 # Architecture Specifications (`PR-Files/architecture`)
 
-## 1. Responsibility
-본 디렉터리는 시스템 전체의 구조적 설계, 컴포넌트 간 상호작용, 네트워크 토폴로지, 인프라 배치를 다룹니다.
+## 1. Purpose (목적)
+시스템의 네트워크 토폴로지, 단일 진입점(Reverse Proxy), 백엔드 및 데이터/스토리지 컨테이너 격리, 옵저버빌리티 파이프라인의 구조적 설계와 연결 관계를 기술적으로 명세합니다.
 
-## 2. Source of Truth Mapping
-- **Source Files:**
-  - `26-05adf/docs/01_Architecture_and_Ports.md`
-  - `26-05adf/docker-compose.yml`
-  - `26-05adf/nginx/default.conf`
-  - `SA-1/architecture/01_Architecture_and_Ports.md`
+## 2. Input / Source (원천 데이터)
+- `26-05adf/docker-compose.yml` (7개 컨테이너 서비스 정의)
+- `26-05adf/nginx/default.conf` (Port 80 리버스 프록시 설정)
+- `26-05adf/docs/01_Architecture_and_Ports.md`
 
-## 3. Key Components
-1. **Reverse Proxy (Nginx, Port 80):** SPA 정적 라우팅 및 `/api/*` 리버스 프록시 단일 진입점 `[IMPLEMENTED]`
-2. **Backend API (Spring Boot 3.3.2, Port 8080):** Spring Security 6, JWT, RESTful API `[IMPLEMENTED]`
-3. **Database (MySQL 8.0, Port 3306):** Flyway 기반 스키마 마이그레이션 `[IMPLEMENTED]`
-4. **Cache & In-Memory Store (Redis 7.0, Port 6379):** RTR JTI 관리 및 Token Blacklist `[IMPLEMENTED]`
-5. **Observability Stack:** Prometheus (9090), VictoriaMetrics (8428), Grafana (3000) `[IMPLEMENTED]`
+## 3. Output (산출물)
+- **`ARCHITECTURE_SPEC.md`**: 시스템 및 네트워크 토폴로지 아키텍처 상세 기술 명세서
 
-## 4. Documentation Standard
-- 아키텍처 다이어그램(Mermaid) 필수 포함
-- 포트 매핑 및 네트워크 격리 정책 명시
-- 데이터 플로우(Data Flow) 및 의존성 방향 명확화
+## 4. What belongs here (포함되는 자료)
+- Nginx 리버스 프록시 단일 진입점(Port 80) 및 라우팅 규칙
+- Docker 브리지 네트워크 격리 정책 및 포트 매핑 규격
+- Spring Boot, MySQL, Redis, Prometheus, VictoriaMetrics, Grafana 간 연결 다이어그램 및 데이터 플로우
+
+## 5. What does NOT belong here (포함되지 않는 자료)
+- 발표용 스타일링/시각 효과가 적용된 프레젠테이션 SVG/HTML
+- 비즈니스 도메인별 세부 Java 코드 구현
+- 미구현된 분산 아키텍처를 구현된 것처럼 기술하는 내용
+
+## 6. Relationship with PRD-PO (PRD-PO와의 관계)
+- `PRD-PO/presentation/slides/003/`의 컨테이너 토폴로지 다이어그램과 `PRD-PO/presentation/source/03_ARCHITECTURE.md`는 본 디렉터리의 아키텍처 명세를 1:1로 참조하여 시각화 및 발표용으로 가공됩니다.

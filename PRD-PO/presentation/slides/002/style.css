@@ -1,0 +1,58 @@
+/* ===== Slide 002: Stateless Security Dilemma & Architecture Solution ===== */
+
+.problem-grid {
+  margin-bottom: 1.25rem;
+  flex: 1.2;
+}
+
+.problem-card-heading {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.problem-card-desc {
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.workflow-banner {
+  background: var(--bg-card-alt);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 0.8;
+}
+
+.workflow-step {
+  text-align: center;
+  flex: 1;
+}
+
+.workflow-step-tag {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.workflow-step-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-top: 2px;
+}
+
+.workflow-step-sub {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.workflow-arrow {
+  color: var(--text-muted);
+  font-size: 1.25rem;
+}

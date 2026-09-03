@@ -1,0 +1,126 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APMS.SR - Slide 13</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Presentation Design System -->
+  <link rel="stylesheet" href="../../common/css/reset.css">
+  <link rel="stylesheet" href="../../common/css/variables.css">
+  <link rel="stylesheet" href="../../common/css/typography.css">
+  <link rel="stylesheet" href="../../common/css/common.css">
+  
+  <!-- Slide Specific Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="presentation-mode" data-slide="013" data-slide-index="13">
+
+  <div id="presentation-progress"></div>
+
+  <main id="presentation-viewport">
+    <section class="slide active" id="slide-13" data-speaker-note="아키텍처 의사결정에서의 현실적인 트레이드오프 분석입니다. 무상태의 확장성과 실시간 세션 제어 사이에서 Access Token 무상태 유지 및 Redis 블랙리스트 조회를 절충하였으며, Redis 외부 의존성 결합에 대해서는 2초 타임아웃 단축과 503 격리로 시스템 복원력을 확보했습니다.">
+      
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 13</span>
+          <h2 class="slide-title">아키텍처 의사결정 및 기술적 트레이드오프</h2>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <span class="tag verified">DECISION ANALYSIS</span>
+          <span class="tag documented">DOCUMENTED</span>
+        </div>
+      </div>
+
+      <!-- Trade-offs 2-Column Grid -->
+      <div class="tradeoff-grid">
+        <!-- Decision 1: Stateless vs Stateful -->
+        <div class="card tradeoff-card">
+          <div class="tradeoff-head">
+            <span class="decision-label">Decision 01</span>
+            <strong class="tradeoff-title">Stateless Access Token vs Stateful Session</strong>
+          </div>
+
+          <div class="tradeoff-compare">
+            <div class="compare-box option-a">
+              <span class="box-title">Pure Stateless JWT</span>
+              <p>✔ 서버 메모리/DB 부하 제로<br>✖ 발급된 토큰 즉시 무효화 불가</p>
+            </div>
+            <div class="compare-vs">VS</div>
+            <div class="compare-box option-b">
+              <span class="box-title">Stateful Session</span>
+              <p>✔ 즉각적인 세션 무효화 가능<br>✖ 매 요청 DB/세션 스토리지 부하</p>
+            </div>
+          </div>
+
+          <div class="tradeoff-result">
+            <div class="result-tag blue">선택: 하이브리드 아키텍처</div>
+            <p>
+              Access Token은 <strong>무상태(1h)</strong>로 서명 검증하여 성능을 극대화하고, 로그아웃 및 토큰 재발급 시에만 <strong>Redis Blacklist/RTR</strong>을 조회하여 타협점 도출.
+            </p>
+          </div>
+        </div>
+
+        <!-- Decision 2: Redis Dependency vs Resilience -->
+        <div class="card tradeoff-card">
+          <div class="tradeoff-head">
+            <span class="decision-label">Decision 02</span>
+            <strong class="tradeoff-title">Redis 의존성 결합 vs 시스템 복원력</strong>
+          </div>
+
+          <div class="tradeoff-compare">
+            <div class="compare-box option-a">
+              <span class="box-title">기본 설정 (Lettuce 60s)</span>
+              <p>✔ 일시적 네트워크 지연 복구 대기<br>✖ Redis 다운 시 60초 블로킹 전파</p>
+            </div>
+            <div class="compare-vs">VS</div>
+            <div class="compare-box option-b">
+              <span class="box-title">Fast-Fail 격리 설계</span>
+              <p>✔ 2초 타임아웃으로 스레드 보호<br>✖ Redis 다운 시 토큰 갱신 503 중단</p>
+            </div>
+          </div>
+
+          <div class="tradeoff-result">
+            <div class="result-tag green">선택: 2초 타임아웃 & 503 격리</div>
+            <p>
+              Redis 장애가 전체 백엔드 톰캣 스레드 풀 고갈로 전파되는 최악의 상황을 방지하기 위해 <strong>타임아웃 2초 단축 및 503 에러 핸들링</strong>으로 장애 격리.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Speaker Notes Panel -->
+  <div id="speaker-panel">
+    <div class="speaker-head">
+      <span>Speaker Notes</span>
+      <button id="speaker-close" aria-label="발표 노트 닫기">✕</button>
+    </div>
+    <div id="speaker-text"></div>
+  </div>
+
+  <!-- Bottom Presentation Navigation Bar -->
+  <nav id="presentation-nav" aria-label="발표 네비게이션">
+    <div class="presentation-nav-left">
+      <span class="presentation-brand">APMS.SR / PRESENTATION</span>
+      <span class="presentation-hint">← → 방향키 · Space 다음 · N 발표 노트 · F 전체화면</span>
+    </div>
+
+    <div class="presentation-nav-right">
+      <button class="presentation-btn" id="prev-btn" aria-label="이전 슬라이드">‹</button>
+      <span id="presentation-counter">13 / 15</span>
+      <button class="presentation-btn" id="next-btn" aria-label="다음 슬라이드">›</button>
+      <button class="speaker-btn" id="speaker-toggle">SPEAKER</button>
+    </div>
+  </nav>
+
+  <!-- Presentation Runtime -->
+  <script src="../../common/js/presentation.js"></script>
+  <script src="../../common/js/export.js"></script>
+</body>
+</html>

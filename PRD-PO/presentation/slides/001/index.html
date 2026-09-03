@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APMS.SR - Slide 01</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Presentation Design System -->
+  <link rel="stylesheet" href="../../common/css/reset.css">
+  <link rel="stylesheet" href="../../common/css/variables.css">
+  <link rel="stylesheet" href="../../common/css/typography.css">
+  <link rel="stylesheet" href="../../common/css/common.css">
+  
+  <!-- Slide Specific Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="presentation-mode" data-slide="001" data-slide-index="1">
+
+  <div id="presentation-progress"></div>
+
+  <main id="presentation-viewport">
+    <section class="slide active" id="slide-01" data-speaker-note="반갑습니다. 백엔드 및 인프라 엔지니어링 포트폴리오 발표를 시작하겠습니다. 
+본 발표는 26-05adf 애플리케이션 저장소와 SA-1 AI 프로세스 저장소의 실제 빌드 결과를 바탕으로 작성되었으며, 모든 자료는 테스트와 코드로 증명된 사실만을 전달합니다.">
+      <div class="slide-hero-wrap">
+        <div class="slide-hero-badge">
+          <span class="slide-hero-badge-dot"></span>
+          황인찬 개인 스프링 보안 프로젝트 26-05adf
+        </div>
+        <h1 class="slide-hero-title">
+          Backend & Infrastructure<br>
+          <span class="slide-hero-gradient-text">
+            Engineering Portfolio
+          </span>
+        </h1>
+        <p class="slide-hero-desc">
+          Stateless JWT + RTR + Redis Blacklist 실시간 세션 제어 및 Docker 인프라 기반 자동화 성능/보안 팩트 검증 포트폴리오.
+        </p>
+
+        <div class="grid-4 slide-hero-grid">
+          <div class="card">
+            <span class="source-card-label">Application Source</span>
+            <span class="source-card-val">bluejals13/26-05adf</span>
+            <span class="tag verified" style="margin-top: 8px; width: fit-content;">feature/auth</span>
+          </div>
+          <div class="card">
+            <span class="source-card-label">AI Process Source</span>
+            <span class="source-card-val">bluejals13/SA-1</span>
+            <span class="tag documented" style="margin-top: 8px; width: fit-content;">main</span>
+          </div>
+          <div class="card">
+            <span class="source-card-label">Testing Suite</span>
+            <span class="source-card-val">JUnit 10종 100% Pass</span>
+            <span class="tag verified" style="margin-top: 8px; width: fit-content;">VERIFIED</span>
+          </div>
+          <div class="card">
+            <span class="source-card-label">k6 Load Benchmark</span>
+            <span class="source-card-val">70 VU / 5.64ms Avg</span>
+            <span class="tag verified" style="margin-top: 8px; width: fit-content;">0% ERROR</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Speaker Notes Panel -->
+  <div id="speaker-panel">
+    <div class="speaker-head">
+      <span>Speaker Notes</span>
+      <button id="speaker-close" aria-label="발표 노트 닫기">✕</button>
+    </div>
+    <div id="speaker-text"></div>
+  </div>
+
+  <!-- Bottom Presentation Navigation Bar -->
+  <nav id="presentation-nav" aria-label="발표 네비게이션">
+    <div class="presentation-nav-left">
+      <span class="presentation-brand">APMS.SR / PRESENTATION</span>
+      <span class="presentation-hint">← → 방향키 · Space 다음 · N 발표 노트 · F 전체화면</span>
+    </div>
+
+    <div class="presentation-nav-right">
+      <button class="presentation-btn" id="prev-btn" aria-label="이전 슬라이드">‹</button>
+      <span id="presentation-counter">01 / 03</span>
+      <button class="presentation-btn" id="next-btn" aria-label="다음 슬라이드">›</button>
+      <button class="speaker-btn" id="speaker-toggle">SPEAKER</button>
+    </div>
+  </nav>
+
+  <!-- Presentation Runtime -->
+  <script src="../../common/js/presentation.js"></script>
+  <script src="../../common/js/export.js"></script>
+</body>
+</html>

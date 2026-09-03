@@ -1,0 +1,148 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APMS.SR - Slide 04</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Presentation Design System -->
+  <link rel="stylesheet" href="../../common/css/reset.css">
+  <link rel="stylesheet" href="../../common/css/variables.css">
+  <link rel="stylesheet" href="../../common/css/typography.css">
+  <link rel="stylesheet" href="../../common/css/common.css">
+  
+  <!-- Slide Specific Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="presentation-mode" data-slide="004" data-slide-index="4">
+
+  <div id="presentation-progress"></div>
+
+  <main id="presentation-viewport">
+    <section class="slide active" id="slide-04" data-speaker-note="백엔드 애플리케이션의 계층 분리와 DTO 캡슐화 구조입니다. 엔티티의 외부 직접 노출을 차단하기 위해 Java 17의 불변 Record DTO를 도입하였으며, ApiResponse 표준 래퍼와 GlobalExceptionHandler를 통해 성공 및 예외 응답 형식을 통일하여 통신 안정성을 보장합니다.">
+      
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 04</span>
+          <h2 class="slide-title">백엔드 계층 분리와 DTO 캡슐화</h2>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <span class="tag implemented">IMPLEMENTED</span>
+          <span class="tag documented">DOCUMENTED</span>
+        </div>
+      </div>
+
+      <div class="slide-content-grid">
+        <!-- Left: 3-Tier Layer Architecture Diagram -->
+        <div class="card highlight-blue layer-arch-card">
+          <div class="card-title">
+            <span>3-Tier Architecture & Data Flow</span>
+            <span class="tag" style="background: rgba(56, 189, 248, 0.15); color: var(--accent-blue);">LAYER ISOLATION</span>
+          </div>
+
+          <div class="layer-steps">
+            <div class="layer-step-box">
+              <div class="layer-step-head">
+                <span class="layer-tag">Web Layer</span>
+                <strong class="layer-name">Controller</strong>
+              </div>
+              <p class="layer-desc">HTTP 요청 수신, 입력값 검증(@Valid), DTO 수신 및 `ApiResponse<T>` 변환</p>
+            </div>
+
+            <div class="layer-flow-arrow">▼ <span class="flow-label">불변 Record DTO 전달 (Entity 직접 노출 차단)</span></div>
+
+            <div class="layer-step-box">
+              <div class="layer-step-head">
+                <span class="layer-tag">Business Layer</span>
+                <strong class="layer-name">Service</strong>
+              </div>
+              <p class="layer-desc">트랜잭션(`@Transactional`) 관리, 비즈니스 도메인 규칙 검증 및 실행</p>
+            </div>
+
+            <div class="layer-flow-arrow">▼ <span class="flow-label">Entity 영속화 / 조회</span></div>
+
+            <div class="layer-step-box">
+              <div class="layer-step-head">
+                <span class="layer-tag">Persistence Layer</span>
+                <strong class="layer-name">Repository</strong>
+              </div>
+              <p class="layer-desc">Spring Data JPA 인터페이스, 데이터베이스 쿼리 실행 및 엔티티 수명 관리</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: 3 Core Implementation Cards -->
+        <div class="right-features">
+          <div class="card feature-card">
+            <div class="card-title" style="color: var(--accent-blue);">
+              <span>1. Java 17 Record 불변 DTO</span>
+              <span class="tag" style="background: rgba(56, 189, 248, 0.15); color: var(--accent-blue);">IMMUTABILITY</span>
+            </div>
+            <p class="feature-desc">
+              요청/응답 객체에 `record`를 사용하여 Setter 부수 효과를 차단하고, 영속성 엔티티의 변경 감지(Dirty Checking) 오작동 및 데이터 오염을 방지합니다.
+            </p>
+            <div class="code-preview">
+              <code>public record LoginRequest(@NotBlank String email, @NotBlank String password) {}</code>
+            </div>
+          </div>
+
+          <div class="card feature-card">
+            <div class="card-title" style="color: var(--accent-green);">
+              <span>2. 통일된 API 응답 (`ApiResponse<T>`)</span>
+              <span class="tag" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-green);">STANDARDIZED</span>
+            </div>
+            <p class="feature-desc">
+              모든 API 응답을 `success`, `data`, `message`, `errorCode` 포맷으로 통일하여 클라이언트 통신의 예측 가능성과 일관성을 확보합니다.
+            </p>
+            <div class="code-preview">
+              <code>public record ApiResponse&lt;T&gt;(boolean success, T data, String message, String errorCode) {}</code>
+            </div>
+          </div>
+
+          <div class="card feature-card">
+            <div class="card-title" style="color: var(--accent-purple);">
+              <span>3. 중앙 집중식 예외 핸들링</span>
+              <span class="tag" style="background: rgba(168, 85, 247, 0.15); color: var(--accent-purple);">EXCEPTION ADVICE</span>
+            </div>
+            <p class="feature-desc">
+              `@RestControllerAdvice` 기반 `GlobalExceptionHandler`를 통해 비즈니스 예외와 보안 예외를 표준 에러 응답 포맷으로 가공합니다.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Speaker Notes Panel -->
+  <div id="speaker-panel">
+    <div class="speaker-head">
+      <span>Speaker Notes</span>
+      <button id="speaker-close" aria-label="발표 노트 닫기">✕</button>
+    </div>
+    <div id="speaker-text"></div>
+  </div>
+
+  <!-- Bottom Presentation Navigation Bar -->
+  <nav id="presentation-nav" aria-label="발표 네비게이션">
+    <div class="presentation-nav-left">
+      <span class="presentation-brand">APMS.SR / PRESENTATION</span>
+      <span class="presentation-hint">← → 방향키 · Space 다음 · N 발표 노트 · F 전체화면</span>
+    </div>
+
+    <div class="presentation-nav-right">
+      <button class="presentation-btn" id="prev-btn" aria-label="이전 슬라이드">‹</button>
+      <span id="presentation-counter">04 / 06</span>
+      <button class="presentation-btn" id="next-btn" aria-label="다음 슬라이드">›</button>
+      <button class="speaker-btn" id="speaker-toggle">SPEAKER</button>
+    </div>
+  </nav>
+
+  <!-- Presentation Runtime -->
+  <script src="../../common/js/presentation.js"></script>
+  <script src="../../common/js/export.js"></script>
+</body>
+</html>

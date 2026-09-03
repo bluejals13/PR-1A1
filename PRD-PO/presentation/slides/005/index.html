@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APMS.SR - Slide 05</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Presentation Design System -->
+  <link rel="stylesheet" href="../../common/css/reset.css">
+  <link rel="stylesheet" href="../../common/css/variables.css">
+  <link rel="stylesheet" href="../../common/css/typography.css">
+  <link rel="stylesheet" href="../../common/css/common.css">
+  
+  <!-- Slide Specific Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="presentation-mode" data-slide="005" data-slide-index="5">
+
+  <div id="presentation-progress"></div>
+
+  <main id="presentation-viewport">
+    <section class="slide active" id="slide-05" data-speaker-note="JWT 인증 아키텍처 및 전송 채널 분리 구조입니다. Access Token은 Authorization Header를 통해 전달하고 1시간 수명을 부여하며, Refresh Token은 7일 수명과 함께 HttpOnly Cookie로 전송하여 JavaScript의 직접 접근을 제한함으로써 토큰 탈취 위협을 완화합니다.">
+      
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 05</span>
+          <h2 class="slide-title">JWT 이원화 수명주기 및 전송 채널 물리 격리</h2>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <span class="tag implemented">IMPLEMENTED</span>
+          <span class="tag verified">VERIFIED</span>
+        </div>
+      </div>
+
+      <!-- Main Comparison Grid -->
+      <div class="token-comparison-grid">
+        <!-- Access Token Card -->
+        <div class="card highlight-blue token-card">
+          <div class="token-card-header">
+            <span class="token-type-badge blue">Short-Lived Token</span>
+            <span class="tag verified">1 HOUR TTL</span>
+          </div>
+          <h3 class="token-title">Access Token</h3>
+          <div class="token-path-box">
+            <span class="path-label">전송 채널:</span>
+            <code>Authorization: Bearer &lt;token&gt; (Header)</code>
+          </div>
+
+          <ul class="token-spec-list">
+            <li><strong>목적:</strong> 모든 인가 API 요청 시 즉각적인 무상태 서명 검증</li>
+            <li><strong>페이로드:</strong> `userId`, `roles`, `permissions`를 포함하여 DB 조회 최소화</li>
+            <li><strong>특징:</strong> 1시간 짧은 만료 주기로 탈취 시 피해 노출 시간 제한</li>
+            <li><strong>저장소:</strong> 클라이언트 메모리(State) 관리</li>
+          </ul>
+        </div>
+
+        <!-- Refresh Token Card -->
+        <div class="card highlight-green token-card">
+          <div class="token-card-header">
+            <span class="token-type-badge green">Long-Lived Token</span>
+            <span class="tag verified">7 DAYS TTL</span>
+          </div>
+          <h3 class="token-title">Refresh Token</h3>
+          <div class="token-path-box">
+            <span class="path-label">전송 채널:</span>
+            <code>HttpOnly; Secure; SameSite=Strict (Cookie)</code>
+          </div>
+
+          <ul class="token-spec-list">
+            <li><strong>목적:</strong> Access Token 만료 시 재발급 엔드포인트(`/api/auth/refresh`) 전용</li>
+            <li><strong>식별자:</strong> 난수 UUID 기반 `jti` 식별자로 Redis(`rt:&lt;userId&gt;`) 매핑</li>
+            <li><strong>보안 격리:</strong> <code>HttpOnly</code> 플래그로 브라우저 JavaScript(XSS) 접근 원천 차단</li>
+            <li><strong>전송 제어:</strong> `SameSite=Strict` 설정을 통해 CSRF 요청 차단</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Channel Isolation Bottom Banner -->
+      <div class="channel-banner">
+        <div class="channel-col">
+          <span class="channel-role">Client Layer</span>
+          <div class="channel-nodes">
+            <div class="channel-box">JS App Context ➔ <strong>Header 주입</strong></div>
+            <div class="channel-box">Browser Network ➔ <strong>Cookie 자동 첨부 (JS 차단)</strong></div>
+          </div>
+        </div>
+        <div class="channel-arrow">➔</div>
+        <div class="channel-col">
+          <span class="channel-role">Server Gateway</span>
+          <div class="channel-nodes">
+            <div class="channel-box">`JwtAuthenticationFilter` (헤더 검증)</div>
+            <div class="channel-box">`/api/auth/refresh` (쿠키 추출 및 Redis 검증)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Speaker Notes Panel -->
+  <div id="speaker-panel">
+    <div class="speaker-head">
+      <span>Speaker Notes</span>
+      <button id="speaker-close" aria-label="발표 노트 닫기">✕</button>
+    </div>
+    <div id="speaker-text"></div>
+  </div>
+
+  <!-- Bottom Presentation Navigation Bar -->
+  <nav id="presentation-nav" aria-label="발표 네비게이션">
+    <div class="presentation-nav-left">
+      <span class="presentation-brand">APMS.SR / PRESENTATION</span>
+      <span class="presentation-hint">← → 방향키 · Space 다음 · N 발표 노트 · F 전체화면</span>
+    </div>
+
+    <div class="presentation-nav-right">
+      <button class="presentation-btn" id="prev-btn" aria-label="이전 슬라이드">‹</button>
+      <span id="presentation-counter">05 / 06</span>
+      <button class="presentation-btn" id="next-btn" aria-label="다음 슬라이드">›</button>
+      <button class="speaker-btn" id="speaker-toggle">SPEAKER</button>
+    </div>
+  </nav>
+
+  <!-- Presentation Runtime -->
+  <script src="../../common/js/presentation.js"></script>
+  <script src="../../common/js/export.js"></script>
+</body>
+</html>

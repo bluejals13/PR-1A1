@@ -1,0 +1,153 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APMS.SR - Slide 14</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Presentation Design System -->
+  <link rel="stylesheet" href="../../common/css/reset.css">
+  <link rel="stylesheet" href="../../common/css/variables.css">
+  <link rel="stylesheet" href="../../common/css/typography.css">
+  <link rel="stylesheet" href="../../common/css/common.css">
+  
+  <!-- Slide Specific Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="presentation-mode" data-slide="014" data-slide-index="14">
+
+  <div id="presentation-progress"></div>
+
+  <main id="presentation-viewport">
+    <section class="slide active" id="slide-14" data-speaker-note="현재 시스템의 한계점과 미래 로드맵입니다. 현재의 단일 노드 Docker Compose 환경의 한계를 명확히 인식하며, 검증된 사실과 격리된 [PLANNED] 영역으로 JPA N+1 실측 벤치마크, 메시지 큐, Redis Cluster HA 및 TLS 보안 로드맵을 체계적으로 수립했습니다.">
+      
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 14</span>
+          <h2 class="slide-title">현재 시스템 한계 및 미래 로드맵</h2>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <span class="tag documented">DOCUMENTED</span>
+          <span class="tag planned">PLANNED</span>
+        </div>
+      </div>
+
+      <div class="roadmap-split-grid">
+        <!-- Left: Current Known Limitations -->
+        <div class="card limit-card">
+          <div class="card-title" style="color: var(--accent-amber);">
+            <span>Current Limitations (현재 한계)</span>
+            <span class="tag" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">KNOWN LIMITS</span>
+          </div>
+          <p class="limit-lead">
+            현재 구현/검증된 범위를 정직하게 공개하며, 사실과 계획을 엄격히 분리합니다.
+          </p>
+
+          <div class="limit-list">
+            <div class="limit-item">
+              <span class="limit-badge">Limit 01</span>
+              <div class="limit-content">
+                <strong>단일 노드 인프라 한계</strong>
+                <p>단일 Docker Compose 인스턴스 구성으로 다중 노드 분산 및 L7 오토스케일링 미적용 상태</p>
+              </div>
+            </div>
+
+            <div class="limit-item">
+              <span class="limit-badge">Limit 02</span>
+              <div class="limit-content">
+                <strong>JPA N+1 실측 데이터 부재</strong>
+                <p>배치 사이즈 및 Fetch Join 설계는 반영되었으나 쿼리 수 비교 정밀 벤치마크 미보유</p>
+              </div>
+            </div>
+
+            <div class="limit-item">
+              <span class="limit-badge">Limit 03</span>
+              <div class="limit-content">
+                <strong>수동 검증 배포 프로세스</strong>
+                <p>완전 무인 자동화 배포가 아닌 개발자 수동 승인(Human-in-the-loop) 필수 적용</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Future Engineering Roadmap -->
+        <div class="card roadmap-card">
+          <div class="card-title" style="color: var(--accent-cyan);">
+            <span>Future Roadmap (향후 계획 과제)</span>
+            <span class="tag planned">[PLANNED]</span>
+          </div>
+          <p class="roadmap-lead">
+            향후 확장성과 보안 고도화를 위해 단계별로 진행할 공학적 계획 과제입니다.
+          </p>
+
+          <div class="roadmap-list">
+            <div class="roadmap-item">
+              <span class="plan-tag">PLANNED</span>
+              <div class="plan-content">
+                <strong>1. JPA N+1 쿼리 최적화 벤치마크</strong>
+                <p>Batch Size 및 Fetch Join 전/후 실행 쿼리 수 및 힙 메모리 정밀 측정</p>
+              </div>
+            </div>
+
+            <div class="roadmap-item">
+              <span class="plan-tag">PLANNED</span>
+              <div class="plan-content">
+                <strong>2. 비동기 메시지 큐 (Message Queue)</strong>
+                <p>대용량 트래픽 이벤트 분산을 위한 Kafka / RabbitMQ 파이프라인 도입</p>
+              </div>
+            </div>
+
+            <div class="roadmap-item">
+              <span class="plan-tag">PLANNED</span>
+              <div class="plan-content">
+                <strong>3. 분산 캐시 클러스터링</strong>
+                <p>Redis Sentinel / Cluster 다중 노드 분산 고가용성(HA) 구성</p>
+              </div>
+            </div>
+
+            <div class="roadmap-item">
+              <span class="plan-tag">PLANNED</span>
+              <div class="plan-content">
+                <strong>4. 클라우드 시크릿 & TLS 보안</strong>
+                <p>HashiCorp Vault / AWS KMS 시크릿 관리 및 Let's Encrypt HTTPS 적용</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Speaker Notes Panel -->
+  <div id="speaker-panel">
+    <div class="speaker-head">
+      <span>Speaker Notes</span>
+      <button id="speaker-close" aria-label="발표 노트 닫기">✕</button>
+    </div>
+    <div id="speaker-text"></div>
+  </div>
+
+  <!-- Bottom Presentation Navigation Bar -->
+  <nav id="presentation-nav" aria-label="발표 네비게이션">
+    <div class="presentation-nav-left">
+      <span class="presentation-brand">APMS.SR / PRESENTATION</span>
+      <span class="presentation-hint">← → 방향키 · Space 다음 · N 발표 노트 · F 전체화면</span>
+    </div>
+
+    <div class="presentation-nav-right">
+      <button class="presentation-btn" id="prev-btn" aria-label="이전 슬라이드">‹</button>
+      <span id="presentation-counter">14 / 15</span>
+      <button class="presentation-btn" id="next-btn" aria-label="다음 슬라이드">›</button>
+      <button class="speaker-btn" id="speaker-toggle">SPEAKER</button>
+    </div>
+  </nav>
+
+  <!-- Presentation Runtime -->
+  <script src="../../common/js/presentation.js"></script>
+  <script src="../../common/js/export.js"></script>
+</body>
+</html>

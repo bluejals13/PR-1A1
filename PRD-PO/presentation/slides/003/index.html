@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APMS.SR - Slide 03</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Presentation Design System -->
+  <link rel="stylesheet" href="../../common/css/reset.css">
+  <link rel="stylesheet" href="../../common/css/variables.css">
+  <link rel="stylesheet" href="../../common/css/typography.css">
+  <link rel="stylesheet" href="../../common/css/common.css">
+  
+  <!-- Slide Specific Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="presentation-mode" data-slide="003" data-slide-index="3">
+
+  <div id="presentation-progress"></div>
+
+  <main id="presentation-viewport">
+    <section class="slide active" id="slide-03" data-speaker-note="전체 시스템의 도커 컨테이너 구성입니다. 외부로는 Nginx 포트 80만 노출되며, 모든 백엔드와 스토리지, 모니터링 스택은 도커 내부 브리지 네트워크로 격리되며 도커 기반으로 애플리케이션과 데이터 저장소, 관측 구성요소를 분리하고 컨테이너 네트워크를 통해 연결했습니다..">
+      
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 03</span>
+          <h2 class="slide-title">전체 시스템 아키텍처 및 Container 구성</h2>
+        </div>
+        <span class="tag implemented">IMPLEMENTED</span>
+      </div>
+
+      <div class="slide-diagram-container">
+        <svg class="topology-svg" viewBox="0 0 920 360" xmlns="http://www.w3.org/2000/svg">
+          <rect x="140" y="15" width="760" height="330" rx="12" fill="#111827" stroke="#334155" stroke-width="1.5" stroke-dasharray="6,6"/>
+          <text x="155" y="36" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="600">Docker Bridge Network (apms-network) // Isolated Internal Scope</text>
+
+          <rect x="10" y="130" width="95" height="60" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
+          <text x="35" y="158" fill="#f8fafc" font-family="sans-serif" font-weight="700" font-size="13">Client</text>
+          <text x="22" y="175" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="10">Browser / k6</text>
+
+          <rect x="170" y="120" width="120" height="80" rx="8" fill="#1e293b" stroke="#06b6d4" stroke-width="2"/>
+          <text x="195" y="148" fill="#38bdf8" font-family="sans-serif" font-weight="700" font-size="13">Nginx Gateway</text>
+          <text x="190" y="166" fill="#f59e0b" font-family="'JetBrains Mono', monospace" font-size="11">Port 80 (Public)</text>
+          <text x="185" y="184" fill="#94a3b8" font-size="10">Reverse Proxy & SPA</text>
+
+          <rect x="360" y="120" width="150" height="80" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+          <text x="382" y="148" fill="#38bdf8" font-family="sans-serif" font-weight="700" font-size="13">Spring Boot 3.3.2</text>
+          <text x="390" y="166" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="11">Port 8080 (Internal)</text>
+          <text x="375" y="184" fill="#10b981" font-size="10">Security 6 / JJWT / JPA</text>
+
+          <rect x="580" y="50" width="130" height="70" rx="8" fill="#1e293b" stroke="#a855f7" stroke-width="1.5"/>
+          <text x="615" y="78" fill="#c084fc" font-family="sans-serif" font-weight="700" font-size="13">MySQL 8.0</text>
+          <text x="600" y="96" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="10">Port 3306 (Host 3307)</text>
+          <text x="605" y="110" fill="#64748b" font-size="10">Flyway DB Migration</text>
+
+          <rect x="580" y="150" width="130" height="70" rx="8" fill="#1e293b" stroke="#ef4444" stroke-width="1.5"/>
+          <text x="620" y="178" fill="#f87171" font-family="sans-serif" font-weight="700" font-size="13">Redis 7.0</text>
+          <text x="605" y="196" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="10">Port 6379 (Internal)</text>
+          <text x="600" y="210" fill="#10b981" font-size="10">RTR & Blacklist Store</text>
+
+          <rect x="360" y="250" width="130" height="60" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="1.5"/>
+          <text x="390" y="275" fill="#34d399" font-family="sans-serif" font-weight="700" font-size="12">Prometheus</text>
+          <text x="395" y="293" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="10">Port 9090</text>
+
+          <rect x="530" y="250" width="130" height="60" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="1.5"/>
+          <text x="545" y="275" fill="#34d399" font-family="sans-serif" font-weight="700" font-size="12">VictoriaMetrics</text>
+          <text x="565" y="293" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="10">Port 8428</text>
+
+          <rect x="700" y="250" width="130" height="60" rx="8" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="735" y="275" fill="#fbbf24" font-family="sans-serif" font-weight="700" font-size="12">Grafana</text>
+          <text x="720" y="293" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="10">Port 3000 (Partial)</text>
+
+          <!-- Flow arrows -->
+          <path d="M105 160 L170 160" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-cyan)"/>
+          <path d="M290 160 L360 160" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-blue)"/>
+          <path d="M510 140 L580 90" stroke="#a855f7" stroke-width="1.5" marker-end="url(#arrow-purple)"/>
+          <path d="M510 165 L580 180" stroke="#f87171" stroke-width="1.5" marker-end="url(#arrow-red)"/>
+          <path d="M425 200 L425 250" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrow-green)"/>
+          <path d="M490 280 L530 280" stroke="#34d399" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+          <path d="M660 280 L700 280" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrow-amber)"/>
+
+          <defs>
+            <marker id="arrow-cyan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#38bdf8"/></marker>
+            <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#38bdf8"/></marker>
+            <marker id="arrow-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#a855f7"/></marker>
+            <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#f87171"/></marker>
+            <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#34d399"/></marker>
+            <marker id="arrow-amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#fbbf24"/></marker>
+          </defs>
+        </svg>
+      </div>
+    </section>
+  </main>
+
+  <!-- Speaker Notes Panel -->
+  <div id="speaker-panel">
+    <div class="speaker-head">
+      <span>Speaker Notes</span>
+      <button id="speaker-close" aria-label="발표 노트 닫기">✕</button>
+    </div>
+    <div id="speaker-text"></div>
+  </div>
+
+  <!-- Bottom Presentation Navigation Bar -->
+  <nav id="presentation-nav" aria-label="발표 네비게이션">
+    <div class="presentation-nav-left">
+      <span class="presentation-brand">APMS.SR / PRESENTATION</span>
+      <span class="presentation-hint">← → 방향키 · Space 다음 · N 발표 노트 · F 전체화면</span>
+    </div>
+
+    <div class="presentation-nav-right">
+      <button class="presentation-btn" id="prev-btn" aria-label="이전 슬라이드">‹</button>
+      <span id="presentation-counter">03 / 03</span>
+      <button class="presentation-btn" id="next-btn" aria-label="다음 슬라이드">›</button>
+      <button class="speaker-btn" id="speaker-toggle">SPEAKER</button>
+    </div>
+  </nav>
+
+  <!-- Presentation Runtime -->
+  <script src="../../common/js/presentation.js"></script>
+  <script src="../../common/js/export.js"></script>
+</body>
+</html>

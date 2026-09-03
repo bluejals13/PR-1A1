@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APMS.SR - Backend & Infrastructure Engineering Portfolio</title>
+  <meta http-equiv="refresh" content="0; url=slides/001/index.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="common/css/reset.css">
+  <link rel="stylesheet" href="common/css/variables.css">
+  <link rel="stylesheet" href="common/css/typography.css">
+  <link rel="stylesheet" href="common/css/common.css">
+  <style>
+    .launcher-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      padding: 2rem;
+    }
+    .launcher-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      max-width: 640px;
+      width: 100%;
+    }
+    .slide-link-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+      text-align: left;
+    }
+    .slide-link-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all var(--transition-fast);
+    }
+    .slide-link-item:hover {
+      border-color: var(--accent-blue);
+      background: var(--bg-card-alt);
+    }
+  </style>
+</head>
+<body class="presentation-mode">
+  <div class="launcher-container">
+    <div class="launcher-card">
+      <div class="tag verified" style="margin-bottom: 1rem;">PRESENTATION LAUNCHER</div>
+      <h1 style="font-size: 1.8rem; margin-bottom: 0.75rem;">Backend & Infrastructure Engineering Portfolio</h1>
+      <p style="margin-bottom: 1.5rem;">슬라이드 001로 자동 이동 중입니다. 이동하지 않으면 아래 목록을 클릭하세요.</p>
+      
+      <div class="slide-link-list">
+        <a href="slides/001/index.html" class="slide-link-item">
+          <span><strong>Slide 001</strong> · Project Identity & Architecture Overview</span>
+          <span class="tag verified">OPEN ›</span>
+        </a>
+        <a href="slides/002/index.html" class="slide-link-item">
+          <span><strong>Slide 002</strong> · Stateless 3대 보안 딜레마 & 해결 아키텍처</span>
+          <span class="tag verified">OPEN ›</span>
+        </a>
+        <a href="slides/003/index.html" class="slide-link-item">
+          <span><strong>Slide 003</strong> · 전체 시스템 아키텍처 및 Container 구성</span>
+          <span class="tag implemented">OPEN ›</span>
+        </a>
+        <a href="slides/004/index.html" class="slide-link-item">
+          <span><strong>Slide 004</strong> · 백엔드 계층 분리와 DTO 캡슐화</span>
+          <span class="tag implemented">OPEN ›</span>
+        </a>
+        <a href="slides/005/index.html" class="slide-link-item">
+          <span><strong>Slide 005</strong> · JWT 이원화 수명주기 및 전송 채널 물리 격리</span>
+          <span class="tag verified">OPEN ›</span>
+        </a>
+        <a href="slides/006/index.html" class="slide-link-item">
+          <span><strong>Slide 006</strong> · RTR(Refresh Token Rotation) 및 Redis Blacklist 토큰 상태 제어</span>
+          <span class="tag verified">OPEN ›</span>
+        </a>
+        <a href="slides/007/index.html" class="slide-link-item">
+          <span><strong>Slide 007</strong> · RBAC 권한 계층 및 Spring Security 인가 파이프라인</span>
+          <span class="tag verified">OPEN ›</span>
+        </a>
+        <a href="slides/008/index.html" class="slide-link-item">
+          <span><strong>Slide 008</strong> · Database Schema & Migration Governance (Flyway)</span>
+          <span class="tag implemented">OPEN ›</span>
+        </a>
+        <a href="slides/009/index.html" class="slide-link-item">
+          <span><strong>Slide 009</strong> · 10종 자동화 단위/통합 테스트 및 보안 시나리오 검증</span>
+          <span class="tag verified">OPEN ›</span>
+        </a>
+        <a href="slides/010/index.html" class="slide-link-item">
+          <span><strong>Slide 010</strong> · k6 70 VU 동시 부하 실측 및 성능 검증</span>
+          <span class="tag verified">OPEN ›</span>
+        </a>
+        <a href="slides/015/index.html" class="slide-link-item">
+          <span><strong>Slide 015</strong> · Engineering Identity (보안·인프라·성능·검증·거버넌스 요약)</span>
+          <span class="tag documented">OPEN ›</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APMS.SR - Slide 02</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Presentation Design System -->
+  <link rel="stylesheet" href="../../common/css/reset.css">
+  <link rel="stylesheet" href="../../common/css/variables.css">
+  <link rel="stylesheet" href="../../common/css/typography.css">
+  <link rel="stylesheet" href="../../common/css/common.css">
+  
+  <!-- Slide Specific Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="presentation-mode" data-slide="002" data-slide-index="2">
+
+  <div id="presentation-progress"></div>
+
+  <main id="presentation-viewport">
+    <section class="slide active" id="slide-02" data-speaker-note="JWT 기반 인증은 서버의 세션 저장 부담을 덜어주지만, 발급된 토큰을 중간에 무효화할 수 없다는 치명적인 보안 맹점이 있습니다. 
+여기서 저는 RTR과 Redis Blacklist를 결합하여 무상태의 확장성을 해치지 않으면서도 토큰 상태 제어을 확보하는 아키텍처를 방향으로 진행했습니다.">
+      
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 02</span>
+          <h2 class="slide-title">무상태(Stateless) 인증의 3대 보안 딜레마 & 해결 아키텍처</h2>
+        </div>
+        <span class="tag verified">ARCHITECTURAL DECISION</span>
+      </div>
+
+      <!-- 3 Large Visual Problem Cards -->
+      <div class="grid-3 problem-grid">
+        <div class="card highlight-red">
+          <div class="card-title" style="color: var(--accent-red);">
+            <span>1. Token Revocation Gap</span>
+            <span class="tag" style="background: rgba(239, 68, 68, 0.2); color: #f87171;">무효화 불가</span>
+          </div>
+          <div class="problem-card-heading">
+            로그아웃 후에도 토큰 유효
+          </div>
+          <p class="problem-card-desc">
+            순수 Stateless JWT는 사용자가 로그아웃해도 만료 시각(1시간)까지 서명이 유효하여 토큰 탈취 시 API 호출을 즉시 차단할 방법이 없음.
+          </p>
+        </div>
+
+        <div class="card highlight-red">
+          <div class="card-title" style="color: var(--accent-red);">
+            <span>2. Replay Attack Risk</span>
+            <span class="tag" style="background: rgba(239, 68, 68, 0.2); color: #f87171;">탈취 토큰 재사용</span>
+          </div>
+          <div class="problem-card-heading">
+            장기 Refresh Token 공격 노출
+          </div>
+          <p class="problem-card-desc">
+            7일간 유효한 Refresh Token이 고정되어 있으면 탈취 시 공격자가 무한히 새 Access Token을 발급받아 지속적인 비인가 접근 가능.
+          </p>
+        </div>
+
+        <div class="card highlight-amber">
+          <div class="card-title" style="color: var(--accent-amber);">
+            <span>3. Container Isolation</span>
+            <span class="tag" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">도커 루프백 실패</span>
+          </div>
+          <div class="problem-card-heading">
+            `localhost` 바인딩 거부
+          </div>
+          <p class="problem-card-desc">
+            Docker 격리 환경에서 컨테이너 간 통신 시 `localhost`는 자기 자신을 가리켜 Redis/DB 커넥션 거부(Connection Refused) 발생.
+          </p>
+        </div>
+      </div>
+
+      <!-- Large 5-Step Process Hero Banner -->
+      <div class="workflow-banner">
+        <div class="workflow-step">
+          <div class="workflow-step-tag" style="color: var(--accent-red);">Problem</div>
+          <div class="workflow-step-title">Stateless 한계</div>
+          <div class="workflow-step-sub">즉시 회수 불가</div>
+        </div>
+        <div class="workflow-arrow">➔</div>
+        <div class="workflow-step">
+          <div class="workflow-step-tag" style="color: var(--accent-blue);">Decision</div>
+          <div class="workflow-step-title">RTR + Blacklist</div>
+          <div class="workflow-step-sub">1회용 토큰 & TTL</div>
+        </div>
+        <div class="workflow-arrow">➔</div>
+        <div class="workflow-step">
+          <div class="workflow-step-tag" style="color: var(--accent-purple);">Implementation</div>
+          <div class="workflow-step-title">Spring + Redis</div>
+          <div class="workflow-step-sub">JJWT / In-Memory</div>
+        </div>
+        <div class="workflow-arrow">➔</div>
+        <div class="workflow-step">
+          <div class="workflow-step-tag" style="color: var(--accent-green);">Verification</div>
+          <div class="workflow-step-title">JUnit 10종 + k6</div>
+          <div class="workflow-step-sub">70 VU 부하 테스트</div>
+        </div>
+        <div class="workflow-arrow">➔</div>
+        <div class="workflow-step">
+          <div class="workflow-step-tag" style="color: #34d399;">Result</div>
+          <div class="workflow-step-title" style="color: #34d399;">성능 검증 : 5.64ms / 0% Err</div>
+          <div class="workflow-step-sub">70 VU 부하 조건 성능 검증</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Speaker Notes Panel -->
+  <div id="speaker-panel">
+    <div class="speaker-head">
+      <span>Speaker Notes</span>
+      <button id="speaker-close" aria-label="발표 노트 닫기">✕</button>
+    </div>
+    <div id="speaker-text"></div>
+  </div>
+
+  <!-- Bottom Presentation Navigation Bar -->
+  <nav id="presentation-nav" aria-label="발표 네비게이션">
+    <div class="presentation-nav-left">
+      <span class="presentation-brand">APMS.SR / PRESENTATION</span>
+      <span class="presentation-hint">← → 방향키 · Space 다음 · N 발표 노트 · F 전체화면</span>
+    </div>
+
+    <div class="presentation-nav-right">
+      <button class="presentation-btn" id="prev-btn" aria-label="이전 슬라이드">‹</button>
+      <span id="presentation-counter">02 / 03</span>
+      <button class="presentation-btn" id="next-btn" aria-label="다음 슬라이드">›</button>
+      <button class="speaker-btn" id="speaker-toggle">SPEAKER</button>
+    </div>
+  </nav>
+
+  <!-- Presentation Runtime -->
+  <script src="../../common/js/presentation.js"></script>
+  <script src="../../common/js/export.js"></script>
+</body>
+</html>

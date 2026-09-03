@@ -1,0 +1,139 @@
+﻿/* ===== Slide 005: Authentication Architecture: JWT Lifecycles & Channel Isolation ===== */
+
+.token-comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  flex: 1.1;
+  min-height: 0;
+  margin-bottom: 1rem;
+}
+
+.token-card {
+  padding: 1.15rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.token-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.token-type-badge {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+}
+
+.token-type-badge.blue {
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--accent-blue);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+}
+
+.token-type-badge.green {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--accent-green);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.token-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.token-path-box {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.75rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.path-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.token-path-box code {
+  font-size: 0.8rem;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.token-spec-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+}
+
+.token-spec-list li {
+  font-size: 0.88rem;
+  margin-bottom: 0;
+  line-height: 1.4;
+}
+
+.channel-banner {
+  background: var(--bg-card-alt);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 0.85rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 0.6;
+}
+
+.channel-col {
+  flex: 1;
+}
+
+.channel-role {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--accent-cyan);
+  text-transform: uppercase;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.channel-nodes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.channel-box {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.35rem 0.65rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.channel-box strong {
+  color: var(--text-primary);
+}
+
+.channel-arrow {
+  color: var(--text-muted);
+  font-size: 1.25rem;
+  padding: 0 1.5rem;
+}

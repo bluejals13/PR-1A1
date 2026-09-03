@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APMS.SR - Slide 06</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Presentation Design System -->
+  <link rel="stylesheet" href="../../common/css/reset.css">
+  <link rel="stylesheet" href="../../common/css/variables.css">
+  <link rel="stylesheet" href="../../common/css/typography.css">
+  <link rel="stylesheet" href="../../common/css/common.css">
+  
+  <!-- Slide Specific Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="presentation-mode" data-slide="006" data-slide-index="6">
+
+  <div id="presentation-progress"></div>
+
+  <main id="presentation-viewport">
+    <section class="slide active" id="slide-06" data-speaker-note="RTR과 Redis Blacklist를 통한 토큰 상태 제어 메커니즘입니다. RTR에서 기존 JTI를 무효화하고 재사용된 Refresh Token을 거부하여 Replay Attack에 대응하며, 로그아웃 시에는 Access Token의 잔여 유효시간만큼 Redis 블랙리스트에 등록하여 Stateless 환경에서도 즉각적인 세션 무효화를 달성합니다.">
+      
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 06</span>
+          <h2 class="slide-title">RTR(Refresh Token Rotation) 및 Redis Blacklist 토큰 상태 제어</h2>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <span class="tag verified">VERIFIED</span>
+          <span class="tag documented">DOCUMENTED</span>
+        </div>
+      </div>
+
+      <div class="security-mechanism-grid">
+        <!-- Mechanism 1: RTR (Refresh Token Rotation) -->
+        <div class="card highlight-blue mechanism-card">
+          <div class="mechanism-head">
+            <h3 class="mechanism-title">1. Refresh Token Rotation (RTR)</h3>
+            <span class="tag verified">1회용 JTI 검증</span>
+          </div>
+          <p class="mechanism-sub">토큰 갱신 시마다 JTI를 교체하여 재사용 공격(Replay Attack) 방어</p>
+
+          <div class="sequence-box">
+            <div class="seq-step normal">
+              <span class="seq-num">Step 1</span>
+              <div class="seq-text">
+                <strong>토큰 갱신 요청:</strong> Cookie의 Refresh Token(`JTI_A`) 전달
+              </div>
+            </div>
+            <div class="seq-step normal">
+              <span class="seq-num">Step 2</span>
+              <div class="seq-text">
+                <strong>원자적 교체:</strong> Redis `rt:<userId>`의 `JTI_A` 삭제 및 신규 `JTI_B` 발급
+              </div>
+            </div>
+            <div class="seq-step alert">
+              <span class="seq-num">Defend</span>
+              <div class="seq-text">
+                <strong>탈취 토큰 재사용 거부:</strong> 이미 소진된 `JTI_A`로 재요청 시 즉시 <code>401 Unauthorized</code> 차단
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mechanism 2: Redis Blacklist -->
+        <div class="card highlight-green mechanism-card">
+          <div class="mechanism-head">
+            <h3 class="mechanism-title">2. Redis Token Blacklist</h3>
+            <span class="tag verified">잔여 TTL 관리</span>
+          </div>
+          <p class="mechanism-sub">로그아웃 시 Access Token의 잔여 수명 동안만 메모리에 적재하여 즉시 무효화</p>
+
+          <div class="sequence-box">
+            <div class="seq-step normal">
+              <span class="seq-num">Step 1</span>
+              <div class="seq-text">
+                <strong>로그아웃 요청:</strong> `/api/auth/logout` 호출 시 Access Token 파싱
+              </div>
+            </div>
+            <div class="seq-step normal">
+              <span class="seq-num">Step 2</span>
+              <div class="seq-text">
+                <strong>TTL 계산 & 적재:</strong> 남은 만료 시간(예: 35분)만큼 Redis <code>bl:&lt;token&gt;</code> 등록
+              </div>
+            </div>
+            <div class="seq-step alert green-alert">
+              <span class="seq-num">Result</span>
+              <div class="seq-text">
+                <strong>즉시 필터 차단:</strong> `JwtAuthenticationFilter`에서 O(1) 인메모리 확인 후 <code>401 Unauthorized</code> 거부
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Summary Box -->
+      <div class="security-bottom-summary">
+        <span class="summary-label">Architectural Advantage</span>
+        <span class="summary-text">
+          매 API 요청마다 DB 세션을 조회하지 않아 <strong>Stateless의 고성능</strong>을 유지하면서, 토큰 탈취 대응 및 <strong>즉각적인 실시간 세션 통제권</strong>을 동시에 확보.
+        </span>
+      </div>
+    </section>
+  </main>
+
+  <!-- Speaker Notes Panel -->
+  <div id="speaker-panel">
+    <div class="speaker-head">
+      <span>Speaker Notes</span>
+      <button id="speaker-close" aria-label="발표 노트 닫기">✕</button>
+    </div>
+    <div id="speaker-text"></div>
+  </div>
+
+  <!-- Bottom Presentation Navigation Bar -->
+  <nav id="presentation-nav" aria-label="발표 네비게이션">
+    <div class="presentation-nav-left">
+      <span class="presentation-brand">APMS.SR / PRESENTATION</span>
+      <span class="presentation-hint">← → 방향키 · Space 다음 · N 발표 노트 · F 전체화면</span>
+    </div>
+
+    <div class="presentation-nav-right">
+      <button class="presentation-btn" id="prev-btn" aria-label="이전 슬라이드">‹</button>
+      <span id="presentation-counter">06 / 06</span>
+      <button class="presentation-btn" id="next-btn" aria-label="다음 슬라이드">›</button>
+      <button class="speaker-btn" id="speaker-toggle">SPEAKER</button>
+    </div>
+  </nav>
+
+  <!-- Presentation Runtime -->
+  <script src="../../common/js/presentation.js"></script>
+  <script src="../../common/js/export.js"></script>
+</body>
+</html>

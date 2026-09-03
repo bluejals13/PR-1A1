@@ -1,0 +1,158 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APMS.SR - Slide 09</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Presentation Design System -->
+  <link rel="stylesheet" href="../../common/css/reset.css">
+  <link rel="stylesheet" href="../../common/css/variables.css">
+  <link rel="stylesheet" href="../../common/css/typography.css">
+  <link rel="stylesheet" href="../../common/css/common.css">
+  
+  <!-- Slide Specific Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="presentation-mode" data-slide="009" data-slide-index="9">
+
+  <div id="presentation-progress"></div>
+
+  <main id="presentation-viewport">
+    <section class="slide active" id="slide-09" data-speaker-note="10종의 자동화 단위 및 통합 테스트 스위트 검증 결과입니다. 단순 기능 확인을 넘어 Refresh Token 재사용 시 401 차단, Blacklist 등재 토큰 즉시 차단, 권한 부재 시 403 차단 등 핵심 보안 시나리오가 100% Pass로 기계적으로 입증되었습니다.">
+      
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 09</span>
+          <h2 class="slide-title">10종 자동화 단위/통합 테스트 및 보안 시나리오 검증</h2>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <span class="tag verified">100% PASS (10/10)</span>
+          <span class="tag documented">DOCUMENTED</span>
+        </div>
+      </div>
+
+      <!-- Top 3 Critical Defend Scenarios Banner -->
+      <div class="scenarios-banner">
+        <div class="scenario-card defend-red">
+          <div class="scenario-badge">Security Assertion 1</div>
+          <strong class="scenario-title">RTR Replay Attack 방어</strong>
+          <p class="scenario-desc">소진된 구버전 Refresh Token 재사용 시도</p>
+          <div class="scenario-result-tag fail-tag">➔ 401 Unauthorized 차단</div>
+        </div>
+
+        <div class="scenario-card defend-red">
+          <div class="scenario-badge">Security Assertion 2</div>
+          <strong class="scenario-title">Redis Blacklist 즉시 차단</strong>
+          <p class="scenario-desc">로그아웃 후 잔여 유효시간 내 Access Token 접근</p>
+          <div class="scenario-result-tag fail-tag">➔ 401 Unauthorized 차단</div>
+        </div>
+
+        <div class="scenario-card defend-amber">
+          <div class="scenario-badge">Security Assertion 3</div>
+          <strong class="scenario-title">RBAC 권한 계층 차단</strong>
+          <p class="scenario-desc">`ROLE_USER` 계정의 관리자 엔드포인트 접근</p>
+          <div class="scenario-result-tag warn-tag">➔ 403 Forbidden 차단</div>
+        </div>
+      </div>
+
+      <!-- Bottom 10-Suite Mapping Grid -->
+      <div class="test-suite-grid">
+        <!-- Auth Core Suites (6종) -->
+        <div class="card test-group-card">
+          <div class="card-title" style="color: var(--accent-blue);">
+            <span>Auth & Session Core Suites (6종)</span>
+            <span class="tag verified">6 PASS</span>
+          </div>
+
+          <div class="suite-list">
+            <div class="suite-item">
+              <code class="suite-name">AuthControllerTest</code>
+              <span class="suite-desc">HTTP 로그인/로그아웃/재발급 규격 검증</span>
+            </div>
+            <div class="suite-item">
+              <code class="suite-name">AuthServiceTest</code>
+              <span class="suite-desc">비밀번호 해싱 및 토큰 생성 단위 로직</span>
+            </div>
+            <div class="suite-item">
+              <code class="suite-name">JwtAuthenticationFilterTest</code>
+              <span class="suite-desc">Header Bearer 파싱 및 SecurityContext 주입</span>
+            </div>
+            <div class="suite-item">
+              <code class="suite-name">RefreshTokenRepositoryTest</code>
+              <span class="suite-desc">Redis User ID 기준 JTI 수명(TTL) 검증</span>
+            </div>
+            <div class="suite-item highlight">
+              <code class="suite-name">SecurityIntegrationTest</code>
+              <span class="suite-desc"><strong>RTR 재사용 공격 401 차단 통합 검증</strong></span>
+            </div>
+            <div class="suite-item highlight">
+              <code class="suite-name">TokenBlacklistServiceTest</code>
+              <span class="suite-desc"><strong>로그아웃 Access Token 블랙리스트 차단</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- RBAC Authorization Suites (4종) -->
+        <div class="card test-group-card">
+          <div class="card-title" style="color: var(--accent-purple);">
+            <span>RBAC & Authorization Suites (4종)</span>
+            <span class="tag verified">4 PASS</span>
+          </div>
+
+          <div class="suite-list">
+            <div class="suite-item highlight">
+              <code class="suite-name">RbacSecurityIntegrationTest</code>
+              <span class="suite-desc"><strong>`ROLE_ADMIN` vs `ROLE_USER` 403 차단 검증</strong></span>
+            </div>
+            <div class="suite-item">
+              <code class="suite-name">PermissionIntegrationTest</code>
+              <span class="suite-desc">세부 퍼미션(`USER_READ` 등) 부여/취소 검증</span>
+            </div>
+            <div class="suite-item">
+              <code class="suite-name">RolePermissionIntegrationTest</code>
+              <span class="suite-desc">Role-Permission M:N 매핑 무결성 검증</span>
+            </div>
+            <div class="suite-item">
+              <code class="suite-name">MenuSecurityIntegrationTest</code>
+              <span class="suite-desc">권한별 사이드바 메뉴 인가 인터셉터 검증</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Speaker Notes Panel -->
+  <div id="speaker-panel">
+    <div class="speaker-head">
+      <span>Speaker Notes</span>
+      <button id="speaker-close" aria-label="발표 노트 닫기">✕</button>
+    </div>
+    <div id="speaker-text"></div>
+  </div>
+
+  <!-- Bottom Presentation Navigation Bar -->
+  <nav id="presentation-nav" aria-label="발표 네비게이션">
+    <div class="presentation-nav-left">
+      <span class="presentation-brand">APMS.SR / PRESENTATION</span>
+      <span class="presentation-hint">← → 방향키 · Space 다음 · N 발표 노트 · F 전체화면</span>
+    </div>
+
+    <div class="presentation-nav-right">
+      <button class="presentation-btn" id="prev-btn" aria-label="이전 슬라이드">‹</button>
+      <span id="presentation-counter">09 / 09</span>
+      <button class="presentation-btn" id="next-btn" aria-label="다음 슬라이드">›</button>
+      <button class="speaker-btn" id="speaker-toggle">SPEAKER</button>
+    </div>
+  </nav>
+
+  <!-- Presentation Runtime -->
+  <script src="../../common/js/presentation.js"></script>
+  <script src="../../common/js/export.js"></script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APMS.SR - Slide 10</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Presentation Design System -->
+  <link rel="stylesheet" href="../../common/css/reset.css">
+  <link rel="stylesheet" href="../../common/css/variables.css">
+  <link rel="stylesheet" href="../../common/css/typography.css">
+  <link rel="stylesheet" href="../../common/css/common.css">
+  
+  <!-- Slide Specific Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="presentation-mode" data-slide="010" data-slide-index="10">
+
+  <div id="presentation-progress"></div>
+
+  <main id="presentation-viewport">
+    <section class="slide active" id="slide-10" data-speaker-note="k6 부하 테스트 실측 결과입니다. 정의된 70 VU 동시 부하 조건에서 평균 지연시간 5.64ms, P95 9.98ms, 처리량 463 req/s, 에러율 0.00%로 목표 임계치를 완벽히 충족하며 시스템의 안정적인 처리 성능을 입증했습니다.">
+      
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 10</span>
+          <h2 class="slide-title">k6 70 VU 동시 부하 실측 및 성능 검증</h2>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <span class="tag verified">70 VUs EMPIRICAL PASS</span>
+          <span class="tag documented">DOCUMENTED</span>
+        </div>
+      </div>
+
+      <!-- 4 Large KPI Fact Cards -->
+      <div class="kpi-grid">
+        <div class="card kpi-card">
+          <span class="kpi-label">Throughput</span>
+          <div class="kpi-val blue-text">463 <span class="kpi-unit">req/s</span></div>
+          <span class="kpi-sub">3회 반복 측정 평균</span>
+        </div>
+
+        <div class="card kpi-card">
+          <span class="kpi-label">Average Latency</span>
+          <div class="kpi-val green-text">5.64 <span class="kpi-unit">ms</span></div>
+          <span class="kpi-threshold">임계치: `avg < 20ms` [PASS]</span>
+        </div>
+
+        <div class="card kpi-card">
+          <span class="kpi-label">P95 Latency</span>
+          <div class="kpi-val green-text">9.98 <span class="kpi-unit">ms</span></div>
+          <span class="kpi-threshold">임계치: `p(95) < 50ms` [PASS]</span>
+        </div>
+
+        <div class="card kpi-card">
+          <span class="kpi-label">Error Rate</span>
+          <div class="kpi-val green-text">0.00 <span class="kpi-unit">%</span></div>
+          <span class="kpi-threshold">총 0건 에러 (`rate < 1%`) [PASS]</span>
+        </div>
+      </div>
+
+      <!-- Bottom Benchmark Scenario & Details -->
+      <div class="benchmark-details-grid">
+        <!-- Left: Test Conditions -->
+        <div class="card condition-card">
+          <div class="card-title" style="color: var(--accent-blue);">
+            <span>부하 테스트 프로파일</span>
+            <span class="tag verified">70 VUs / 60s</span>
+          </div>
+          <ul class="condition-list">
+            <li><strong>동시 가상 사용자:</strong> 70 VUs (Virtual Users)</li>
+            <li><strong>부하 지속 시간:</strong> 1분 (60초) 안정 상태 지속</li>
+            <li><strong>검증 방식:</strong> 5~7차 3회 독립 측정 후 산술 평균 산출</li>
+            <li><strong>시스템 환경:</strong> Docker Compose 격리 네트워크 환경</li>
+          </ul>
+        </div>
+
+        <!-- Right: Simulated User Journey -->
+        <div class="card journey-card">
+          <div class="card-title" style="color: var(--accent-cyan);">
+            <span>시뮬레이션 트래픽 파이프라인</span>
+            <span class="tag" style="background: rgba(6, 182, 212, 0.15); color: #22d3ee;">REAL TRAFFIC</span>
+          </div>
+          <div class="journey-steps">
+            <div class="journey-step">
+              <span class="journey-num">01</span>
+              <div class="journey-content">
+                <strong>로그인 요청</strong>
+                <code>POST /api/auth/login</code>
+              </div>
+            </div>
+            <div class="journey-arrow">➔</div>
+            <div class="journey-step">
+              <span class="journey-num">02</span>
+              <div class="journey-content">
+                <strong>프로필 조회</strong>
+                <code>GET /api/auth/me</code>
+              </div>
+            </div>
+            <div class="journey-arrow">➔</div>
+            <div class="journey-step">
+              <span class="journey-num">03</span>
+              <div class="journey-content">
+                <strong>인가 메뉴 조회</strong>
+                <code>GET /api/auth/menus</code>
+              </div>
+            </div>
+            <div class="journey-arrow">➔</div>
+            <div class="journey-step">
+              <span class="journey-num">04</span>
+              <div class="journey-content">
+                <strong>RTR 토큰 갱신</strong>
+                <code>POST /api/auth/refresh</code>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Speaker Notes Panel -->
+  <div id="speaker-panel">
+    <div class="speaker-head">
+      <span>Speaker Notes</span>
+      <button id="speaker-close" aria-label="발표 노트 닫기">✕</button>
+    </div>
+    <div id="speaker-text"></div>
+  </div>
+
+  <!-- Bottom Presentation Navigation Bar -->
+  <nav id="presentation-nav" aria-label="발표 네비게이션">
+    <div class="presentation-nav-left">
+      <span class="presentation-brand">APMS.SR / PRESENTATION</span>
+      <span class="presentation-hint">← → 방향키 · Space 다음 · N 발표 노트 · F 전체화면</span>
+    </div>
+
+    <div class="presentation-nav-right">
+      <button class="presentation-btn" id="prev-btn" aria-label="이전 슬라이드">‹</button>
+      <span id="presentation-counter">10 / 11</span>
+      <button class="presentation-btn" id="next-btn" aria-label="다음 슬라이드">›</button>
+      <button class="speaker-btn" id="speaker-toggle">SPEAKER</button>
+    </div>
+  </nav>
+
+  <!-- Presentation Runtime -->
+  <script src="../../common/js/presentation.js"></script>
+  <script src="../../common/js/export.js"></script>
+</body>
+</html>

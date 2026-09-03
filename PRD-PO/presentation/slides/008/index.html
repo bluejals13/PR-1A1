@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APMS.SR - Slide 08</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Presentation Design System -->
+  <link rel="stylesheet" href="../../common/css/reset.css">
+  <link rel="stylesheet" href="../../common/css/variables.css">
+  <link rel="stylesheet" href="../../common/css/typography.css">
+  <link rel="stylesheet" href="../../common/css/common.css">
+  
+  <!-- Slide Specific Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="presentation-mode" data-slide="008" data-slide-index="8">
+
+  <div id="presentation-progress"></div>
+
+  <main id="presentation-viewport">
+    <section class="slide active" id="slide-08" data-speaker-note="데이터베이스 스키마 및 마이그레이션 거버넌스입니다. ddl-auto: validate 설정을 적용하여 애플리케이션 기동 시 임의 스키마 변경을 방지하고, Flyway V1부터 V5까지의 마이그레이션 스크립트로 스키마 변경 이력과 초기 시드 데이터를 버전으로 안전하게 관리합니다.">
+      
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 08</span>
+          <h2 class="slide-title">Database Schema & Migration Governance (Flyway)</h2>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <span class="tag implemented">IMPLEMENTED</span>
+          <span class="tag verified">VERIFIED</span>
+        </div>
+      </div>
+
+      <div class="db-governance-container">
+        <!-- Core Policy Box -->
+        <div class="card highlight-blue policy-banner">
+          <div class="policy-header">
+            <span class="policy-tag">Core DDL Policy</span>
+            <code>spring.jpa.hibernate.ddl-auto = validate</code>
+          </div>
+          <p class="policy-desc">
+            <code>ddl-auto: validate</code>와 Flyway V1~V5를 통해 애플리케이션의 임의 스키마 변경을 방지하고, DB 스키마 변경 이력을 버전으로 관리합니다.
+          </p>
+        </div>
+
+        <!-- 5-Step Migration Timeline -->
+        <div class="migration-timeline">
+          <div class="migration-card">
+            <div class="migration-step-tag">V1</div>
+            <strong class="migration-title">Init Schema</strong>
+            <span class="migration-file">V1__init_schema.sql</span>
+            <p class="migration-desc">기본 DDL 구조 및 `users` 테이블 생성</p>
+          </div>
+
+          <div class="migration-arrow">➔</div>
+
+          <div class="migration-card">
+            <div class="migration-step-tag">V2</div>
+            <strong class="migration-title">Authority Schema</strong>
+            <span class="migration-file">V2__init_authority_schema.sql</span>
+            <p class="migration-desc">`roles`, `user_roles` 인가 기본 스키마</p>
+          </div>
+
+          <div class="migration-arrow">➔</div>
+
+          <div class="migration-card">
+            <div class="migration-step-tag">V3</div>
+            <strong class="migration-title">Common Schema</strong>
+            <span class="migration-file">V3__init_common_schema.sql</span>
+            <p class="migration-desc">공통 감사(Audit) 컬럼 및 베이스 엔티티</p>
+          </div>
+
+          <div class="migration-arrow">➔</div>
+
+          <div class="migration-card">
+            <div class="migration-step-tag">V4</div>
+            <strong class="migration-title">Permissions</strong>
+            <span class="migration-file">V4__insert_permissions.sql</span>
+            <p class="migration-desc">`permissions`, `role_permissions` 시드</p>
+          </div>
+
+          <div class="migration-arrow">➔</div>
+
+          <div class="migration-card">
+            <div class="migration-step-tag">V5</div>
+            <strong class="migration-title">Test Users</strong>
+            <span class="migration-file">V5__insert_test_users.sql</span>
+            <p class="migration-desc">테스트 계정 및 역할 매핑 데이터 시딩</p>
+          </div>
+        </div>
+
+        <!-- Governance Benefits Grid -->
+        <div class="grid-3 benefits-grid">
+          <div class="card benefit-card">
+            <span class="benefit-label">1. Schema Consistency</span>
+            <p>로컬 개발, CI 파이프라인, Docker Compose 운영 환경 간 스키마 일관성 유지</p>
+          </div>
+          <div class="card benefit-card">
+            <span class="benefit-label">2. Version Traceability</span>
+            <p>모든 DDL 변경 내역을 Git 형상 관리 시스템과 1:1로 매핑하여 추적성 확보</p>
+          </div>
+          <div class="card benefit-card">
+            <span class="benefit-label">3. Automated Seeding</span>
+            <p>컨테이너 구동 시 필수 권한 및 테스트 사용자 데이터를 자동 적재하여 테스트 재현성 보장</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Speaker Notes Panel -->
+  <div id="speaker-panel">
+    <div class="speaker-head">
+      <span>Speaker Notes</span>
+      <button id="speaker-close" aria-label="발표 노트 닫기">✕</button>
+    </div>
+    <div id="speaker-text"></div>
+  </div>
+
+  <!-- Bottom Presentation Navigation Bar -->
+  <nav id="presentation-nav" aria-label="발표 네비게이션">
+    <div class="presentation-nav-left">
+      <span class="presentation-brand">APMS.SR / PRESENTATION</span>
+      <span class="presentation-hint">← → 방향키 · Space 다음 · N 발표 노트 · F 전체화면</span>
+    </div>
+
+    <div class="presentation-nav-right">
+      <button class="presentation-btn" id="prev-btn" aria-label="이전 슬라이드">‹</button>
+      <span id="presentation-counter">08 / 09</span>
+      <button class="presentation-btn" id="next-btn" aria-label="다음 슬라이드">›</button>
+      <button class="speaker-btn" id="speaker-toggle">SPEAKER</button>
+    </div>
+  </nav>
+
+  <!-- Presentation Runtime -->
+  <script src="../../common/js/presentation.js"></script>
+  <script src="../../common/js/export.js"></script>
+</body>
+</html>

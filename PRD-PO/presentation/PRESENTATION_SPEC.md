@@ -88,7 +88,7 @@ Problem (도전 과제)
 - **Purpose:** 불변 Record DTO를 통한 엔티티 캡슐화 및 통일된 API 응답 규격 제시.
 - **Key Message:** Entity의 외부 직접 노출을 차단하고 통일된 응답/예외 래퍼로 통신 안정성을 보장한다.
 - **Required Evidence:** `05_CORE_IMPLEMENTATION.md`
-- **Visual Recommendation:** Controller ➔ Service ➔ Repository 계층 분리 다이어그램 및 `ApiResponse<T>` 구조 박스.
+- **Visual Recommendation:** Controller ➔ Service ➔ Repository 3계층 분리 다이어그램 및 `ApiResponse<T>` 구조 박스.
 - **Content:**
   - Java 17 `record` 불변 DTO: 불변성 보장 및 얕은 복사 부수 효과 방지
   - `ApiResponse<T>`: `success`, `data`, `message`, `errorCode` 표준 규격
@@ -100,7 +100,7 @@ Problem (도전 과제)
 
 ### Slide 05: Authentication Architecture (JWT & Lifecycles)
 - **Purpose:** 이원화된 JWT 수명주기 및 전송 채널 격리 메커니즘 설명.
-- **Key Message:** Access Token(1시간)과 Refresh Token(7일)을 분리하고 전송 채널을 물리적으로 격리하여 XSS 공격을 방어한다.
+- **Key Message:** Access Token은 Authorization Header로, Refresh Token은 HttpOnly Cookie로 분리하여 Refresh Token의 JavaScript 접근을 제한한다.
 - **Required Evidence:** `04_AUTH_AND_RBAC.md`, `AUTH_AND_SECURITY_SPEC.md`
 - **Visual Recommendation:** Access Token(Header) vs Refresh Token(Cookie) 전송 경로 및 수명주기 다이어그램.
 - **Content:**
@@ -113,7 +113,7 @@ Problem (도전 과제)
 
 ### Slide 06: Advanced Token Security (RTR & Redis Blacklist)
 - **Purpose:** Refresh Token Rotation 및 Redis Blacklist의 동작 메커니즘 증명.
-- **Key Message:** 1회용 JTI 검증으로 재사용 공격을 방어하고, 잔여 TTL 블랙리스트로 즉시 로그아웃 무효화를 달성한다.
+- **Key Message:** RTR에서 기존 JTI를 무효화하고 재사용된 Refresh Token을 거부하여 Replay Attack에 대응한다.
 - **Required Evidence:** `04_AUTH_AND_RBAC.md`, `06_SECURITY.md`
 - **Visual Recommendation:** RTR 시퀀스 다이어그램 (토큰 갱신 시 JTI 교체 및 탈취 토큰 차단 흐름).
 - **Content:**
@@ -139,7 +139,7 @@ Problem (도전 과제)
 
 ### Slide 08: Database Schema & Migration Governance (Flyway)
 - **Purpose:** Flyway를 통한 데이터베이스 DDL 형상 관리 및 버전 통제 프로세스 설명.
-- **Key Message:** JPA validate 모드와 Flyway V1~V5 마이그레이션으로 환경 간 스키마 일관성을 100% 보장한다.
+- **Key Message:** ddl-auto: validate와 Flyway V1~V5 마이그레이션으로 애플리케이션이 임의로 스키마를 변경하지 않도록 하고, DB 스키마 변경 이력을 버전으로 관리한다.
 - **Required Evidence:** `05_CORE_IMPLEMENTATION.md`
 - **Visual Recommendation:** V1(Init) ➔ V2(Auth) ➔ V3(Common) ➔ V4(Perm) ➔ V5(Test User) 타임라인 스텝 바.
 - **Content:**
@@ -186,7 +186,7 @@ Problem (도전 과제)
 
 ### Slide 11: Real-World Incident Troubleshooting (TS 6-Step)
 - **Purpose:** 실측 장애 3건에 대한 6단계 표준(Symptom~Prevention) 분석 및 해결 내역 제시.
-- **Key Message:** 장애를 단순 패치하지 않고 6단계 표준 프레임워크로 근본 원인을 진단하여 재발을 방지했다.
+- **Key Message:** 성능 검증과 별도로 실제 운영/구성 과정에서 발생한 장애를 표준 분석 절차로 해결
 - **Required Evidence:** `09_TROUBLESHOOTING.md`, `TS-01-REDIS_TIMEOUT.md`, `TS-001_*.md`, `TS-003_*.md`
 - **Visual Recommendation:** 3개 장애 카드 (Symptom ➔ Root Cause ➔ Resolution ➔ Result).
 - **Content:**

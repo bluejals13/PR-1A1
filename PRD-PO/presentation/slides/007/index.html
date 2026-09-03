@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APMS.SR - Slide 07</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Presentation Design System -->
+  <link rel="stylesheet" href="../../common/css/reset.css">
+  <link rel="stylesheet" href="../../common/css/variables.css">
+  <link rel="stylesheet" href="../../common/css/typography.css">
+  <link rel="stylesheet" href="../../common/css/common.css">
+  
+  <!-- Slide Specific Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="presentation-mode" data-slide="007" data-slide-index="7">
+
+  <div id="presentation-progress"></div>
+
+  <main id="presentation-viewport">
+    <section class="slide active" id="slide-07" data-speaker-note="다계층 RBAC 권한 모델과 Spring Security 인가 파이프라인입니다. User, Role, Permission을 M:N으로 정규화하여 역할 변경이나 세부 권한 추가 시 유연하게 확장 가능하며, JwtAuthenticationFilter와 UserAuthorityService를 거쳐 권한이 없는 접근은 즉시 403 Forbidden으로 차단합니다.">
+      
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 07</span>
+          <h2 class="slide-title">RBAC 권한 계층 및 Spring Security 인가 파이프라인</h2>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <span class="tag implemented">IMPLEMENTED</span>
+          <span class="tag verified">VERIFIED</span>
+        </div>
+      </div>
+
+      <div class="rbac-layout-grid">
+        <!-- Left: M:N Normalized Model Card -->
+        <div class="card highlight-purple rbac-model-card">
+          <div class="card-title" style="color: var(--accent-purple);">
+            <span>1. M:N 정규화 RBAC 데이터 모델</span>
+            <span class="tag" style="background: rgba(168, 85, 247, 0.15); color: #c084fc;">DATA MODEL</span>
+          </div>
+          <p class="card-desc-text">
+            사용자(User)와 권한(Permission) 사이에 역할(Role)을 매핑 테이블(`user_roles`, `role_permissions`)로 정규화하여 권한 변경 시 유연한 확장을 지원합니다.
+          </p>
+
+          <div class="schema-flow-box">
+            <div class="schema-node">
+              <span class="node-badge user">User</span>
+              <span class="node-name">users</span>
+              <span class="node-sub">id, email, name</span>
+            </div>
+            <div class="schema-rel">M:N (`user_roles`) ➔</div>
+            <div class="schema-node">
+              <span class="node-badge role">Role</span>
+              <span class="node-name">roles</span>
+              <span class="node-sub">ROLE_ADMIN, ROLE_USER</span>
+            </div>
+            <div class="schema-rel">M:N (`role_permissions`) ➔</div>
+            <div class="schema-node">
+              <span class="node-badge perm">Permission</span>
+              <span class="node-name">permissions</span>
+              <span class="node-sub">USER_READ, AUTH_MANAGE</span>
+            </div>
+          </div>
+
+          <div class="menu-mapping-box">
+            <span class="menu-label">Menu Access Control:</span>
+            <span class="menu-text">`roles` ➔ `role_menus` ➔ `menus` (사이드바 인가 메뉴 동적 렌더링)</span>
+          </div>
+        </div>
+
+        <!-- Right: Spring Security Pipeline Card -->
+        <div class="card highlight-blue security-pipeline-card">
+          <div class="card-title" style="color: var(--accent-blue);">
+            <span>2. Spring Security 인가 판정 파이프라인</span>
+            <span class="tag verified">FILTER CHAIN</span>
+          </div>
+
+          <div class="pipeline-steps">
+            <div class="pipe-step">
+              <div class="pipe-step-num">01</div>
+              <div class="pipe-step-content">
+                <strong>요청 수신 및 토큰 추출</strong>
+                <p>`JwtAuthenticationFilter`가 `Authorization: Bearer` 헤더 파싱</p>
+              </div>
+            </div>
+
+            <div class="pipe-step">
+              <div class="pipe-step-num">02</div>
+              <div class="pipe-step-content">
+                <strong>권한 로딩 & SecurityContext 주입</strong>
+                <p>`UserAuthorityService`를 통해 Role & Permission을 `GrantedAuthority` 목록으로 주입</p>
+              </div>
+            </div>
+
+            <div class="pipe-step">
+              <div class="pipe-step-num">03</div>
+              <div class="pipe-step-content">
+                <strong>엔드포인트 접근 권한 검사</strong>
+                <p>`@PreAuthorize("hasAuthority('ADMIN')")` 또는 `requestMatchers` 인가 판정</p>
+              </div>
+            </div>
+
+            <div class="pipe-decision-row">
+              <div class="decision-box grant">
+                <span class="decision-tag pass">권한 일치</span>
+                <strong>200 OK / 정상 응답</strong>
+              </div>
+              <div class="decision-box reject">
+                <span class="decision-tag fail">권한 부재</span>
+                <strong>403 Forbidden 차단</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Speaker Notes Panel -->
+  <div id="speaker-panel">
+    <div class="speaker-head">
+      <span>Speaker Notes</span>
+      <button id="speaker-close" aria-label="발표 노트 닫기">✕</button>
+    </div>
+    <div id="speaker-text"></div>
+  </div>
+
+  <!-- Bottom Presentation Navigation Bar -->
+  <nav id="presentation-nav" aria-label="발표 네비게이션">
+    <div class="presentation-nav-left">
+      <span class="presentation-brand">APMS.SR / PRESENTATION</span>
+      <span class="presentation-hint">← → 방향키 · Space 다음 · N 발표 노트 · F 전체화면</span>
+    </div>
+
+    <div class="presentation-nav-right">
+      <button class="presentation-btn" id="prev-btn" aria-label="이전 슬라이드">‹</button>
+      <span id="presentation-counter">07 / 09</span>
+      <button class="presentation-btn" id="next-btn" aria-label="다음 슬라이드">›</button>
+      <button class="speaker-btn" id="speaker-toggle">SPEAKER</button>
+    </div>
+  </nav>
+
+  <!-- Presentation Runtime -->
+  <script src="../../common/js/presentation.js"></script>
+  <script src="../../common/js/export.js"></script>
+</body>
+</html>
