@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>APMS.SR - Slide 10</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- 발표 공통 CSS -->
+  <link rel="stylesheet" href="발표용_공통.css">
+
+  <!-- 10번 슬라이드 전용 CSS -->
+  <link rel="stylesheet" href="10번 슬라이드.css">
+
+
+</head>
+
+<body class="presentation-mode" data-slide="10">
+
+  <!-- Progress -->
+  <div id="presentation-progress"></div>
+
+
+  <!-- Slide Viewport -->
+  <main id="presentation-viewport">
+
+    <section
+      class="slide active performance-metric-slide"
+      id="slide-10"
+      data-speaker-note="k6 부하 테스트 결과, 70명의 가상 사용자가 1분간 지속적으로 요청을 주입하는 환경에서 평균 응답속도 5.64ms, P95 9.98ms, 초당 463건의 처리량을 기록했습니다. 모든 차수에서 에러율 0.00%로 설정된 성능 임계치를 완벽하게 충족했습니다."
+    >
+
+      <!-- Header -->
+      <div class="slide-header">
+
+        <div class="slide-title-wrap">
+
+          <span class="slide-num">
+            SLIDE 10
+          </span>
+
+          <h2 class="slide-title">
+            k6 70 VU 부하 테스트 실측 벤치마크 지표
+          </h2>
+
+        </div>
+
+        <span class="tag verified">
+          VERIFIED FACT
+        </span>
+
+      </div>
+
+
+      <!-- Metric Hero -->
+      <div class="metric-hero-wrap">
+
+        <!-- VU -->
+        <div class="metric-hero">
+
+          <div class="metric-val">
+            70 VUs
+          </div>
+
+          <div class="metric-sub">
+            Stress Concurrency
+          </div>
+
+          <span class="tag verified">
+            60s DURATION
+          </span>
+
+        </div>
+
+
+        <!-- Average -->
+        <div class="metric-hero green">
+
+          <div class="metric-val">
+            5.64<span>ms</span>
+          </div>
+
+          <div class="metric-sub">
+            Average Latency (Fact)
+          </div>
+
+          <span class="tag verified">
+            avg &lt; 20ms PASS
+          </span>
+
+        </div>
+
+
+        <!-- P95 -->
+        <div class="metric-hero green">
+
+          <div class="metric-val">
+            9.98<span>ms</span>
+          </div>
+
+          <div class="metric-sub">
+            P95 Latency (Fact)
+          </div>
+
+          <span class="tag verified">
+            p(95) &lt; 50ms PASS
+          </span>
+
+        </div>
+
+
+        <!-- Error -->
+        <div class="metric-hero green">
+
+          <div class="metric-val">
+            0.00%
+          </div>
+
+          <div class="metric-sub">
+            Error Rate (0 Errors)
+          </div>
+
+          <span class="tag verified">
+            rate &lt; 1% PASS
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- Run Comparison -->
+      <div class="table-container performance-table-container">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Run 차수 (60s 측정)</th>
+              <th>가상 사용자 (VU)</th>
+              <th>평균 응답시간 (Avg)</th>
+              <th>95 백분위수 (P95)</th>
+              <th>초당 처리량 (Throughput)</th>
+              <th>오류율 (Error Rate)</th>
+              <th>판정 (Status)</th>
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr>
+
+              <td>
+                <strong>5차 Run</strong>
+              </td>
+
+              <td>70 VU</td>
+
+              <td>4.73 ms</td>
+
+              <td>8.77 ms</td>
+
+              <td>469 req/s</td>
+
+              <td>0.00%</td>
+
+              <td>
+                <span class="tag verified">
+                  PASS
+                </span>
+              </td>
+
+            </tr>
+
+
+            <tr>
+
+              <td>
+                <strong>6차 Run</strong>
+              </td>
+
+              <td>70 VU</td>
+
+              <td>6.01 ms</td>
+
+              <td>10.61 ms</td>
+
+              <td>457 req/s</td>
+
+              <td>0.00%</td>
+
+              <td>
+                <span class="tag verified">
+                  PASS
+                </span>
+              </td>
+
+            </tr>
+
+
+            <tr>
+
+              <td>
+                <strong>7차 Run</strong>
+              </td>
+
+              <td>70 VU</td>
+
+              <td>6.18 ms</td>
+
+              <td>10.57 ms</td>
+
+              <td>465 req/s</td>
+
+              <td>0.00%</td>
+
+              <td>
+                <span class="tag verified">
+                  PASS
+                </span>
+              </td>
+
+            </tr>
+
+
+            <tr class="fact-row">
+
+              <td>
+                <strong>
+                  3회 산술 평균 (불변 Fact)
+                </strong>
+              </td>
+
+              <td>
+                <strong>70 VU</strong>
+              </td>
+
+              <td>
+                <strong>5.64 ms</strong>
+              </td>
+
+              <td>
+                <strong>9.98 ms</strong>
+              </td>
+
+              <td>
+                <strong>463 req/s</strong>
+              </td>
+
+              <td>
+                <strong>0.00%</strong>
+              </td>
+
+              <td>
+                <span class="tag verified">
+                  VERIFIED
+                </span>
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+      <!-- Scenario -->
+      <p class="performance-scenario">
+        * 부하 시나리오:
+        <code>/api/auth/login</code>
+        ➔
+        <code>/api/users/me</code>
+        ➔
+        <code>/api/menus</code>
+        ➔
+        <code>/api/auth/refresh</code>
+      </p>
+
+    </section>
+
+  </main>
+
+
+  <!-- Speaker Panel -->
+  <div id="speaker-panel">
+
+    <div class="speaker-head">
+
+      <span>
+        Speaker Notes
+      </span>
+
+      <button
+        id="speaker-close"
+        aria-label="발표 노트 닫기"
+      >
+        ✕
+      </button>
+
+    </div>
+
+    <div id="speaker-text"></div>
+
+  </div>
+
+
+  <!-- Presentation Navigation -->
+  <nav
+    id="presentation-nav"
+    aria-label="발표 네비게이션"
+  >
+
+    <div class="presentation-nav-left">
+
+      <span class="presentation-brand">
+        APMS.SR / PRESENTATION
+      </span>
+
+      <span class="presentation-hint">
+        ← → 방향키 · Space 다음 · N 발표 노트
+      </span>
+
+    </div>
+
+
+    <div class="presentation-nav-right">
+
+      <button
+        class="presentation-btn"
+        id="prev-btn"
+        aria-label="이전 슬라이드"
+      >
+        ‹
+      </button>
+
+      <span id="presentation-counter">
+        10 / 14
+      </span>
+
+      <button
+        class="presentation-btn"
+        id="next-btn"
+        aria-label="다음 슬라이드"
+      >
+        ›
+      </button>
+
+      <button
+        id="speaker-toggle"
+        type="button"
+      >
+        SPEAKER
+      </button>
+
+    </div>
+
+  </nav>
+
+
+  <script src="발표용_공통.js"></script>
+
+</body>
+</html>

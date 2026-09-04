@@ -1,74 +1,482 @@
-/* ===== Presentation Shell ===== */
+/* =========================================================
+   APMS.SR - 발표용 공통 CSS
+   기존 구조: <section class="slide" data-slide="N">
+   ========================================================= */
+
 :root {
   --present-bg: #080c14;
   --present-panel: #0f172a;
+  --present-card: #1e293b;
   --present-border: #334155;
+
   --present-text: #f8fafc;
+  --present-secondary: #cbd5e1;
   --present-muted: #64748b;
+
   --present-cyan: #06b6d4;
   --present-blue: #38bdf8;
+  --present-green: #10b981;
+  --present-red: #ef4444;
   --present-amber: #f59e0b;
+  --present-purple: #a855f7;
+
+  --present-font: 'Inter', sans-serif;
+  --present-mono: 'JetBrains Mono', monospace;
 }
 
-* { box-sizing: border-box; }
+/* =========================================================
+   RESET
+   ========================================================= */
 
-html, body {
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
   width: 100%;
   height: 100%;
-  margin: 0;
 }
 
 body.presentation-mode {
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
   background: var(--present-bg);
   color: var(--present-text);
+  font-family: var(--present-font);
 }
 
-/* Top progress */
+/* =========================================================
+   TOP PROGRESS
+   ========================================================= */
+
 #presentation-progress {
   position: fixed;
   z-index: 2000;
   top: 0;
   left: 0;
-  width: 33.333%;
+
+  width: 0%;
   height: 4px;
-  background: linear-gradient(90deg, var(--present-blue), #10b981);
+
+  background: linear-gradient(
+    90deg,
+    var(--present-blue),
+    var(--present-green)
+  );
+
   transition: width .25s ease;
 }
 
-/* Slide viewport */
+/* =========================================================
+   VIEWPORT
+   ========================================================= */
+
 #presentation-viewport {
   position: fixed;
   inset: 0 0 64px 0;
+
+  width: 100%;
+  height: calc(100vh - 64px);
+
   overflow: hidden;
 }
 
-.presentation-slide {
-  position: absolute !important;
-  inset: 0;
+/* =========================================================
+   SLIDE
+   중요: HTML이 .slide 이므로 .presentation-slide가 아니라
+         .slide을 기준으로 통일
+   ========================================================= */
+
+.slide {
+  position: relative;
+
   width: 100%;
   height: 100%;
-  display: none !important;
+
   padding: 1.75rem 2.5rem 1rem;
-  overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  background: var(--present-bg);
 }
 
-.presentation-slide.active {
-  display: flex !important;
-}
+/* =========================================================
+   HEADER
+   ========================================================= */
 
-/* Bottom navigation */
-#presentation-nav {
-  position: fixed;
-  z-index: 1900;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 64px;
+.slide-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  flex-shrink: 0;
+
+  margin-bottom: 1.25rem;
+  padding-bottom: .6rem;
+
+  border-bottom: 1px solid var(--present-border);
+}
+
+.slide-title-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+
+  min-width: 0;
+}
+
+.slide-num {
+  flex-shrink: 0;
+
+  color: var(--present-cyan);
+
+  font-family: var(--present-mono);
+  font-size: .85rem;
+  font-weight: 700;
+}
+
+.slide-title {
+  color: var(--present-text);
+
+  font-size: 1.65rem;
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+/* =========================================================
+   GRID
+   ========================================================= */
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+
+  gap: 1.25rem;
+
+  flex: 1;
+  min-height: 0;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(0, 1fr)
+    minmax(0, 1fr);
+
+  gap: 1.25rem;
+
+  flex: 1;
+  min-height: 0;
+}
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.card {
+  min-width: 0;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 1.25rem;
+
+  background: var(--present-card);
+  border: 1px solid var(--present-border);
+  border-radius: 10px;
+
+  overflow: hidden;
+}
+
+.highlight-red {
+  border-color: rgba(239, 68, 68, .5);
+  background: rgba(239, 68, 68, .05);
+}
+
+.highlight-green {
+  border-color: rgba(16, 185, 129, .5);
+  background: rgba(16, 185, 129, .05);
+}
+
+.highlight-amber {
+  border-color: rgba(245, 158, 11, .5);
+  background: rgba(245, 158, 11, .04);
+}
+
+/* =========================================================
+   CARD TITLE
+   ========================================================= */
+
+.card-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  margin-bottom: 1rem;
+
+  color: var(--present-text);
+
+  font-size: 1.15rem;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+/* =========================================================
+   TAG
+   ========================================================= */
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  padding: .25rem .65rem;
+
+  border-radius: 4px;
+
+  font-family: var(--present-mono);
+  font-size: .75rem;
+  line-height: 1.2;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.tag.verified {
+  background: rgba(16, 185, 129, .18);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, .5);
+}
+
+.tag.implemented {
+  background: rgba(6, 182, 212, .15);
+  color: #67e8f9;
+  border: 1px solid rgba(6, 182, 212, .45);
+}
+
+.tag.danger {
+  background: rgba(239, 68, 68, .2);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, .4);
+}
+
+/* =========================================================
+   TEXT
+   ========================================================= */
+
+p {
+  color: var(--present-secondary);
+  line-height: 1.5;
+}
+
+strong {
+  color: var(--present-text);
+}
+
+/* =========================================================
+   LIST
+   ========================================================= */
+
+ul {
+  padding-left: 1.25rem;
+}
+
+li {
+  margin-bottom: .75rem;
+  color: var(--present-secondary);
+  line-height: 1.5;
+}
+
+li:last-child {
+  margin-bottom: 0;
+}
+
+/* =========================================================
+   SECURITY LIST
+   ========================================================= */
+
+.security-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: .75rem;
+
+  margin-top: auto;
+}
+
+.security-list > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  padding: .75rem 1rem;
+
+  background: var(--present-panel);
+  border: 1px solid var(--present-border);
+  border-radius: 6px;
+}
+
+.security-list small {
+  display: block;
+
+  margin-top: .25rem;
+
+  color: var(--present-muted);
+
+  font-size: .8rem;
+}
+
+.highlight-red .security-list > div > span:first-child {
+  color: #fca5a5;
+}
+
+.highlight-green .security-list > div > span:first-child {
+  color: #86efac;
+}
+
+/* =========================================================
+   SUMMARY
+   ========================================================= */
+
+.summary,
+.security-summary {
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+
+  background: rgba(0, 0, 0, .3);
+
+  border-radius: 8px;
+}
+
+.summary strong,
+.security-summary strong {
+  display: block;
+  margin-bottom: .5rem;
+}
+
+.summary p,
+.security-summary p {
+  color: #cbd5e1;
+  font-size: .95rem;
+  line-height: 1.5;
+}
+
+.before-summary,
+.security-summary.red {
+  border: 1px solid rgba(239, 68, 68, .3);
+}
+
+.before-summary strong,
+.security-summary.red strong {
+  color: #fca5a5;
+}
+
+.after-summary,
+.security-summary.green {
+  border: 1px solid rgba(16, 185, 129, .3);
+}
+
+.after-summary strong,
+.security-summary.green strong {
+  color: #86efac;
+}
+
+/* =========================================================
+   DIAGRAM
+   Slide 05 / Slide 08
+   ========================================================= */
+
+.diagram-wrap {
+  width: 100%;
+  min-height: 0;
+
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: .5rem 0;
+
+  background: transparent;
+  overflow: hidden;
+}
+
+.diagram-wrap svg {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* =========================================================
+   CODE BLOCK
+   Slide 06
+   ========================================================= */
+
+pre {
+  min-height: 0;
+
+  margin: 0;
+  padding: 1rem;
+
+  overflow: auto;
+
+  background: #080c14;
+  border: 1px solid var(--present-border);
+  border-radius: 6px;
+
+  color: #e2e8f0;
+
+  font-family: var(--present-mono);
+  font-size: .78rem;
+  line-height: 1.55;
+
+  white-space: pre;
+}
+
+pre code {
+  font-family: inherit;
+}
+
+/* =========================================================
+   BOTTOM NAVIGATION
+   ========================================================= */
+
+#presentation-nav {
+  position: fixed;
+  z-index: 1900;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: 64px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
   padding: 0 2.5rem;
+
   background: var(--present-panel);
   border-top: 1px solid var(--present-border);
 }
@@ -82,7 +490,10 @@ body.presentation-mode {
 
 .presentation-brand {
   color: var(--present-cyan);
-  font: 700 .9rem/1 'JetBrains Mono', monospace;
+
+  font-family: var(--present-mono);
+  font-size: .9rem;
+  font-weight: 700;
 }
 
 .presentation-hint {
@@ -93,15 +504,21 @@ body.presentation-mode {
 .presentation-btn {
   width: 38px;
   height: 38px;
-  border: 1px solid var(--present-border);
-  border-radius: 6px;
-  background: #1e293b;
-  color: var(--present-text);
-  cursor: pointer;
-  font-size: 1.1rem;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
+  border: 1px solid var(--present-border);
+  border-radius: 6px;
+
+  background: var(--present-card);
+  color: var(--present-text);
+
+  cursor: pointer;
+
+  font-size: 1.1rem;
+
   transition: .2s;
 }
 
@@ -117,84 +534,55 @@ body.presentation-mode {
 
 #presentation-counter {
   min-width: 65px;
+
   text-align: center;
+
   color: var(--present-text);
-  font: 600 .9rem/1 'JetBrains Mono', monospace;
+
+  font-family: var(--present-mono);
+  font-size: .9rem;
+  font-weight: 600;
 }
 
-/* Speaker notes */
+/* =========================================================
+   SPEAKER
+   ========================================================= */
+
 #speaker-toggle {
-  border: 1px solid rgba(245,158,11,.5);
-  border-radius: 6px;
   padding: .45rem .9rem;
-  background: rgba(245,158,11,.12);
+
+  border: 1px solid rgba(245, 158, 11, .5);
+  border-radius: 6px;
+
+  background: rgba(245, 158, 11, .12);
   color: var(--present-amber);
+
   cursor: pointer;
-  font: 600 .82rem/1 'JetBrains Mono', monospace;
+
+  font-family: var(--present-mono);
+  font-size: .82rem;
+  font-weight: 600;
 }
 
 #speaker-panel {
   position: fixed;
   z-index: 3000;
+
   right: 2.5rem;
   bottom: 74px;
+
   width: 480px;
   max-height: 280px;
+
   display: none;
   flex-direction: column;
+
   gap: .6rem;
+
   padding: 1.25rem;
+
   overflow-y: auto;
-  background: #0f172a;
-  border: 1px solid var(--present-amber);
-  border-radius: 8px;
-  box-shadow: 0 16px 36px rgba(0,0,0,.7);
-}
 
-#speaker-panel.visible {
-  display: flex;
-}
+  background: var(--present-panel);
 
-.speaker-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: var(--present-amber);
-  font: 700 .82rem/1 'JetBrains Mono', monospace;
-  text-transform: uppercase;
-}
-
-#speaker-text {
-  color: #f1f5f9;
-  font-size: .92rem;
-  line-height: 1.6;
-  white-space: pre-line;
-}
-
-#speaker-close {
-  border: 0;
-  background: transparent;
-  color: var(--present-muted);
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-@media (max-width: 800px) {
-  #presentation-nav {
-    padding: 0 1rem;
-  }
-
-  .presentation-hint {
-    display: none;
-  }
-
-  .presentation-slide {
-    padding: 1.25rem 1rem .75rem;
-  }
-
-  #speaker-panel {
-    left: 1rem;
-    right: 1rem;
-    width: auto;
-  }
-}
+  border: 1px solid var(--present

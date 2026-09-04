@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APMS.SR - Slide 04</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="4번 슬라이드.css">
+  <link rel="stylesheet" href="발표용_공통.css">
+</head>
+<body class="presentation-mode" data-slide="4">
+
+  <div id="presentation-progress"></div>
+
+  <main id="presentation-viewport">
+
+    <!-- Slide 04: Security Design Before / After (Visual-First 50:50 Hero Split) -->
+    <section class="slide" id="slide-04" data-speaker-note="단순 JWT 구조에서는 토큰이 탈취되면 서버가 대처할 방법이 없습니다. 이를 해결하기 위해 1회용 Refresh Token Rotation과 로그아웃 즉시 잔여 수명만큼만 메모리에 등재하는 Redis Blacklist를 도입하여 무상태 인증에 실시간 제어력을 부여했습니다.">
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 04</span>
+          <h2 class="slide-title">보안 아키텍처 Before vs After 비교</h2>
+        </div>
+        <span class="tag verified">VERIFIED</span>
+      </div>
+
+      <div class="grid-2" style="flex: 1;">
+        <!-- BEFORE: Simple JWT -->
+        <div class="card highlight-red" style="border-width: 2px;">
+          <div class="card-title" style="color: var(--accent-red); margin-bottom: 1rem;">
+            <span style="font-size: 1.3rem;">BEFORE // Simple JWT Only</span>
+            <span class="tag" style="background: rgba(239, 68, 68, 0.2); color: #f87171;">VULNERABLE GAP</span>
+          </div>
+
+          <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem;">
+            <div style="font-size: 1.1rem; font-weight: 700; color: #fca5a5; margin-bottom: 0.5rem;">
+              ⚠️ Stateless 제어 불능 상태
+            </div>
+            <p style="font-size: 0.95rem; color: #cbd5e1;">
+              서버에 상태 저장이 전혀 없어, 토큰이 탈취되거나 로그아웃을 수행해도 만료 시각까지 API 접근 차단 불가능.
+            </p>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: auto;">
+            <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-secondary); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-color);">
+              <span style="font-weight: 600; color: #fca5a5;">로그아웃 후 Access Token</span>
+              <span class="tag" style="background: rgba(239,68,68,0.2); color: #f87171;">차단 불가 (유효)</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-secondary); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-color);">
+              <span style="font-weight: 600; color: #fca5a5;">Refresh Token 탈취 시</span>
+              <span class="tag" style="background: rgba(239,68,68,0.2); color: #f87171;">Replay Attack 가능</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-secondary); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-color);">
+              <span style="font-weight: 600; color: #fca5a5;">인가 제어 계층</span>
+              <span class="tag" style="background: rgba(239,68,68,0.2); color: #f87171;">단순 Role 문자열</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- AFTER: 3-Layer Defense -->
+        <div class="card highlight-green" style="border-width: 2px;">
+          <div class="card-title" style="color: var(--accent-green); margin-bottom: 1rem;">
+            <span style="font-size: 1.3rem;">AFTER // 3-Layer Defense (JWT + RTR + Redis)</span>
+            <span class="tag verified">3-TIER ACTIVE</span>
+          </div>
+
+          <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem;">
+            <div style="font-size: 1.1rem; font-weight: 700; color: #86efac; margin-bottom: 0.5rem;">
+              🛡️ 무상태 확장성 + 실시간 세션 통제
+            </div>
+            <p style="font-size: 0.95rem; color: #cbd5e1;">
+              Access Token의 고속 무상태 서명 검증을 유지하면서, RTR 1회용 JTI 및 Redis Blacklist로 세션 무효화 제어 달성.
+            </p>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: auto;">
+            <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-secondary); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-color);">
+              <div>
+                <span style="font-weight: 600; color: #86efac;">Layer 1: Access Token (1h)</span>
+                <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">Header Bearer / JJWT Stateless</span>
+              </div>
+              <span class="tag verified">VERIFIED</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-secondary); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-color);">
+              <div>
+                <span style="font-weight: 600; color: #86efac;">Layer 2: RTR (7d, UUID JTI)</span>
+                <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">HttpOnly Cookie / Replay 시 401 차단</span>
+              </div>
+              <span class="tag verified">VERIFIED</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-secondary); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-color);">
+              <div>
+                <span style="font-weight: 600; color: #86efac;">Layer 3: Redis Blacklist (`bl:`)</span>
+                <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">로그아웃 시 잔여 TTL 등록 즉시 거부</span>
+              </div>
+              <span class="tag verified">VERIFIED</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="speaker-panel">
+    <div class="speaker-head">
+      <span>Speaker Notes</span>
+      <button id="speaker-close" aria-label="발표 노트 닫기">✕</button>
+    </div>
+    <div id="speaker-text"></div>
+  </div>
+
+  <nav id="presentation-nav" aria-label="발표 네비게이션">
+    <div class="presentation-nav-left">
+      <span class="presentation-brand">APMS.SR / PRESENTATION</span>
+      <span class="presentation-hint">← → 방향키 · Space 다음 · N 발표 노트</span>
+    </div>
+
+    <div class="presentation-nav-right">
+      <button class="presentation-btn" id="prev-btn" aria-label="이전 슬라이드">‹</button>
+      <span id="presentation-counter">04 / 14</span>
+      <button class="presentation-btn" id="next-btn" aria-label="다음 슬라이드">›</button>
+      <button id="speaker-toggle">SPEAKER</button>
+    </div>
+  </nav>
+
+<script src="발표용_공통.js"></script>
+</body>
+</html>
+

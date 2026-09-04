@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>APMS.SR - Slide 09</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="4번 슬라이드.css">
+  <link rel="stylesheet" href="발표용_공통.css">
+</head>
+<body class="presentation-mode" data-slide="9">
+
+  <div id="presentation-progress"></div>
+
+  <main id="presentation-viewport">
+
+
+    <!-- Slide 09: MySQL vs Redis Role Comparison (Visual-First Split & Evidence Chain) -->
+    <section class="slide" id="slide-09" data-speaker-note="영속적인 비즈니스 도메인 데이터와 정규화된 권한 모델은 MySQL과 Flyway로 엄격히 통제하고, 밀리초 단위의 고속 조회가 필요한 RTR 토큰과 블랙리스트는 Redis의 TTL 기능을 활용하여 분리했습니다. Check-Then-Act 동시성 문제는 Redis Lua Script의 원자적 단일 실행으로 격리하여 Replay Attack을 100% 방어했습니다.">
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 09</span>
+          <h2 class="slide-title">데이터 계층 분리: MySQL (영속) vs Redis (임시 세션)</h2>
+        </div>
+        <span class="tag verified">EVIDENCE CHAIN VERIFIED</span>
+      </div>
+
+      <div class="grid-2" style="flex: 1.3;">
+        <!-- Left: MySQL 8.0 -->
+        <div class="card highlight-blue" style="border-width: 2px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+            <div style="font-size: 1.5rem; font-weight: 800; color: #60a5fa; font-family: var(--font-mono);">
+              MySQL 8.0
+            </div>
+            <span class="tag" style="background: rgba(56,189,248,0.2); color: #38bdf8; font-size: 0.75rem;">
+              PERMANENT BUSINESS STATE
+            </span>
+          </div>
+
+          <div style="background: rgba(0,0,0,0.35); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 0.75rem; margin-bottom: 0.6rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+              <span style="font-family: var(--font-mono); font-size: 0.75rem; color: #38bdf8; font-weight: 700;">Flyway Schema Integrity (V1~V5)</span>
+              <span class="tag verified" style="font-size: 0.65rem;">DDL CODEIFIED</span>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 4px; font-family: var(--font-mono); font-size: 0.72rem;">
+              <span class="tag" style="background: #1e293b; color: #93c5fd; border: 1px solid #3b82f6;">users (PK, UK username)</span>
+              <span class="tag" style="background: #1e293b; color: #93c5fd; border: 1px solid #3b82f6;">roles (PK, UK name)</span>
+              <span class="tag" style="background: #1e293b; color: #93c5fd; border: 1px solid #3b82f6;">permissions (PK, UK name)</span>
+              <span class="tag" style="background: #1e293b; color: #fbbf24; border: 1px solid #f59e0b;">user_roles (Composite PK, FK CASCADE)</span>
+              <span class="tag" style="background: #1e293b; color: #fbbf24; border: 1px solid #f59e0b;">role_permissions (Composite PK, FK CASCADE)</span>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.45rem; font-size: 0.85rem; color: var(--text-secondary);">
+            <div style="background: var(--bg-secondary); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid var(--accent-blue);">
+              <strong style="color: var(--text-primary);">다대다 M:N 관계 모델:</strong> <code>users ➔ user_roles ➔ roles ➔ role_permissions ➔ permissions</code>
+            </div>
+            <div style="background: var(--bg-secondary); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid var(--accent-blue);">
+              <strong style="color: var(--text-primary);">스키마 제약 무결성:</strong> Composite PK로 매핑 중복 방지, FK ON DELETE CASCADE로 고아 데이터 원천 차단.
+            </div>
+            <div style="background: var(--bg-secondary); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid var(--accent-blue);">
+              <strong style="color: var(--text-primary);">단일 진실 공급원:</strong> JPA 엔티티 및 Flyway 버전 통제로 환경 간 스키마 일치 보장.
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Redis 7.0 -->
+        <div class="card highlight-red" style="border-width: 2px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+            <div style="font-size: 1.5rem; font-weight: 800; color: #f87171; font-family: var(--font-mono);">
+              Redis 7.0
+            </div>
+            <span class="tag" style="background: rgba(239,68,68,0.2); color: #f87171; font-size: 0.75rem;">
+              TEMPORARY AUTH STATE
+            </span>
+          </div>
+
+          <div style="background: rgba(0,0,0,0.35); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 0.75rem; margin-bottom: 0.6rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+              <span style="font-family: var(--font-mono); font-size: 0.75rem; color: #f87171; font-weight: 700;">Ephemeral Key Model & Auto Expiry</span>
+              <span class="tag verified" style="font-size: 0.65rem;">TTL MANAGED</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px; font-family: var(--font-mono); font-size: 0.72rem;">
+              <div style="display: flex; justify-content: space-between; background: #1e293b; padding: 0.25rem 0.5rem; border-radius: 4px; border: 1px solid #7f1d1d;">
+                <span style="color: #fecaca;"><code>auth:refresh:user:{userId}</code> ➔ JTI (UUID)</span>
+                <span style="color: #fbbf24; font-weight: 700;">TTL: 7 Days (PX)</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; background: #1e293b; padding: 0.25rem 0.5rem; border-radius: 4px; border: 1px solid #7f1d1d;">
+                <span style="color: #fecaca;"><code>blacklist:{jti}</code> ➔ "1"</span>
+                <span style="color: #fbbf24; font-weight: 700;">TTL: Remaining Ms</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.45rem; font-size: 0.85rem; color: var(--text-secondary);">
+            <div style="background: var(--bg-secondary); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid var(--accent-red);">
+              <strong style="color: var(--text-primary);">Lua Script 원자적 Rotation:</strong> <code>GET ➔ Compare ➔ SET (1-RTT)</code> 단일 블록 실행으로 Check-Then-Act Race Condition 완벽 차단.
+            </div>
+            <div style="background: var(--bg-secondary); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid var(--accent-red);">
+              <strong style="color: var(--text-primary);">테스트 스위트 입증:</strong> <code>RefreshTokenRepositoryTest</code> 5종 (save, delete, rotateSuccess, rotateFail, rotateNull) 100% Pass.
+            </div>
+            <div style="background: var(--bg-secondary); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid var(--accent-red);">
+              <strong style="color: var(--text-primary);">Sub-ms 인메모리 I/O:</strong> RDBMS 만료 데이터 축적 방지 및 인가 필터 지연시간 최소화.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Evidence Chain Banner -->
+      <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.55rem 1rem; margin-top: 0.6rem; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.78rem;">
+          <span style="color: var(--accent-cyan); font-weight: 700;">EVIDENCE CHAIN:</span>
+          <span style="color: #94a3b8;">[1] Architecture Decision</span> ➔
+          <span style="color: #94a3b8;">[2] Flyway V1~V5 DDL</span> ➔
+          <span style="color: #94a3b8;">[3] Lua Script Implementation</span> ➔
+          <span style="color: #34d399; font-weight: 700;">[4] JUnit / MockMvc Tests [VERIFIED]</span>
+        </div>
+        <span class="tag verified" style="font-size: 0.7rem;">STATUS: SOURCE & TEST VERIFIED</span>
+      </div>
+    </section>
+
+
+
+   </main>
+
+  <div id="speaker-panel">
+    <div class="speaker-head">
+      <span>Speaker Notes</span>
+      <button id="speaker-close" aria-label="발표 노트 닫기">✕</button>
+    </div>
+    <div id="speaker-text"></div>
+  </div>
+
+  <nav id="presentation-nav" aria-label="발표 네비게이션">
+    <div class="presentation-nav-left">
+      <span class="presentation-brand">APMS.SR / PRESENTATION</span>
+      <span class="presentation-hint">← → 방향키 · Space 다음 · N 발표 노트</span>
+    </div>
+
+    <div class="presentation-nav-right">
+      <button class="presentation-btn" id="prev-btn" aria-label="이전 슬라이드">‹</button>
+      <span id="presentation-counter">09 / 14</span>
+      <button class="presentation-btn" id="next-btn" aria-label="다음 슬라이드">›</button>
+      <button id="speaker-toggle">SPEAKER</button>
+    </div>
+  </nav>
+
+<script src="발표용_공통.js"></script>
+</body>
+</html>
+
+

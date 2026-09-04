@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>APMS.SR - Slide 07</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="4번 슬라이드.css">
+  <link rel="stylesheet" href="발표용_공통.css">
+</head>
+<body class="presentation-mode" data-slide="7">
+
+  <div id="presentation-progress"></div>
+
+  <main id="presentation-viewport">
+
+    <!-- Slide 07: Incident Analysis (Layered Engineering Response Map) -->
+    <section class="slide" id="slide-07" data-speaker-note="실제 개발 과정에서 발생한 세 가지 핵심 장애를 TS 표준 6단계 프로세스로 해결했습니다. Redis 다운 시 60초간 블로킹되던 문제를 2초 타임아웃으로 격리했고, 클라이언트의 무한 401 루프를 차단했으며, 도커 컨테이너 격리로 인한 호스트 바인딩 이슈를 환경변수 기반 아키텍처로 정상화했습니다.">
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 07</span>
+          <h2 class="slide-title">실제 장애 3건의 계층별 엔지니어링 대응 (Incident Map)</h2>
+        </div>
+        <span class="tag verified">TS 6-STEP STANDARD</span>
+      </div>
+
+      <div class="grid-3" style="flex: 1;">
+        <!-- Incident 1: App Data Layer -->
+        <div class="card highlight-amber" style="border-width: 2px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <span class="tag" style="background: rgba(245,158,11,0.2); color: #fbbf24;">APP DATA LAYER</span>
+            <span class="tag verified">TS-01-REDIS</span>
+          </div>
+          <div style="font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem;">
+            Redis 커맨드 타임아웃 블로킹
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.6rem; flex: 1;">
+            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-red);">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #f87171; font-weight: 700;">SYMPTOM</span>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 2px;">Redis 장애 시 백엔드 스레드가 최대 60초간 블로킹되어 프론트엔드 흰 화면(Blank Screen) 발생</p>
+            </div>
+            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-amber);">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #fbbf24; font-weight: 700;">ROOT CAUSE</span>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 2px;">Lettuce 클라이언트 기본 커맨드 타임아웃(60s) 미설정 및 스레드 고갈</p>
+            </div>
+            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-green);">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #34d399; font-weight: 700;">RESOLUTION</span>
+              <p style="font-size: 0.88rem; color: #86efac; margin-top: 2px; font-weight: 600;">타임아웃 2초(`2000ms`) 단축 및 503 `REDIS_UNAVAILABLE` 즉시 반환</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Incident 2: Client Interceptor Layer -->
+        <div class="card highlight-amber" style="border-width: 2px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <span class="tag" style="background: rgba(56,189,248,0.2); color: #38bdf8;">CLIENT / NETWORK LAYER</span>
+            <span class="tag verified">TS-001</span>
+          </div>
+          <div style="font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem;">
+            JWT Refresh 401 무한 루프
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.6rem; flex: 1;">
+            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-red);">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #f87171; font-weight: 700;">SYMPTOM</span>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 2px;">토큰 만료 시 클라이언트 인터셉터와 서버 간 초당 수십 회 401 재시도 루프로 CPU 급증</p>
+            </div>
+            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-amber);">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #fbbf24; font-weight: 700;">ROOT CAUSE</span>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 2px;">갱신 요청 실패(401)에 대한 클라이언트 탈출 조건(Exit Condition) 부재</p>
+            </div>
+            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-green);">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #34d399; font-weight: 700;">RESOLUTION</span>
+              <p style="font-size: 0.88rem; color: #86efac; margin-top: 2px; font-weight: 600;">갱신 401 수신 시 세션 즉시 초기화 및 로그인 리다이렉트 탈출 로직 구현</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Incident 3: Infra Container Layer -->
+        <div class="card highlight-amber" style="border-width: 2px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <span class="tag" style="background: rgba(168,85,247,0.2); color: #c084fc;">INFRA CONTAINER LAYER</span>
+            <span class="tag verified">TS-003</span>
+          </div>
+          <div style="font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem;">
+            Docker Redis 바인딩 거부
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.6rem; flex: 1;">
+            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-red);">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #f87171; font-weight: 700;">SYMPTOM</span>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 2px;">`docker compose up` 실행 시 Spring Boot가 Redis 연결에 실패하며 기동 중단</p>
+            </div>
+            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-amber);">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #fbbf24; font-weight: 700;">ROOT CAUSE</span>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 2px;">컨테이너 격리 환경에서 `localhost`는 컨테이너 자신(Loopback)을 가리키는 문제</p>
+            </div>
+            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-green);">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #34d399; font-weight: 700;">RESOLUTION</span>
+              <p style="font-size: 0.88rem; color: #86efac; margin-top: 2px; font-weight: 600;">`${SPRING_REDIS_HOST:localhost}` 환경변수화 및 서비스명(`redis`) 주입</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+
+
+   </main>
+
+  <div id="speaker-panel">
+    <div class="speaker-head">
+      <span>Speaker Notes</span>
+      <button id="speaker-close" aria-label="발표 노트 닫기">✕</button>
+    </div>
+    <div id="speaker-text"></div>
+  </div>
+
+  <nav id="presentation-nav" aria-label="발표 네비게이션">
+    <div class="presentation-nav-left">
+      <span class="presentation-brand">APMS.SR / PRESENTATION</span>
+      <span class="presentation-hint">← → 방향키 · Space 다음 · N 발표 노트</span>
+    </div>
+
+    <div class="presentation-nav-right">
+      <button class="presentation-btn" id="prev-btn" aria-label="이전 슬라이드">‹</button>
+      <span id="presentation-counter">07 / 14</span>
+      <button class="presentation-btn" id="next-btn" aria-label="다음 슬라이드">›</button>
+      <button id="speaker-toggle">SPEAKER</button>
+    </div>
+  </nav>
+
+<script src="발표용_공통.js"></script>
+</body>
+</html>
+
+

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>APMS.SR - Slide 06</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="4번 슬라이드.css">
+  <link rel="stylesheet" href="발표용_공통.css">
+</head>
+<body class="presentation-mode" data-slide="6">
+
+  <div id="presentation-progress"></div>
+
+  <main id="presentation-viewport">
+
+    <!-- Slide 06: Security Test Results -->
+    <section class="slide" id="slide-06" data-speaker-note="설계된 보안 기능은 10개의 단위 및 통합 테스트 스위트를 통해 검증되었습니다. 특히 RTR 토큰 재사용 공격 차단과 로그아웃 토큰의 블랙리스트 필터링, 그리고 RBAC 권한 분기는 실제 MockMvc 통합 테스트로 동작을 검증했습니다.">
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 06</span>
+          <h2 class="slide-title">보안 기능 각 10종 단위 및 통합 테스트 Pass </h2>
+        </div>
+        <span class="tag verified">100% PASS</span>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">
+            <span>핵심 3대 검증 증거 (Top 3 Evidence)</span>
+            <span class="tag verified">VERIFIED</span>
+          </div>
+          <ul style="margin-bottom: 1rem;">
+            <li><span class="tag verified">PASS</span> <strong>SecurityIntegrationTest:</strong> 소진된 구버전 Refresh Token 재사용 시 401 및 `INVALID_REFRESH_TOKEN` 차단 확인.</li>
+            <li><span class="tag verified">PASS</span> <strong>TokenBlacklistServiceTest:</strong> 로그아웃 토큰 잔여 TTL 등록 후 인가 필터 즉시 차단 확인.</li>
+            <li><span class="tag verified">PASS</span> <strong>RbacSecurityIntegrationTest:</strong> `ROLE_USER` 권한 계정으로 관리자 엔드포인트 접근 시 403 Forbidden 차단 확인.</li>
+          </ul>
+
+          <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.75rem; margin-top: auto;">
+            <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.4rem;">기타 7종 테스트 스위트 (전원 PASS):</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+              <span class="tag verified" style="font-size: 0.7rem;">AuthControllerTest</span>
+              <span class="tag verified" style="font-size: 0.7rem;">AuthServiceTest</span>
+              <span class="tag verified" style="font-size: 0.7rem;">JwtAuthenticationFilterTest</span>
+              <span class="tag verified" style="font-size: 0.7rem;">RefreshTokenRepositoryTest</span>
+              <span class="tag verified" style="font-size: 0.7rem;">PermissionIntegrationTest</span>
+              <span class="tag verified" style="font-size: 0.7rem;">RolePermissionIntegrationTest</span>
+              <span class="tag verified" style="font-size: 0.7rem;">MenuSecurityIntegrationTest</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <span>실제 검증 코드 스니펫 (SecurityIntegrationTest.java)</span>
+            <span class="tag verified">EVIDENCE</span>
+          </div>
+          <pre style="flex: 1;"><code>@Test
+@DisplayName("소진된 Refresh Token 재사용 시 401 Unauthorized 반환")
+void replayAttack_ShouldFail() throws Exception {
+    // 1. 로그인 후 초기 토큰 세트 획득 (rt1)
+    TokenResponse initial = authService.login(loginRequest);
+    
+    // 2. 1회 재발급 성공 (rt1 소진 ➔ 신규 rt2 발급)
+    TokenResponse refreshed = 
+        authService.refreshToken(initial.refreshToken());
+    
+    // 3. 탈취된 구버전 rt1으로 재발급 시도 ➔ 401 검증
+    mockMvc.perform(post("/api/auth/refresh")
+            .cookie(new Cookie("refreshToken", 
+                               initial.refreshToken())))
+            .andExpect(status().isUnauthorized())
+            .andExpect(jsonPath("$.errorCode")
+               .value("INVALID_REFRESH_TOKEN"));
+}</code></pre>
+        </div>
+      </div>
+    </section>
+
+
+
+
+
+
+   </main>
+
+  <div id="speaker-panel">
+    <div class="speaker-head">
+      <span>Speaker Notes</span>
+      <button id="speaker-close" aria-label="발표 노트 닫기">✕</button>
+    </div>
+    <div id="speaker-text"></div>
+  </div>
+
+  <nav id="presentation-nav" aria-label="발표 네비게이션">
+    <div class="presentation-nav-left">
+      <span class="presentation-brand">APMS.SR / PRESENTATION</span>
+      <span class="presentation-hint">← → 방향키 · Space 다음 · N 발표 노트</span>
+    </div>
+
+    <div class="presentation-nav-right">
+      <button class="presentation-btn" id="prev-btn" aria-label="이전 슬라이드">‹</button>
+      <span id="presentation-counter">06 / 14</span>
+      <button class="presentation-btn" id="next-btn" aria-label="다음 슬라이드">›</button>
+      <button id="speaker-toggle">SPEAKER</button>
+    </div>
+  </nav>
+
+<script src="발표용_공통.js"></script>
+</body>
+</html>
+
+

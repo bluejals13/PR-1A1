@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APMS.SR - Slide 15</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Presentation Design System -->
+  <link rel="stylesheet" href="../../common/css/reset.css">
+  <link rel="stylesheet" href="../../common/css/variables.css">
+  <link rel="stylesheet" href="../../common/css/typography.css">
+  <link rel="stylesheet" href="../../common/css/common.css">
+  
+  <!-- Slide Specific Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="presentation-mode" data-slide="015" data-slide-index="15">
+
+  <div id="presentation-progress"></div>
+
+  <main id="presentation-viewport">
+    <section class="slide active" id="slide-15" data-speaker-note="엔지니어링 정체성을 요약합니다. 001~014 슬라이드에 나타난 보안·인프라·성능·검증·거버넌스 근거를 기반으로, 개발자가 원리를 이해하고 백엔드 설계·인프라 실행·검증·장애 분석을 수행한다는 메시지를 전달합니다.">
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 15</span>
+          <h2 class="slide-title">Engineering Identity</h2>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <span class="tag documented">DOCUMENTED</span>
+        </div>
+      </div>
+
+      <div class="card highlight-blue identity-card">
+        <div class="identity-head">
+          <span class="identity-tag">ENGINEERING IDENTITY</span>
+          <span class="identity-sub">핵심 원리와 검증된 실천을 통한 엔지니어 정체성</span>
+        </div>
+        <ul class="identity-list">
+          <li><strong>Security:</strong> 001‑006에서 구현한 JWT 이원화, RTR 토큰 회전, RBAC 권한 계층.</li>
+          <li><strong>Infrastructure / Performance:</strong> 010에서 검증된 k6 70 VU 부하, 5 ms 평균 응답, 0 % 오류.</li>
+          <li><strong>Verification:</strong> 011에서 실제 장애 3건 분석·복구, 6‑Step TS 절차 적용.</li>
+          <li><strong>Resilience / Governance:</strong> 012‑014에서 AI‑거버넌스 8‑Stage 프로세스, 트레이드‑오프 선택, 한계·로드맵 구분.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <!-- Speaker Notes Panel -->
+  <div id="speaker-panel">
+    <div class="speaker-head">
+      <span>Speaker Notes</span>
+      <button id="speaker-close" aria-label="발표 노트 닫기">✕</button>
+    </div>
+    <div id="speaker-text"></div>
+  </div>
+
+  <!-- Bottom Presentation Navigation Bar -->
+  <nav id="presentation-nav" aria-label="발표 네비게이션">
+    <div class="presentation-nav-left">
+      <span class="presentation-brand">APMS.SR / PRESENTATION</span>
+      <span class="presentation-hint">← → 방향키 · Space 다음 · N 발표 노트 · F 전체화면</span>
+    </div>
+    <div class="presentation-nav-right">
+      <button class="presentation-btn" id="prev-btn" aria-label="이전 슬라이드">‹</button>
+      <span id="presentation-counter">15 / 15</span>
+      <button class="presentation-btn" id="next-btn" aria-label="다음 슬라이드">›</button>
+      <button class="speaker-btn" id="speaker-toggle">SPEAKER</button>
+    </div>
+  </nav>
+
+  <!-- Presentation Runtime -->
+  <script src="../../common/js/presentation.js"></script>
+  <script src="../../common/js/export.js"></script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>APMS.SR - Slide 12</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- 발표 공통 CSS -->
+  <link rel="stylesheet" href="발표용_공통.css">
+
+
+
+
+</head>
+
+<body class="presentation-mode" data-slide="12">
+
+  <!-- Progress -->
+  <div id="presentation-progress"></div>
+
+
+  <!-- Slide Viewport -->
+  <main id="presentation-viewport">
+
+    <!-- Slide 12: AI Engineering Workflow -->
+    <section class="slide" id="slide-12" data-speaker-note="SA-1 리포지토리의 거버넌스 규칙에 따라 AI Agent를 개발 프로세스에 통합했습니다. 요구사항 분석부터 검증, 문서화까지 8단계 라이프사이클을 거치며, AI가 작성한 코드는 반드시 JUnit과 k6 테스트를 거쳐 개발자의 승인 하에만 반영됩니다.">
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 12</span>
+          <h2 class="slide-title">SA-1 기반 통제된 AI 협업 8단계 라이프사이클</h2>
+        </div>
+        <span class="tag documented">DOCUMENTED</span>
+      </div>
+
+      <div class="card highlight-blue" style="margin-bottom: 1.25rem;">
+        <div style="font-size: 1.15rem; font-weight: 700; color: var(--accent-cyan); text-align: center;">
+          "AI가 단독으로 개발한 것이 아닌, 개발자가 통제된 엔지니어링 프로세스에서 AI를 정밀 도구로 활용"
+        </div>
+        <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 0.5rem;">
+          <span class="tag documented">Zero-Chatter Policy</span>
+          <span class="tag documented">Documentation-First</span>
+        </div>
+      </div>
+
+      <div class="diagram-wrap" style="padding: 0.75rem; flex: 1;">
+        <svg viewBox="0 0 880 120" xmlns="http://www.w3.org/2000/svg">
+          <rect x="5" y="35" width="95" height="45" rx="5" fill="#1e293b" stroke="#38bdf8"/>
+          <text x="18" y="55" fill="#fff" font-size="10" font-weight="700">1. Requirement</text>
+          <text x="22" y="68" fill="#94a3b8" font-size="8">과제 명세화</text>
+
+          <path d="M100 57 L115 57" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+
+          <rect x="115" y="35" width="95" height="45" rx="5" fill="#1e293b" stroke="#38bdf8"/>
+          <text x="125" y="55" fill="#fff" font-size="10" font-weight="700">2. Context Read</text>
+          <text x="135" y="68" fill="#94a3b8" font-size="8">기존 코드 분석</text>
+
+          <path d="M210 57 L225 57" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+
+          <rect x="225" y="35" width="95" height="45" rx="5" fill="#1e293b" stroke="#38bdf8"/>
+          <text x="245" y="55" fill="#fff" font-size="10" font-weight="700">3. Planning</text>
+          <text x="240" y="68" fill="#94a3b8" font-size="8">파일 변경 계획</text>
+
+          <path d="M320 57 L335 57" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+
+          <rect x="335" y="35" width="95" height="45" rx="5" fill="#1e293b" stroke="#a855f7"/>
+          <text x="345" y="55" fill="#fff" font-size="10" font-weight="700">4. Delegation</text>
+          <text x="345" y="68" fill="#c084fc" font-size="8">@Task&Log 위임</text>
+
+          <path d="M430 57 L445 57" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-purple)"/>
+
+          <rect x="445" y="35" width="95" height="45" rx="5" fill="#1e293b" stroke="#10b981"/>
+          <text x="455" y="55" fill="#fff" font-size="10" font-weight="700">5. Verification</text>
+          <text x="455" y="68" fill="#34d399" font-size="8">JUnit / k6 검증</text>
+
+          <path d="M540 57 L555 57" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+
+          <rect x="555" y="35" width="95" height="45" rx="5" fill="#1e293b" stroke="#f59e0b"/>
+          <text x="560" y="55" fill="#fff" font-size="10" font-weight="700">6. Human Review</text>
+          <text x="565" y="68" fill="#fbbf24" font-size="8">개발자 최종승인</text>
+
+          <path d="M650 57 L665 57" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-amber)"/>
+
+          <rect x="665" y="35" width="95" height="45" rx="5" fill="#1e293b" stroke="#38bdf8"/>
+          <text x="670" y="55" fill="#fff" font-size="10" font-weight="700">7. Documentation</text>
+          <text x="675" y="68" fill="#38bdf8" font-size="8">changelogs 동기화</text>
+
+          <path d="M760 57 L775 57" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+
+          <rect x="775" y="35" width="95" height="45" rx="5" fill="#1e293b" stroke="#10b981"/>
+          <text x="795" y="55" fill="#fff" font-size="10" font-weight="700">8. Deploy</text>
+          <text x="795" y="68" fill="#34d399" font-size="8">컨테이너 빌드</text>
+        </svg>
+      </div>
+    </section>
+
+
+  </main>
+
+
+  <!-- Speaker Panel -->
+  <div id="speaker-panel">
+
+    <div class="speaker-head">
+
+      <span>
+        Speaker Notes
+      </span>
+
+      <button
+        id="speaker-close"
+        aria-label="발표 노트 닫기"
+      >
+        ✕
+      </button>
+
+    </div>
+
+    <div id="speaker-text"></div>
+
+  </div>
+
+
+  <!-- Presentation Navigation -->
+  <nav
+    id="presentation-nav"
+    aria-label="발표 네비게이션"
+  >
+
+    <div class="presentation-nav-left">
+
+      <span class="presentation-brand">
+        APMS.SR / PRESENTATION
+      </span>
+
+      <span class="presentation-hint">
+        ← → 방향키 · Space 다음 · N 발표 노트
+      </span>
+
+    </div>
+
+
+    <div class="presentation-nav-right">
+
+      <button
+        class="presentation-btn"
+        id="prev-btn"
+        aria-label="이전 슬라이드"
+      >
+        ‹
+      </button>
+
+      <span id="presentation-counter">
+        12 / 14
+      </span>
+
+      <button
+        class="presentation-btn"
+        id="next-btn"
+        aria-label="다음 슬라이드"
+      >
+        ›
+      </button>
+
+      <button
+        id="speaker-toggle"
+        type="button"
+      >
+        SPEAKER
+      </button>
+
+    </div>
+
+  </nav>
+
+
+  <script src="발표용_공통.js"></script>
+
+</body>
+</html>

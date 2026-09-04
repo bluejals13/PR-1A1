@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>APMS.SR - Slide 13</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- 발표 공통 CSS -->
+  <link rel="stylesheet" href="발표용_공통.css">
+
+  <!-- 10번 슬라이드 전용 CSS -->
+  <link rel="stylesheet" href="4번 슬라이드.css">
+
+
+</head>
+
+<body class="presentation-mode" data-slide="13">
+
+  <!-- Progress -->
+  <div id="presentation-progress"></div>
+
+
+  <!-- Slide Viewport -->
+  <main id="presentation-viewport">
+
+    <!-- Slide 13: Claim -> Evidence Mapping -->
+    <section class="slide" id="slide-13" data-speaker-note="본 포트폴리오에서 제시하는 모든 보안, 성능, 인프라 주장은 소스 코드의 구현 위치와 이를 검증한 자동화 테스트 파일로 1:1 맵핑됩니다. 증거가 없는 주장은 일체 포함하지 않았습니다.">
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 13</span>
+          <h2 class="slide-title">Claim-to-Evidence 추적성 매트릭스</h2>
+        </div>
+        <span class="tag verified">TRACEABLE</span>
+      </div>
+
+      <div class="table-container" style="flex: 1;">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 25%;">엔지니어링 주장 (Claim)</th>
+              <th style="width: 32%;">소스 구현 위치 (Implementation)</th>
+              <th style="width: 33%;">검증 테스트 / 증거 (Verification)</th>
+              <th style="width: 10%;">판정</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>RTR 토큰 탈취 Replay Attack 방어</strong></td>
+              <td><code>AuthService.java</code> (JTI Redis 갱신)</td>
+              <td><code>SecurityIntegrationTest.java</code> (401 확인)</td>
+              <td><span class="tag verified">VERIFIED</span></td>
+            </tr>
+            <tr>
+              <td><strong>로그아웃 즉시 Access Token 차단</strong></td>
+              <td><code>TokenBlacklistService.java</code></td>
+              <td><code>TokenBlacklistServiceTest.java</code> (거부 확인)</td>
+              <td><span class="tag verified">VERIFIED</span></td>
+            </tr>
+            <tr>
+              <td><strong>User-Role-Permission M:N 인가</strong></td>
+              <td><code>UserAuthorityService.java</code></td>
+              <td><code>RbacSecurityIntegrationTest.java</code> (403 확인)</td>
+              <td><span class="tag verified">VERIFIED</span></td>
+            </tr>
+            <tr>
+              <td><strong>70 VU 부하 시 5.64ms / 0% Error</strong></td>
+              <td><code>k6/scenarios/load.test.js</code></td>
+              <td>k6 실행 요약 로그 (5~7차 실측치)</td>
+              <td><span class="tag verified">VERIFIED</span></td>
+            </tr>
+            <tr>
+              <td><strong>Nginx 프록시 & 내부 DNS 통신</strong></td>
+              <td><code>nginx/default.conf</code>, <code>docker-compose.yml</code></td>
+              <td>TS-003 해결 및 컨테이너 기동 로그</td>
+              <td><span class="tag verified">VERIFIED</span></td>
+            </tr>
+            <tr>
+              <td><strong>Redis 장애 시 2s 타임아웃 방어</strong></td>
+              <td><code>application.yml</code> (lettuce timeout)</td>
+              <td><code>TS-01-REDIS</code> 장애 회복 검증</td>
+              <td><span class="tag verified">VERIFIED</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- Speaker Panel -->
+  <div id="speaker-panel">
+
+    <div class="speaker-head">
+
+      <span>
+        Speaker Notes
+      </span>
+
+      <button
+        id="speaker-close"
+        aria-label="발표 노트 닫기"
+      >
+        ✕
+      </button>
+
+    </div>
+
+    <div id="speaker-text"></div>
+
+  </div>
+
+
+  <!-- Presentation Navigation -->
+  <nav
+    id="presentation-nav"
+    aria-label="발표 네비게이션"
+  >
+
+    <div class="presentation-nav-left">
+
+      <span class="presentation-brand">
+        APMS.SR / PRESENTATION
+      </span>
+
+      <span class="presentation-hint">
+        ← → 방향키 · Space 다음 · N 발표 노트
+      </span>
+
+    </div>
+
+
+    <div class="presentation-nav-right">
+
+      <button
+        class="presentation-btn"
+        id="prev-btn"
+        aria-label="이전 슬라이드"
+      >
+        ‹
+      </button>
+
+      <span id="presentation-counter">
+        13 / 14
+      </span>
+
+      <button
+        class="presentation-btn"
+        id="next-btn"
+        aria-label="다음 슬라이드"
+      >
+        ›
+      </button>
+
+      <button
+        id="speaker-toggle"
+        type="button"
+      >
+        SPEAKER
+      </button>
+
+    </div>
+
+  </nav>
+
+
+  <script src="발표용_공통.js"></script>
+
+</body>
+</html>

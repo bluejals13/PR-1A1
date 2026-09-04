@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>APMS.SR - Slide 11</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- 발표 공통 CSS -->
+  <link rel="stylesheet" href="발표용_공통.css">
+
+
+
+
+</head>
+
+<body class="presentation-mode" data-slide="11">
+
+  <!-- Progress -->
+  <div id="presentation-progress"></div>
+
+
+  <!-- Slide Viewport -->
+  <main id="presentation-viewport">
+
+    <!-- Slide 11: Observability Pipeline (Visual Hero & Strict Partial) -->
+    <section class="slide" id="slide-11" data-speaker-note="애플리케이션의 헬스체크와 메트릭은 Actuator와 Prometheus, VictoriaMetrics 시계열 DB로 수집됩니다. k6 부하 중에도 JVM Heap과 DB 커넥션 풀이 안정적으로 유지됨을 확인했습니다. 다만 Grafana 대시보드는 현재 구성 단계이므로 '부분 구현(PARTIAL)'으로 명확히 구분합니다.">
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 11</span>
+          <h2 class="slide-title">Observability 파이프라인 데이터 흐름</h2>
+        </div>
+        <span class="tag partial">[PARTIAL] DASHBOARD</span>
+      </div>
+
+      <!-- Large Pipeline SVG Hero -->
+      <div class="diagram-wrap" style="flex: 1.3;">
+        <svg viewBox="0 0 880 220" xmlns="http://www.w3.org/2000/svg">
+          <!-- Actuator -->
+          <rect x="20" y="80" width="160" height="85" rx="10" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+          <text x="45" y="115" fill="#34d399" font-size="14" font-weight="800">Spring Actuator</text>
+          <text x="35" y="138" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="11">/actuator/prometheus</text>
+          <text x="50" y="155" fill="#10b981" font-size="10" font-weight="700">JVM / CPU / HikariCP</text>
+
+          <path d="M180 122 L240 122" stroke="#10b981" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+          <text x="185" y="112" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="9">15s Scrape</text>
+
+          <!-- Prometheus -->
+          <rect x="240" y="80" width="160" height="85" rx="10" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+          <text x="270" y="115" fill="#34d399" font-size="14" font-weight="800">Prometheus</text>
+          <text x="280" y="138" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="11">Port 9090 (Pull)</text>
+          <text x="265" y="155" fill="#10b981" font-size="10" font-weight="700">[VERIFIED] Collection</text>
+
+          <path d="M400 122 L460 122" stroke="#10b981" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+          <text x="405" y="112" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="9">Remote Write</text>
+
+          <!-- VictoriaMetrics -->
+          <rect x="460" y="80" width="170" height="85" rx="10" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+          <text x="485" y="115" fill="#34d399" font-size="14" font-weight="800">VictoriaMetrics</text>
+          <text x="495" y="138" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="11">Port 8428 (Store)</text>
+          <text x="480" y="155" fill="#10b981" font-size="10" font-weight="700">Time-Series Storage</text>
+
+          <path d="M630 122 L690 122" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow-amber)"/>
+          <text x="635" y="112" fill="#fbbf24" font-family="'JetBrains Mono', monospace" font-size="9">DataSource Query</text>
+
+          <!-- Grafana (PARTIAL) -->
+          <rect x="690" y="70" width="165" height="105" rx="10" fill="#1e293b" stroke="#f59e0b" stroke-width="2.5" stroke-dasharray="6,6"/>
+          <text x="735" y="105" fill="#fbbf24" font-size="15" font-weight="800">Grafana</text>
+          <text x="720" y="128" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="11">Port 3000:3000</text>
+          <rect x="710" y="140" width="125" height="24" rx="4" fill="rgba(245,158,11,0.2)"/>
+          <text x="722" y="156" fill="#fbbf24" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700">[PARTIAL STATUS]</text>
+        </svg>
+      </div>
+
+      <!-- Concise Evidence Cards -->
+      <div class="grid-2" style="margin-top: 0.75rem; flex: 0.7;">
+        <div class="card highlight-green">
+          <div class="card-title" style="color: var(--accent-green);">
+            <span>[VERIFIED] 부하 주입 중 관측 실측 사실</span>
+            <span class="tag verified">FACT</span>
+          </div>
+          <p style="font-size: 0.95rem;">
+            70 VU k6 부하 주입(60초 지속) 중 <strong>JVM Heap 메모리 안정적 유지(GC 지연 없음)</strong> 및 <strong>HikariCP 커넥션 풀 고갈 0건</strong> 확인.
+          </p>
+        </div>
+
+        <div class="card highlight-amber">
+          <div class="card-title" style="color: var(--accent-amber);">
+            <span>[PARTIAL] 모니터링 상태 분류 투명성</span>
+            <span class="tag partial">PARTIAL</span>
+          </div>
+          <p style="font-size: 0.95rem;">
+            Prometheus 및 VictoriaMetrics 수집 파이프라인은 연동 완료되었으나, <strong>Grafana 대시보드의 실시간 알람 및 정밀 튜닝은 미검증</strong> 상태로 투명하게 분리.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- Speaker Panel -->
+  <div id="speaker-panel">
+
+    <div class="speaker-head">
+
+      <span>
+        Speaker Notes
+      </span>
+
+      <button
+        id="speaker-close"
+        aria-label="발표 노트 닫기"
+      >
+        ✕
+      </button>
+
+    </div>
+
+    <div id="speaker-text"></div>
+
+  </div>
+
+
+  <!-- Presentation Navigation -->
+  <nav
+    id="presentation-nav"
+    aria-label="발표 네비게이션"
+  >
+
+    <div class="presentation-nav-left">
+
+      <span class="presentation-brand">
+        APMS.SR / PRESENTATION
+      </span>
+
+      <span class="presentation-hint">
+        ← → 방향키 · Space 다음 · N 발표 노트
+      </span>
+
+    </div>
+
+
+    <div class="presentation-nav-right">
+
+      <button
+        class="presentation-btn"
+        id="prev-btn"
+        aria-label="이전 슬라이드"
+      >
+        ‹
+      </button>
+
+      <span id="presentation-counter">
+        11 / 14
+      </span>
+
+      <button
+        class="presentation-btn"
+        id="next-btn"
+        aria-label="다음 슬라이드"
+      >
+        ›
+      </button>
+
+      <button
+        id="speaker-toggle"
+        type="button"
+      >
+        SPEAKER
+      </button>
+
+    </div>
+
+  </nav>
+
+
+  <script src="발표용_공통.js"></script>
+
+</body>
+</html>

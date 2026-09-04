@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>APMS.SR - Slide 14</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- 발표 공통 CSS -->
+  <link rel="stylesheet" href="발표용_공통.css">
+
+
+
+
+</head>
+
+<body class="presentation-mode" data-slide="14">
+
+  <!-- Progress -->
+  <div id="presentation-progress"></div>
+
+
+  <!-- Slide Viewport -->
+  <main id="presentation-viewport">
+
+    
+    <!-- Slide 14: FACT vs ROADMAP -->
+    <section class="slide" id="slide-14" data-speaker-note="마지막으로 구현 완료된 사실과 향후 계획을 명확히 분리합니다. 70 VU 부하 환경과 보안 메커니즘은 완벽히 검증되었으며, JPA N+1 정량 벤치마크나 분산 메시지 큐, 쿠버네티스 등은 다음 단계의 로드맵으로 관리하고 있습니다. 경청해 주셔서 감사합니다.">
+      <div class="slide-header">
+        <div class="slide-title-wrap">
+          <span class="slide-num">SLIDE 14</span>
+          <h2 class="slide-title">검증된 FACT와 향후 ROADMAP의 엄격한 경계</h2>
+        </div>
+        <span class="tag verified">ZERO-HALLUCINATION</span>
+      </div>
+
+      <div class="grid-2" style="flex: 1;">
+        <div class="card highlight-green" style="border: 2px solid var(--accent-green);">
+          <div class="card-title" style="color: var(--accent-green); border-bottom: 1px solid rgba(16, 185, 129, 0.3); padding-bottom: 0.5rem;">
+            <span>VERIFIED FACT (검증 완료된 엔지니어링 자산)</span>
+            <span class="tag verified">FACT</span>
+          </div>
+          <ul style="margin-top: 0.75rem;">
+            <li>✔️ Stateless JWT + RTR + Redis Blacklist 실시간 세션 통제 <span class="tag verified" style="float: right;">VERIFIED</span></li>
+            <li>✔️ User-Role-Permission M:N 권한 계층 모델 <span class="tag verified" style="float: right;">VERIFIED</span></li>
+            <li>✔️ Docker Compose 7개 컨테이너 네트워크 격리 <span class="tag implemented" style="float: right;">IMPLEMENTED</span></li>
+            <li>✔️ k6 70 VU 스트레스 평균 5.64ms, 에러율 0.00% <span class="tag verified" style="float: right;">VERIFIED</span></li>
+            <li>✔️ JUnit 10종 자동화 테스트 스위트 100% Pass <span class="tag verified" style="float: right;">VERIFIED</span></li>
+            <li>✔️ 3대 핵심 장애 TS 표준 6단계 해결 <span class="tag verified" style="float: right;">VERIFIED</span></li>
+          </ul>
+        </div>
+
+        <div class="card highlight-amber" style="border: 2px dashed rgba(245, 158, 11, 0.6);">
+          <div class="card-title" style="color: var(--accent-amber); border-bottom: 1px dashed rgba(245, 158, 11, 0.4); padding-bottom: 0.5rem;">
+            <span>FUTURE ROADMAP (향후 개선 계획 과제)</span>
+            <span class="tag planned">PLANNED</span>
+          </div>
+          <ul style="margin-top: 0.75rem;">
+            <li>⏳ JPA N+1 쿼리 최적화 정량 벤치마크 실측 <span class="tag planned" style="float: right;">PLANNED</span></li>
+            <li>⏳ Apache Kafka / RabbitMQ 비동기 메시지 큐 도입 <span class="tag planned" style="float: right;">PLANNED</span></li>
+            <li>⏳ Redis Cluster 분산 캐시 및 다중화 <span class="tag planned" style="float: right;">PLANNED</span></li>
+            <li>⏳ OWASP ZAP 모의 침투 보안 테스트 자동화 <span class="tag planned" style="float: right;">PLANNED</span></li>
+            <li>⏳ Kubernetes 클러스터 오케스트레이션 및 HPA <span class="tag planned" style="float: right;">PLANNED</span></li>
+            <li>⏳ SSL/TLS Production 인증서 (HTTPS) 적용 <span class="tag planned" style="float: right;">PLANNED</span></li>
+            <li>⏳ 1,000+ VU 대규모 분산 부하 테스트 <span class="tag planned" style="float: right;">PLANNED</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+
+
+  </main>
+
+
+  <!-- Speaker Panel -->
+  <div id="speaker-panel">
+
+    <div class="speaker-head">
+
+      <span>
+        Speaker Notes
+      </span>
+
+      <button
+        id="speaker-close"
+        aria-label="발표 노트 닫기"
+      >
+        ✕
+      </button>
+
+    </div>
+
+    <div id="speaker-text"></div>
+
+  </div>
+
+
+  <!-- Presentation Navigation -->
+  <nav
+    id="presentation-nav"
+    aria-label="발표 네비게이션"
+  >
+
+    <div class="presentation-nav-left">
+
+      <span class="presentation-brand">
+        APMS.SR / PRESENTATION
+      </span>
+
+      <span class="presentation-hint">
+        ← → 방향키 · Space 다음 · N 발표 노트
+      </span>
+
+    </div>
+
+
+    <div class="presentation-nav-right">
+
+      <button
+        class="presentation-btn"
+        id="prev-btn"
+        aria-label="이전 슬라이드"
+      >
+        ‹
+      </button>
+
+      <span id="presentation-counter">
+        14 / 14
+      </span>
+
+      <button
+        class="presentation-btn"
+        id="next-btn"
+        aria-label="다음 슬라이드"
+      >
+        ›
+      </button>
+
+      <button
+        id="speaker-toggle"
+        type="button"
+      >
+        SPEAKER
+      </button>
+
+    </div>
+
+  </nav>
+
+
+  <script src="발표용_공통.js"></script>
+
+</body>
+</html>

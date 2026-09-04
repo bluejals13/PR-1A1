@@ -1,7 +1,5 @@
-
 const currentSlide = Number(document.body.dataset.slide);
-
-const totalSlides = 3;
+const totalSlides = 14;
 
 const progress = document.getElementById('presentation-progress');
 const counter = document.getElementById('presentation-counter');
@@ -15,9 +13,10 @@ const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
 
 
-/**
- * 지정한 슬라이드 HTML로 이동
- */
+/* =========================================================
+   슬라이드 이동
+   ========================================================= */
+
 function goToSlide(target) {
   if (target < 1 || target > totalSlides) {
     return;
@@ -27,95 +26,124 @@ function goToSlide(target) {
 }
 
 
-/**
- * 발표 UI 초기화
- */
+/* =========================================================
+   발표 UI
+   ========================================================= */
+
 function updatePresentationUI() {
-  counter.textContent =
-    `${String(currentSlide).padStart(2, '0')} / ${String(totalSlides).padStart(2, '0')}`;
 
-  progress.style.width =
-    `${(currentSlide / totalSlides) * 100}%`;
+  if (counter) {
+    counter.textContent =
+      `${String(currentSlide).padStart(2, '0')} / ${String(totalSlides).padStart(2, '0')}`;
+  }
 
-  prevBtn.disabled = currentSlide === 1;
-  nextBtn.disabled = currentSlide === totalSlides;
+  if (progress) {
+    progress.style.width =
+      `${(currentSlide / totalSlides) * 100}%`;
+  }
+
+  if (prevBtn) {
+    prevBtn.disabled = currentSlide === 1;
+  }
+
+  if (nextBtn) {
+    nextBtn.disabled = currentSlide === totalSlides;
+  }
 
   const slide = document.querySelector('.slide');
 
   const note =
-    slide?.dataset.speakerNote || '발표자 노트가 없습니다.';
+    slide?.dataset.speakerNote ||
+    '발표자 노트가 없습니다.';
 
-  speakerText.textContent = note;
+  if (speakerText) {
+    speakerText.textContent = note;
+  }
 }
 
 
-/**
- * 발표자 노트 열기 / 닫기
- */
+/* =========================================================
+   Speaker
+   ========================================================= */
+
 function toggleSpeaker() {
+
+  if (!speakerPanel) {
+    return;
+  }
+
   speakerPanel.classList.toggle('visible');
 }
 
 
-/**
- * 이전 슬라이드
- */
-prevBtn.addEventListener('click', () => {
-  goToSlide(currentSlide - 1);
-});
+if (prevBtn) {
+  prevBtn.addEventListener('click', () => {
+    goToSlide(currentSlide - 1);
+  });
+}
 
 
-/**
- * 다음 슬라이드
- */
-nextBtn.addEventListener('click', () => {
-  goToSlide(currentSlide + 1);
-});
+if (nextBtn) {
+  nextBtn.addEventListener('click', () => {
+    goToSlide(currentSlide + 1);
+  });
+}
 
 
-/**
- * SPEAKER 버튼
- */
-speakerToggle.addEventListener('click', toggleSpeaker);
+if (speakerToggle) {
+  speakerToggle.addEventListener('click', toggleSpeaker);
+}
 
 
-/**
- * 발표자 노트 닫기
- */
-speakerClose.addEventListener('click', () => {
-  speakerPanel.classList.remove('visible');
-});
+if (speakerClose) {
+  speakerClose.addEventListener('click', () => {
+    speakerPanel.classList.remove('visible');
+  });
+}
 
 
-/**
- * 키보드 발표 제어
- *
- * ← : 이전 슬라이드
- * → : 다음 슬라이드
- * Space : 다음 슬라이드
- * N : 발표자 노트
- * ESC : 발표자 노트 닫기
- */
+/* =========================================================
+   Keyboard Control
+   ← 이전
+   → 다음
+   Space 다음
+   N Speaker
+   ESC Speaker 닫기
+   ========================================================= */
+
 document.addEventListener('keydown', (event) => {
+
   if (event.key === 'ArrowLeft') {
+
     event.preventDefault();
     goToSlide(currentSlide - 1);
 
-  } else if (event.key === 'ArrowRight' || event.key === ' ') {
+  } else if (
+    event.key === 'ArrowRight' ||
+    event.key === ' '
+  ) {
+
     event.preventDefault();
     goToSlide(currentSlide + 1);
 
-  } else if (event.key.toLowerCase() === 'n') {
+  } else if (
+    event.key.toLowerCase() === 'n'
+  ) {
+
     event.preventDefault();
     toggleSpeaker();
 
-  } else if (event.key === 'Escape') {
-    speakerPanel.classList.remove('visible');
+  } else if (
+    event.key === 'Escape'
+  ) {
+
+    speakerPanel?.classList.remove('visible');
   }
 });
 
 
-/**
- * 최초 UI 업데이트
- */
+/* =========================================================
+   최초 실행
+   ========================================================= */
+
 updatePresentationUI();
