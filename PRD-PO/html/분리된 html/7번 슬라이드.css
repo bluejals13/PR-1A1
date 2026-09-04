@@ -1,0 +1,795 @@
+/* ============================================================
+   APMS.SR — SLIDE 07
+   Evidence → Operation / Residual Risk
+   ============================================================ */
+
+.slide-07 {
+  padding-top: 1.5rem;
+}
+
+
+/* ============================================================
+   TOP SUMMARY
+   ============================================================ */
+
+.operation-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  min-height: 54px;
+
+  margin-bottom: .65rem;
+  padding: .55rem .75rem;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(16, 185, 129, .055),
+      rgba(15, 23, 42, .7)
+    );
+
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+}
+
+
+.operation-summary-title {
+  display: flex;
+  align-items: baseline;
+  gap: .65rem;
+}
+
+
+.operation-summary-title .panel-kicker {
+  margin: 0;
+}
+
+
+.operation-summary-title strong {
+  color: #cbd5e1;
+
+  font-size: .58rem;
+  font-weight: 600;
+}
+
+
+.operation-summary-flow {
+  display: flex;
+  align-items: center;
+
+  gap: .4rem;
+
+  font-family: var(--font-mono);
+
+  font-size: .43rem;
+  font-weight: 700;
+}
+
+
+.operation-summary-flow b {
+  color: #475569;
+}
+
+
+.flow-done {
+  color: #6ee7b7;
+}
+
+
+.flow-monitor {
+  color: #fcd34d;
+}
+
+
+.flow-next {
+  color: #7dd3fc;
+}
+
+
+/* ============================================================
+   MAIN LAYOUT
+   ============================================================ */
+
+.operation-layout {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.55fr)
+    minmax(280px, .95fr);
+
+  gap: .75rem;
+
+  flex: 1;
+
+  min-height: 0;
+}
+
+
+/* ============================================================
+   PANEL
+   ============================================================ */
+
+.incident-panel,
+.risk-panel {
+  min-width: 0;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(30, 41, 59, .68),
+      rgba(15, 23, 42, .9)
+    );
+
+  border: 1px solid var(--border-soft);
+
+  border-radius: var(--radius-lg);
+
+  overflow: hidden;
+}
+
+
+.panel-header {
+  min-height: 49px;
+
+  padding: .55rem .75rem;
+}
+
+
+/* ============================================================
+   INCIDENT LIST
+   ============================================================ */
+
+.incident-list {
+  display: grid;
+
+  grid-template-rows: 1fr 1fr;
+
+  gap: .55rem;
+
+  flex: 1;
+
+  min-height: 0;
+
+  padding: .55rem;
+}
+
+
+.incident-card {
+  position: relative;
+
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: .65rem .7rem;
+
+  background:
+    rgba(15, 23, 42, .62);
+
+  border: 1px solid var(--border-soft);
+
+  border-radius: 6px;
+
+  overflow: hidden;
+}
+
+
+.incident-card::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 3px;
+  height: 100%;
+}
+
+
+.incident-card.resolved::before {
+  background: var(--accent-green);
+}
+
+
+.incident-card.verify::before {
+  background: var(--accent-amber);
+}
+
+
+/* ============================================================
+   INCIDENT HEADER
+   ============================================================ */
+
+.incident-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: .75rem;
+
+  padding-left: .25rem;
+
+  margin-bottom: .55rem;
+}
+
+
+.case-id {
+  display: block;
+
+  margin-bottom: .12rem;
+
+  color: var(--text-muted);
+
+  font-family: var(--font-mono);
+
+  font-size: .4rem;
+  font-weight: 700;
+
+  letter-spacing: .07em;
+}
+
+
+.incident-head h4 {
+  color: #e2e8f0;
+
+  font-size: .67rem;
+  font-weight: 700;
+}
+
+
+/* ============================================================
+   CASE STATUS
+   ============================================================ */
+
+.case-status {
+  display: inline-flex;
+  align-items: center;
+
+  gap: .28rem;
+
+  white-space: nowrap;
+
+  font-family: var(--font-mono);
+
+  font-size: .4rem;
+  font-weight: 800;
+}
+
+
+.case-status i {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+}
+
+
+.resolved-status {
+  color: #6ee7b7;
+}
+
+
+.resolved-status i {
+  background: #34d399;
+
+  box-shadow:
+    0 0 6px rgba(52, 211, 153, .55);
+}
+
+
+.verify-status {
+  color: #fcd34d;
+}
+
+
+.verify-status i {
+  background: #f59e0b;
+}
+
+
+/* ============================================================
+   THREAT / IMPACT FLOW
+   ============================================================ */
+
+.incident-flow {
+  padding: .45rem .55rem;
+
+  background: rgba(2, 6, 23, .25);
+
+  border-radius: 4px;
+
+  border: 1px solid rgba(148, 163, 184, .07);
+}
+
+
+.incident-row {
+  display: flex;
+  align-items: center;
+
+  gap: .5rem;
+}
+
+
+.incident-row p {
+  color: #cbd5e1;
+
+  font-family: var(--font-mono);
+
+  font-size: .47rem;
+  line-height: 1.35;
+}
+
+
+.incident-label {
+  flex: 0 0 48px;
+
+  font-family: var(--font-mono);
+
+  font-size: .39rem;
+  font-weight: 800;
+
+  letter-spacing: .04em;
+}
+
+
+.incident-label.threat {
+  color: #fbbf24;
+}
+
+
+.incident-label.impact {
+  color: #f87171;
+}
+
+
+.incident-arrow {
+  margin: .18rem 0 .18rem 1px;
+
+  color: #475569;
+
+  font-size: .5rem;
+}
+
+
+/* ============================================================
+   CONTROL BOX
+   ============================================================ */
+
+.control-box {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: .5rem;
+
+  margin-top: .5rem;
+}
+
+
+.control-box > div {
+  padding: .45rem .5rem;
+
+  background:
+    rgba(30, 41, 59, .55);
+
+  border: 1px solid rgba(148, 163, 184, .08);
+
+  border-radius: 4px;
+}
+
+
+.control-label {
+  display: block;
+
+  margin-bottom: .18rem;
+
+  color: var(--accent-cyan);
+
+  font-family: var(--font-mono);
+
+  font-size: .38rem;
+  font-weight: 800;
+
+  letter-spacing: .05em;
+}
+
+
+.control-box p {
+  color: #94a3b8;
+
+  font-size: .46rem;
+
+  line-height: 1.45;
+}
+
+
+/* ============================================================
+   RISK LIST
+   ============================================================ */
+
+.risk-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: .35rem;
+
+  padding: .55rem;
+
+  overflow: hidden;
+}
+
+
+.risk-item {
+  display: flex;
+  align-items: center;
+
+  gap: .5rem;
+
+  min-height: 40px;
+
+  padding: .4rem .45rem;
+
+  background:
+    rgba(15, 23, 42, .58);
+
+  border: 1px solid rgba(148, 163, 184, .08);
+
+  border-radius: 5px;
+}
+
+
+.risk-state {
+  flex: 0 0 52px;
+
+  text-align: center;
+
+  padding: .2rem .15rem;
+
+  border-radius: 3px;
+
+  font-family: var(--font-mono);
+
+  font-size: .36rem;
+  font-weight: 800;
+}
+
+
+.risk-item strong {
+  display: block;
+
+  color: #dbe4ee;
+
+  font-size: .49rem;
+  font-weight: 700;
+}
+
+
+.risk-item small {
+  display: block;
+
+  margin-top: .1rem;
+
+  color: var(--text-muted);
+
+  font-size: .4rem;
+}
+
+
+/* Risk states */
+
+.risk-done {
+  border-left: 2px solid rgba(16, 185, 129, .55);
+}
+
+
+.risk-done .risk-state {
+  color: #6ee7b7;
+
+  background: rgba(16, 185, 129, .08);
+}
+
+
+.risk-warning {
+  border-left: 2px solid rgba(245, 158, 11, .6);
+}
+
+
+.risk-warning .risk-state {
+  color: #fcd34d;
+
+  background: rgba(245, 158, 11, .08);
+}
+
+
+.risk-critical {
+  border-left: 2px solid rgba(239, 68, 68, .65);
+
+  background:
+    rgba(239, 68, 68, .025);
+}
+
+
+.risk-critical .risk-state {
+  color: #fca5a5;
+
+  background: rgba(239, 68, 68, .09);
+}
+
+
+.risk-info {
+  border-left: 2px solid rgba(56, 189, 248, .55);
+}
+
+
+.risk-info .risk-state {
+  color: #7dd3fc;
+
+  background: rgba(56, 189, 248, .08);
+}
+
+
+/* ============================================================
+   NEXT ACTION
+   ============================================================ */
+
+.next-action-panel {
+  display: grid;
+
+  grid-template-columns:
+    145px
+    1fr
+    1fr
+    1fr;
+
+  align-items: stretch;
+
+  gap: .5rem;
+
+  margin-top: .6rem;
+
+  min-height: 59px;
+
+  padding: .45rem;
+
+  background:
+    rgba(15, 23, 42, .78);
+
+  border:
+    1px solid
+    rgba(239, 68, 68, .12);
+
+  border-radius: 6px;
+}
+
+
+.next-action-title {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: .15rem .4rem;
+}
+
+
+.next-action-title .panel-kicker {
+  margin-bottom: .15rem;
+}
+
+
+.next-action-title h3 {
+  color: #e2e8f0;
+
+  font-size: .58rem;
+}
+
+
+/* Action */
+
+.action-item {
+  display: flex;
+  align-items: center;
+
+  gap: .45rem;
+
+  padding: .35rem .5rem;
+
+  border-radius: 4px;
+
+  background: rgba(30, 41, 59, .55);
+
+  border: 1px solid rgba(148, 163, 184, .08);
+}
+
+
+.priority-badge {
+  flex: 0 0 auto;
+
+  min-width: 25px;
+
+  padding: .18rem .2rem;
+
+  text-align: center;
+
+  border-radius: 3px;
+
+  font-family: var(--font-mono);
+
+  font-size: .4rem;
+  font-weight: 800;
+}
+
+
+.action-item strong {
+  display: block;
+
+  color: #cbd5e1;
+
+  font-size: .46rem;
+}
+
+
+.action-item small {
+  display: block;
+
+  margin-top: .1rem;
+
+  color: var(--text-muted);
+
+  font-size: .38rem;
+}
+
+
+.action-item.p0 {
+  border-color: rgba(239, 68, 68, .14);
+}
+
+
+.action-item.p0 .priority-badge {
+  color: #fca5a5;
+
+  background: rgba(239, 68, 68, .1);
+}
+
+
+.action-item.p1 {
+  border-color: rgba(245, 158, 11, .14);
+}
+
+
+.action-item.p1 .priority-badge {
+  color: #fcd34d;
+
+  background: rgba(245, 158, 11, .1);
+}
+
+
+/* ============================================================
+   BOTTOM PRINCIPLE
+   ============================================================ */
+
+.operation-principle {
+  display: flex;
+  align-items: center;
+
+  gap: .65rem;
+
+  margin-top: .45rem;
+
+  padding: .4rem .65rem;
+
+  color: #94a3b8;
+
+  border-top: 1px solid rgba(51, 65, 85, .55);
+}
+
+
+.principle-mark {
+  flex: 0 0 auto;
+
+  color: var(--accent-cyan);
+
+  font-family: var(--font-mono);
+
+  font-size: .39rem;
+  font-weight: 800;
+
+  letter-spacing: .05em;
+}
+
+
+.operation-principle strong {
+  color: #cbd5e1;
+
+  font-size: .48rem;
+  font-weight: 500;
+
+  font-style: italic;
+}
+
+
+/* ============================================================
+   SHORT SCREEN
+   ============================================================ */
+
+@media (max-height: 700px) {
+
+  .operation-summary {
+    min-height: 45px;
+
+    margin-bottom: .45rem;
+  }
+
+  .operation-layout {
+    gap: .55rem;
+  }
+
+  .incident-list {
+    gap: .4rem;
+
+    padding: .45rem;
+  }
+
+  .incident-card {
+    padding: .5rem .6rem;
+  }
+
+  .incident-head {
+    margin-bottom: .35rem;
+  }
+
+  .control-box {
+    margin-top: .35rem;
+  }
+
+  .risk-list {
+    gap: .25rem;
+    padding: .45rem;
+  }
+
+  .risk-item {
+    min-height: 35px;
+    padding: .3rem .4rem;
+  }
+
+  .next-action-panel {
+    min-height: 50px;
+    margin-top: .4rem;
+  }
+
+  .operation-principle {
+    margin-top: .3rem;
+  }
+}
+
+
+/* ============================================================
+   NARROW SCREEN
+   ============================================================ */
+
+@media (max-width: 1050px) {
+
+  .operation-layout {
+    grid-template-columns:
+      minmax(0, 1.4fr)
+      minmax(250px, .9fr);
+  }
+
+  .next-action-panel {
+    grid-template-columns:
+      110px
+      1fr
+      1fr
+      1fr;
+  }
+
+  .operation-summary-title strong {
+    display: none;
+  }
+}

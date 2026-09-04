@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="4번 슬라이드.css">
+  <link rel="stylesheet" href="7번 슬라이드.css">
   <link rel="stylesheet" href="발표용_공통.css">
 </head>
 <body class="presentation-mode" data-slide="7">
@@ -17,97 +17,342 @@
 
   <main id="presentation-viewport">
 
-    <!-- Slide 07: Incident Analysis (Layered Engineering Response Map) -->
-    <section class="slide" id="slide-07" data-speaker-note="실제 개발 과정에서 발생한 세 가지 핵심 장애를 TS 표준 6단계 프로세스로 해결했습니다. Redis 다운 시 60초간 블로킹되던 문제를 2초 타임아웃으로 격리했고, 클라이언트의 무한 401 루프를 차단했으며, 도커 컨테이너 격리로 인한 호스트 바인딩 이슈를 환경변수 기반 아키텍처로 정상화했습니다.">
-      <div class="slide-header">
-        <div class="slide-title-wrap">
-          <span class="slide-num">SLIDE 07</span>
-          <h2 class="slide-title">실제 장애 3건의 계층별 엔지니어링 대응 (Incident Map)</h2>
+    <!-- Slide 07: Operation / Residual Risk -->
+<section class="slide slide-07" id="slide-07" data-speaker-note="검증된 보안 통제와 아직 검증되지 않은 잔여 위험을 분리하고, 운영 관점에서의 다음 행동 우선순위를 정의합니다.">
+
+  <div class="slide-header">
+    <div class="slide-title-wrap">
+      <span class="slide-num">SLIDE 07</span>
+      <h2 class="slide-title">Evidence → Operation | 해결 이후 무엇이 보장되는가</h2>
+    </div>
+
+    <span class="tag verified">RESIDUAL RISK & NEXT ACTION</span>
+  </div>
+
+
+  <!-- =====================================================
+       OPERATION STATUS
+       ===================================================== -->
+
+  <div class="operation-summary">
+
+    <div class="operation-summary-title">
+      <span class="panel-kicker">SECURITY OPERATION STATUS</span>
+      <strong>검증된 통제와 잔여 위험을 분리해 관리</strong>
+    </div>
+
+    <div class="operation-summary-flow">
+      <span class="flow-done">VERIFIED</span>
+      <b>→</b>
+      <span class="flow-monitor">MONITOR</span>
+      <b>→</b>
+      <span class="flow-next">NEXT ACTION</span>
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       MAIN CONTENT
+       ===================================================== -->
+
+  <div class="operation-layout">
+
+
+    <!-- ===================================================
+         LEFT : RESOLVED / INCIDENT CASES
+         =================================================== -->
+
+    <section class="incident-panel">
+
+      <div class="panel-header">
+        <div>
+          <span class="panel-kicker">01 / OPERATION CASES</span>
+          <h3>Operation & Incident Cases</h3>
         </div>
-        <span class="tag verified">TS 6-STEP STANDARD</span>
+
+        <span class="evidence-count">02 CASES</span>
       </div>
 
-      <div class="grid-3" style="flex: 1;">
-        <!-- Incident 1: App Data Layer -->
-        <div class="card highlight-amber" style="border-width: 2px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-            <span class="tag" style="background: rgba(245,158,11,0.2); color: #fbbf24;">APP DATA LAYER</span>
-            <span class="tag verified">TS-01-REDIS</span>
-          </div>
-          <div style="font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem;">
-            Redis 커맨드 타임아웃 블로킹
+
+      <div class="incident-list">
+
+
+        <!-- CASE 01 -->
+
+        <article class="incident-card resolved">
+
+          <div class="incident-head">
+
+            <div>
+              <span class="case-id">CASE 01</span>
+              <h4>Refresh 401 Loop 차단</h4>
+            </div>
+
+            <span class="case-status resolved-status">
+              <i></i> RESOLVED
+            </span>
+
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 0.6rem; flex: 1;">
-            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-red);">
-              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #f87171; font-weight: 700;">SYMPTOM</span>
-              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 2px;">Redis 장애 시 백엔드 스레드가 최대 60초간 블로킹되어 프론트엔드 흰 화면(Blank Screen) 발생</p>
-            </div>
-            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-amber);">
-              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #fbbf24; font-weight: 700;">ROOT CAUSE</span>
-              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 2px;">Lettuce 클라이언트 기본 커맨드 타임아웃(60s) 미설정 및 스레드 고갈</p>
-            </div>
-            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-green);">
-              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #34d399; font-weight: 700;">RESOLUTION</span>
-              <p style="font-size: 0.88rem; color: #86efac; margin-top: 2px; font-weight: 600;">타임아웃 2초(`2000ms`) 단축 및 503 `REDIS_UNAVAILABLE` 즉시 반환</p>
-            </div>
-          </div>
-        </div>
 
-        <!-- Incident 2: Client Interceptor Layer -->
-        <div class="card highlight-amber" style="border-width: 2px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-            <span class="tag" style="background: rgba(56,189,248,0.2); color: #38bdf8;">CLIENT / NETWORK LAYER</span>
-            <span class="tag verified">TS-001</span>
-          </div>
-          <div style="font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem;">
-            JWT Refresh 401 무한 루프
+          <div class="incident-flow">
+
+            <div class="incident-row">
+              <span class="incident-label threat">THREAT</span>
+              <p>Token Refresh Failure</p>
+            </div>
+
+            <div class="incident-arrow">↓</div>
+
+            <div class="incident-row">
+              <span class="incident-label impact">IMPACT</span>
+              <p>401 Infinite Retry → CPU 고갈</p>
+            </div>
+
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 0.6rem; flex: 1;">
-            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-red);">
-              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #f87171; font-weight: 700;">SYMPTOM</span>
-              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 2px;">토큰 만료 시 클라이언트 인터셉터와 서버 간 초당 수십 회 401 재시도 루프로 CPU 급증</p>
-            </div>
-            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-amber);">
-              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #fbbf24; font-weight: 700;">ROOT CAUSE</span>
-              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 2px;">갱신 요청 실패(401)에 대한 클라이언트 탈출 조건(Exit Condition) 부재</p>
-            </div>
-            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-green);">
-              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #34d399; font-weight: 700;">RESOLUTION</span>
-              <p style="font-size: 0.88rem; color: #86efac; margin-top: 2px; font-weight: 600;">갱신 401 수신 시 세션 즉시 초기화 및 로그인 리다이렉트 탈출 로직 구현</p>
-            </div>
-          </div>
-        </div>
 
-        <!-- Incident 3: Infra Container Layer -->
-        <div class="card highlight-amber" style="border-width: 2px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-            <span class="tag" style="background: rgba(168,85,247,0.2); color: #c084fc;">INFRA CONTAINER LAYER</span>
-            <span class="tag verified">TS-003</span>
-          </div>
-          <div style="font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem;">
-            Docker Redis 바인딩 거부
+          <div class="control-box">
+
+            <div>
+              <span class="control-label">CONTROL</span>
+              <p>
+                Single Flight 적용 +
+                Refresh 401 Exit Condition 추가
+              </p>
+            </div>
+
+            <div>
+              <span class="control-label">VERIFICATION</span>
+              <p>
+                401 반환 → Session Clear →
+                Login Redirect → Loop 종료
+              </p>
+            </div>
+
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 0.6rem; flex: 1;">
-            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-red);">
-              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #f87171; font-weight: 700;">SYMPTOM</span>
-              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 2px;">`docker compose up` 실행 시 Spring Boot가 Redis 연결에 실패하며 기동 중단</p>
+        </article>
+
+
+        <!-- CASE 02 -->
+
+        <article class="incident-card verify">
+
+          <div class="incident-head">
+
+            <div>
+              <span class="case-id">CASE 02</span>
+              <h4>Docker Redis 외부 노출 통제</h4>
             </div>
-            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-amber);">
-              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #fbbf24; font-weight: 700;">ROOT CAUSE</span>
-              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 2px;">컨테이너 격리 환경에서 `localhost`는 컨테이너 자신(Loopback)을 가리키는 문제</p>
-            </div>
-            <div style="background: var(--bg-secondary); padding: 0.65rem 0.85rem; border-radius: 6px; border-left: 3px solid var(--accent-green);">
-              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #34d399; font-weight: 700;">RESOLUTION</span>
-              <p style="font-size: 0.88rem; color: #86efac; margin-top: 2px; font-weight: 600;">`${SPRING_REDIS_HOST:localhost}` 환경변수화 및 서비스명(`redis`) 주입</p>
-            </div>
+
+            <span class="case-status verify-status">
+              <i></i> VERIFY REQUIRED
+            </span>
+
           </div>
-        </div>
+
+
+          <div class="incident-flow">
+
+            <div class="incident-row">
+              <span class="incident-label threat">THREAT</span>
+              <p>외부에서 Redis :6379 직접 접근 가능성</p>
+            </div>
+
+
+          </div>
+
+
+          <div class="control-box">
+
+            <div>
+              <span class="control-label">CONTROL</span>
+              <p>
+                Private Docker Network +
+                Port Exposure 제한
+              </p>
+            </div>
+
+            <div>
+              <span class="control-label">VERIFICATION</span>
+              <p>
+                External :6379 접근 차단 테스트 필요
+              </p>
+            </div>
+
+          </div>
+
+        </article>
+
+
       </div>
+
     </section>
 
+
+    <!-- ===================================================
+         RIGHT : RESIDUAL RISK
+         =================================================== -->
+
+    <aside class="risk-panel">
+
+      <div class="panel-header">
+        <div>
+          <span class="panel-kicker">02 / RESIDUAL RISK</span>
+          <h3>Current Security Posture</h3>
+        </div>
+
+        <span class="evidence-count">7 CONTROLS</span>
+      </div>
+
+
+      <div class="risk-list">
+
+
+        <div class="risk-item risk-done">
+          <span class="risk-state">VERIFIED</span>
+
+          <div>
+            <strong>Authentication</strong>
+            <small>JWT + Refresh Token lifecycle</small>
+          </div>
+        </div>
+
+
+        <div class="risk-item risk-done">
+          <span class="risk-state">VERIFIED</span>
+
+          <div>
+            <strong>Token Revocation</strong>
+            <small>Redis Blacklist / RTR</small>
+          </div>
+        </div>
+
+
+        <div class="risk-item risk-done">
+          <span class="risk-state">VERIFIED</span>
+
+          <div>
+            <strong>RBAC</strong>
+            <small>Role + Permission</small>
+          </div>
+        </div>
+
+
+        <div class="risk-item risk-warning">
+          <span class="risk-state">VERIFY</span>
+
+          <div>
+            <strong>Object Authorization</strong>
+            <small>BOLA / IDOR test required</small>
+          </div>
+        </div>
+
+
+        <div class="risk-item risk-warning">
+          <span class="risk-state">VERIFY</span>
+
+          <div>
+            <strong>Input Validation</strong>
+            <small>Global endpoint verification</small>
+          </div>
+        </div>
+
+
+        <div class="risk-item risk-critical">
+          <span class="risk-state">OPEN</span>
+
+          <div>
+            <strong>Rate Limiting</strong>
+            <small>Login / Refresh endpoint</small>
+          </div>
+        </div>
+
+
+        <div class="risk-item risk-info">
+          <span class="risk-state">TEST</span>
+
+          <div>
+            <strong>Infrastructure Exposure</strong>
+            <small>DB / Redis public exposure test</small>
+          </div>
+        </div>
+
+
+      </div>
+
+    </aside>
+
+  </div>
+
+
+  <!-- =====================================================
+       NEXT ACTIONS
+       ===================================================== -->
+
+  <div class="next-action-panel">
+
+    <div class="next-action-title">
+      <span class="panel-kicker">03 / NEXT ACTIONS</span>
+      <h3>Priority Roadmap</h3>
+    </div>
+
+
+    <div class="action-item p0">
+
+      <span class="priority-badge">P0</span>
+
+      <div>
+        <strong>BOLA / IDOR 방어 및 공격 재현 테스트</strong>
+        <small>Object-Level Authorization 검증 증거 확보</small>
+      </div>
+
+    </div>
+
+
+    <div class="action-item p0">
+
+      <span class="priority-badge">P0</span>
+
+      <div>
+        <strong>DB / Redis / Secret 외부 격리 검증</strong>
+        <small>Network exposure 및 port binding 재검증</small>
+      </div>
+
+    </div>
+
+
+    <div class="action-item p1">
+
+      <span class="priority-badge">P1</span>
+
+      <div>
+        <strong>Auth API Rate Limiting 적용</strong>
+        <small>Login / Refresh abuse 대응</small>
+      </div>
+
+    </div>
+
+
+  </div>
+
+
+  <!-- =====================================================
+       SECURITY PRINCIPLE
+       ===================================================== -->
+
+  <div class="operation-principle">
+    <span class="principle-mark">SECURITY PRINCIPLE</span>
+
+    <strong>
+      구현된 보안 기능의 개수보다,
+      식별되고 검증된 공격면의 범위로 보안 수준을 입증한다.
+    </strong>
+  </div>
+
+</section>
 
 
 
@@ -139,5 +384,3 @@
 <script src="발표용_공통.js"></script>
 </body>
 </html>
-
-

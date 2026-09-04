@@ -3,127 +3,517 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>APMS.SR - Slide 02</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
   <link rel="stylesheet" href="2번 슬라이드.css">
   <link rel="stylesheet" href="발표용_공통.css">
 </head>
+
 <body class="presentation-mode" data-slide="2">
 
   <div id="presentation-progress"></div>
 
   <main id="presentation-viewport">
-    <section class="slide active" id="slide-02" data-speaker-note="JWT 기반 인증은 서버의 세션 저장 부담을 덜어주지만, 발급된 토큰을 중간에 무효화할 수 없다는 치명적인 보안 맹점이 있습니다. 
-여기서 저는 RTR과 Redis Blacklist를 결합하여 무상태의 확장성을 해치지 않으면서도 토큰 상태 제어을 확보하는 아키텍처를 방향으로 진행했습니다.">
-      <div class="slide-header">
+
+    <!-- =========================================================
+         SLIDE 02
+         Security Decision
+         ========================================================= -->
+    <section class="slide security-decision-slide" id="slide-02">
+
+      <!-- Header -->
+      <header class="slide-header">
+
         <div class="slide-title-wrap">
-          <span class="slide-num">SLIDE 02</span>
-          <h2 class="slide-title">무상태(Stateless) 인증의 3대 보안 딜레마 & 해결 아키텍처</h2>
+
+          <span class="slide-num">
+            SLIDE 02
+          </span>
+
+          <div>
+            <h2 class="slide-title">
+              JWT를 선택한 것이 아니라,<br>
+              <span class="title-accent">JWT의 한계를 통제하기로 결정했다</span>
+            </h2>
+          </div>
+
         </div>
-        <span class="tag verified">ARCHITECTURAL DECISION</span>
+
+        <span class="tag verified">
+          SECURITY DECISION
+        </span>
+
+      </header>
+
+
+      <!-- Subtitle -->
+      <div class="security-intro">
+
+        <div class="intro-indicator"></div>
+
+        <p>
+          Stateless 인증의 확장성을 유지하면서
+          <strong>Token Revocation과 Replay 대응</strong>까지 확보한다.
+        </p>
+
       </div>
 
-      <!-- 3 Large Visual Problem Cards -->
-      <div class="grid-3" style="margin-bottom: 1.25rem; flex: 1.2;">
-        <div class="card highlight-red">
-          <div class="card-title" style="color: var(--accent-red);">
-            <span>1. Token Revocation Gap</span>
-            <span class="tag" style="background: rgba(239, 68, 68, 0.2); color: #f87171;">무효화 불가</span>
-          </div>
-          <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
-            로그아웃 후에도 토큰 유효
-          </div>
-          <p style="font-size: 0.92rem;">
-            순수 Stateless JWT는 사용자가 로그아웃해도 만료 시각(1시간)까지 서명이 유효하여 토큰 탈취 시 API 호출을 즉시 차단할 방법이 없음.
-          </p>
-        </div>
 
-        <div class="card highlight-red">
-          <div class="card-title" style="color: var(--accent-red);">
-            <span>2. Replay Attack Risk</span>
-            <span class="tag" style="background: rgba(239, 68, 68, 0.2); color: #f87171;">탈취 토큰 재사용</span>
-          </div>
-          <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
-            장기 Refresh Token 공격 노출
-          </div>
-          <p style="font-size: 0.92rem;">
-            7일간 유효한 Refresh Token이 고정되어 있으면 탈취 시 공격자가 무한히 새 Access Token을 발급받아 지속적인 비인가 접근 가능.
-          </p>
-        </div>
+      <!-- =====================================================
+           Main Security Architecture
+           ===================================================== -->
+      <div class="security-grid">
 
-        <div class="card highlight-amber">
-          <div class="card-title" style="color: var(--accent-amber);">
-            <span>3. Container Isolation</span>
-            <span class="tag" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">도커 루프백 실패</span>
+        <!-- ================= THREAT ================= -->
+        <article class="security-card threat-card">
+
+          <div class="card-header">
+
+            <div>
+              <span class="card-kicker">01 / RISK</span>
+              <h3>우리가 통제해야 할 위협</h3>
+            </div>
+
+            <span class="status-badge danger">
+              HIGH RISK
+            </span>
+
           </div>
-          <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
-            `localhost` 바인딩 거부
+
+
+          <div class="risk-list">
+
+            <div class="risk-item">
+
+              <div class="risk-index">01</div>
+
+              <div class="risk-content">
+                <strong>Access Token 탈취</strong>
+                <span>
+                  서명 검증만으로는 탈취된 토큰을 즉시 폐기할 수 없음
+                </span>
+              </div>
+
+            </div>
+
+
+            <div class="risk-item">
+
+              <div class="risk-index">02</div>
+
+              <div class="risk-content">
+                <strong>Logout 이후 Token 재사용</strong>
+                <span>
+                  Stateless 특성상 서버가 토큰 상태를 알 수 없음
+                </span>
+              </div>
+
+            </div>
+
+
+            <div class="risk-item">
+
+              <div class="risk-index">03</div>
+
+              <div class="risk-content">
+                <strong>Refresh Token Replay</strong>
+                <span>
+                  동일 Refresh Token의 반복 사용 가능성을 차단해야 함
+                </span>
+              </div>
+
+            </div>
+
+
+            <div class="risk-item">
+
+              <div class="risk-index">04</div>
+
+              <div class="risk-content">
+                <strong>Session Store 확장성 부담</strong>
+                <span>
+                  서버 세션 의존도를 높이면 Scale-out 비용이 증가
+                </span>
+              </div>
+
+            </div>
+
           </div>
-          <p style="font-size: 0.92rem;">
-            Docker 격리 환경에서 컨테이너 간 통신 시 `localhost`는 자기 자신을 가리켜 Redis/DB 커넥션 거부(Connection Refused) 발생.
-          </p>
-        </div>
+
+        </article>
+
+
+        <!-- ================= CONTROL ================= -->
+        <article class="security-card control-card">
+
+          <div class="card-header">
+
+            <div>
+              <span class="card-kicker">02 / CONTROL</span>
+              <h3>위협을 통제하는 설계</h3>
+            </div>
+
+            <span class="status-badge control">
+              CONTROLLED
+            </span>
+
+          </div>
+
+
+          <div class="control-stack">
+
+            <!-- Access Token -->
+            <div class="control-item">
+
+              <div class="control-top">
+
+                <span class="control-label">
+                  ACCESS TOKEN
+                </span>
+
+                <span class="control-tech">
+                  JWT
+                </span>
+
+              </div>
+
+              <div class="control-description">
+                Stateless 서명 검증으로 요청 인증
+              </div>
+
+            </div>
+
+
+            <!-- Refresh Token -->
+            <div class="control-item">
+
+              <div class="control-top">
+
+                <span class="control-label">
+                  REFRESH TOKEN
+                </span>
+
+                <span class="control-tech">
+                  HttpOnly Cookie
+                </span>
+
+              </div>
+
+              <div class="control-description">
+                JavaScript 접근을 차단하고 브라우저 쿠키로 전달
+              </div>
+
+            </div>
+
+
+            <!-- Rotation -->
+            <div class="control-item featured">
+
+              <div class="control-top">
+
+                <span class="control-label">
+                  TOKEN ROTATION
+                </span>
+
+                <span class="control-tech">
+                  RTR + JTI
+                </span>
+
+              </div>
+
+              <div class="control-description">
+                Refresh Token 사용 시 새로운 Token으로 교체
+              </div>
+
+            </div>
+
+
+            <!-- Revocation -->
+            <div class="control-item">
+
+              <div class="control-top">
+
+                <span class="control-label">
+                  REVOCATION
+                </span>
+
+                <span class="control-tech">
+                  Redis
+                </span>
+
+              </div>
+
+              <div class="control-description">
+                Logout · 재사용 감지 시 폐기 상태 반영
+              </div>
+
+            </div>
+
+          </div>
+
+        </article>
+
+
+        <!-- ================= RESULT ================= -->
+        <article class="security-card result-card">
+
+          <div class="card-header">
+
+            <div>
+              <span class="card-kicker">03 / RESULT</span>
+              <h3>결과적으로 확보되는 보안 속성</h3>
+            </div>
+
+            <span class="status-badge success">
+              VERIFIED
+            </span>
+
+          </div>
+
+
+          <div class="result-list">
+
+            <div class="result-item">
+
+              <div class="result-icon">✓</div>
+
+              <div>
+                <strong>Fast Verification</strong>
+                <span>
+                  Access Token은 서명 검증 중심으로 처리
+                </span>
+              </div>
+
+            </div>
+
+
+            <div class="result-item">
+
+              <div class="result-icon">✓</div>
+
+              <div>
+                <strong>One-time Refresh</strong>
+                <span>
+                  RTR로 Refresh Token 재사용 검출 및 거부
+                </span>
+              </div>
+
+            </div>
+
+
+            <div class="result-item">
+
+              <div class="result-icon">✓</div>
+
+              <div>
+                <strong>Immediate Revocation</strong>
+                <span>
+                  Redis 기반으로 폐기 상태를 즉시 반영
+                </span>
+              </div>
+
+            </div>
+
+
+            <div class="result-item">
+
+              <div class="result-icon">✓</div>
+
+              <div>
+                <strong>Horizontal Scaling</strong>
+                <span>
+                  애플리케이션 서버 간 세션 공유 불필요
+                </span>
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- Core Message -->
+          <div class="result-highlight">
+
+            <span class="highlight-label">
+              CORE PRINCIPLE
+            </span>
+
+            <strong>
+              Stateless 인증 + Stateful 제어
+            </strong>
+
+            <span>
+              JWT는 빠르게 검증하고,<br>
+              폐기가 필요한 상태만 Redis에서 관리한다.
+            </span>
+
+          </div>
+
+        </article>
+
       </div>
 
-      <!-- Large 5-Step Process Hero Banner -->
-      <div style="background: var(--bg-card-alt); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; flex: 0.8;">
-        <div style="text-align: center; flex: 1;">
-          <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-red); text-transform: uppercase; font-weight: 700;">Problem</div>
-          <div style="font-size: 1.1rem; font-weight: 800; color: var(--text-primary); margin-top: 2px;">Stateless 한계</div>
-          <div style="font-size: 0.8rem; color: var(--text-muted);">즉시 회수 불가</div>
+
+      <!-- =====================================================
+           Security Control Pipeline
+           ===================================================== -->
+      <div class="security-pipeline">
+
+        <div class="pipeline-title">
+          SECURITY CONTROL PIPELINE
         </div>
-        <div style="color: var(--text-muted); font-size: 1.25rem;">➔</div>
-        <div style="text-align: center; flex: 1;">
-          <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-blue); text-transform: uppercase; font-weight: 700;">Decision</div>
-          <div style="font-size: 1.1rem; font-weight: 800; color: var(--text-primary); margin-top: 2px;">RTR + Blacklist</div>
-          <div style="font-size: 0.8rem; color: var(--text-muted);">1회용 토큰 & TTL</div>
+
+        <div class="pipeline-flow">
+
+          <div class="pipeline-node threat">
+            <span class="node-number">01</span>
+            <strong>THREAT</strong>
+            <small>Token 탈취 / Replay</small>
+          </div>
+
+          <div class="pipeline-arrow">→</div>
+
+          <div class="pipeline-node control">
+            <span class="node-number">02</span>
+            <strong>CONTROL</strong>
+            <small>RTR / JTI / Revocation</small>
+          </div>
+
+          <div class="pipeline-arrow">→</div>
+
+          <div class="pipeline-node implementation">
+            <span class="node-number">03</span>
+            <strong>IMPLEMENT</strong>
+            <small>JWT / Cookie / Redis</small>
+          </div>
+
+          <div class="pipeline-arrow">→</div>
+
+          <div class="pipeline-node verification">
+            <span class="node-number">04</span>
+            <strong>VERIFY</strong>
+            <small>Signature / State</small>
+          </div>
+
+          <div class="pipeline-arrow">→</div>
+
+          <div class="pipeline-node operation">
+            <span class="node-number">05</span>
+            <strong>OPERATE</strong>
+            <small>Scale-out / Revoke</small>
+          </div>
+
         </div>
-        <div style="color: var(--text-muted); font-size: 1.25rem;">➔</div>
-        <div style="text-align: center; flex: 1;">
-          <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-purple); text-transform: uppercase; font-weight: 700;">Implementation</div>
-          <div style="font-size: 1.1rem; font-weight: 800; color: var(--text-primary); margin-top: 2px;">Spring + Redis</div>
-          <div style="font-size: 0.8rem; color: var(--text-muted);">JJWT / In-Memory</div>
-        </div>
-        <div style="color: var(--text-muted); font-size: 1.25rem;">➔</div>
-        <div style="text-align: center; flex: 1;">
-          <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-green); text-transform: uppercase; font-weight: 700;">Verification</div>
-          <div style="font-size: 1.1rem; font-weight: 800; color: var(--text-primary); margin-top: 2px;">JUnit 10종 + k6</div>
-          <div style="font-size: 0.8rem; color: var(--text-muted);">70 VU 부하 테스트</div>
-        </div>
-        <div style="color: var(--text-muted); font-size: 1.25rem;">➔</div>
-        <div style="text-align: center; flex: 1;">
-          <div style="font-family: var(--font-mono); font-size: 0.75rem; color: #34d399; text-transform: uppercase; font-weight: 700;">Result</div>
-          <div style="font-size: 1.1rem; font-weight: 800; color: #34d399; margin-top: 2px;">성능 검증 결과 : 5.64ms / 0% Err</div>
-          <div style="font-size: 0.8rem; color: var(--text-muted);">70 VU 부하 조건 성능 검증</div>
-        </div>
+
       </div>
+
+
+      <!-- Evidence -->
+      <div class="slide-evidence">
+
+        <span class="evidence-dot"></span>
+
+        <span>
+          Security Decision validated
+        </span>
+
+        <span class="evidence-arrow">→</span>
+
+        <span class="evidence-detail">
+          상세 Evidence는 Slide 06에서 검증
+        </span>
+
+      </div>
+
     </section>
+
   </main>
 
+
+  <!-- Speaker Notes -->
   <div id="speaker-panel">
+
     <div class="speaker-head">
-      <span>Speaker Notes</span>
-      <button id="speaker-close" aria-label="발표 노트 닫기">✕</button>
+
+      <span>
+        Speaker Notes
+      </span>
+
+      <button
+        id="speaker-close"
+        aria-label="발표 노트 닫기"
+      >
+        ✕
+      </button>
+
     </div>
+
     <div id="speaker-text"></div>
+
   </div>
 
-  <nav id="presentation-nav" aria-label="발표 네비게이션">
+
+  <!-- Presentation Navigation -->
+  <nav
+    id="presentation-nav"
+    aria-label="발표 네비게이션"
+  >
+
     <div class="presentation-nav-left">
-      <span class="presentation-brand">APMS.SR / PRESENTATION</span>
-      <span class="presentation-hint">← → 방향키 · Space 다음 · N 발표 노트</span>
+
+      <span class="presentation-brand">
+        APMS.SR / PRESENTATION
+      </span>
+
+      <span class="presentation-hint">
+        ← → 방향키 · Space 다음 · N 발표 노트
+      </span>
+
     </div>
+
 
     <div class="presentation-nav-right">
-      <button class="presentation-btn" id="prev-btn" aria-label="이전 슬라이드">‹</button>
-      <span id="presentation-counter">02 / 14</span>
-      <button class="presentation-btn" id="next-btn" aria-label="다음 슬라이드">›</button>
-      <button id="speaker-toggle">SPEAKER</button>
+
+      <button
+        class="presentation-btn"
+        id="prev-btn"
+        aria-label="이전 슬라이드"
+      >
+        ‹
+      </button>
+
+      <span id="presentation-counter">
+        02 / 14
+      </span>
+
+      <button
+        class="presentation-btn"
+        id="next-btn"
+        aria-label="다음 슬라이드"
+      >
+        ›
+      </button>
+
+      <button id="speaker-toggle">
+        SPEAKER
+      </button>
+
     </div>
+
   </nav>
 
-<script src="발표용_공통.js"></script>
+
+  <!-- JS는 기존 파일 그대로 사용 -->
+  <script src="발표용_공통.js"></script>
+
 </body>
 </html>

@@ -1,0 +1,804 @@
+# Slide Automation CLI & Jinja2 Rendering Guide
+
+> **목적:** HTML 슬라이드를 JSON 데이터와 독립 Jinja2 Template으로 분리하고, 사람이 명령어를 실행하여 HTML을 재생성·검증할 수 있는 자동화 시스템을 정의한다.
+
+---
+
+## 0. 시스템 목적
+
+이 시스템은 슬라이드의 **콘텐츠 데이터**, **HTML 구조**, **CSS/JS 동작**을 분리한다.
+
+```text
+Content
+   │
+   ▼
+JSON Data
+   │
+   ▼
+Jinja2 Template
+   │
+   │ render
+   ▼
+HTML
+   │
+   ├── Existing CSS
+   └── Existing JS
+   │
+   ▼
+Presentation
+```
+
+Jinja2는 Python 환경에서 사용하는 Template Engine이며, 이 시스템에서는 JSON 데이터를 Jinja2 Template에 주입하여 최종 HTML 파일을 생성하는 역할을 담당한다.
+
+### 핵심 원칙
+
+1. **JSON = Content / Domain Data**
+2. **Jinja2 = HTML Rendering**
+3. **Python = Build / Validate / Normalize / Test Control**
+4. **CSS = Presentation Style**
+5. **JavaScript = Presentation Runtime**
+6. **1 Slide = 1 Independent Template**
+7. **AI Agent는 필수 실행 요소가 아니다.**
+8. **HTML 생성은 명령어로 재현 가능해야 한다.**
+9. **증거가 없는 상태를 VERIFIED로 변경하지 않는다.**
+10. **기존 CSS/JS를 수정하여 Template을 맞추지 않는다.**
+
+---
+
+# 1. 전체 실행 구조
+
+최종적인 작업 흐름은 다음과 같다.
+
+```text
+┌───────────────────────────────┐
+│ automation/data/slide_008.json │
+└───────────────┬───────────────┘
+                │
+                ▼
+┌──────────────────────────────────┐
+│ automation/templates/             │
+│ slide_008.html.j2                │
+└───────────────┬──────────────────┘
+                │
+                │ Jinja2 render
+                ▼
+┌──────────────────────────────────┐
+│ automation/build.py              │
+│                                  │
+│ Validate                         │
+│ Normalize                        │
+│ Render                           │
+│ Write HTML                       │
+└───────────────┬──────────────────┘
+                │
+                ▼
+┌──────────────────────────────────────────┐
+│ PRD-PO/html/분리된 html/8번 슬라이드.html │
+└──────────────────────────────────────────┘
+                │
+                ├── 8번 슬라이드.css
+                └── 발표용_공통.js
+```
+
+따라서 HTML을 수정한 뒤 다시 생성해야 하는 경우에도 Template이나 JSON만 수정하고 동일한 명령을 다시 실행하면 된다.
+
+---
+
+# 2. 사람이 실행하는 명령어
+
+## 2.1 특정 슬라이드 Build
+
+현재 지원되는 기본 명령:
+
+```bash
+python automation/build.py --slide 008
+```
+
+이 명령은 Slide 008의 JSON과 Jinja2 Template을 읽어 HTML을 생성한다.
+
+예:
+
+```text
+automation/data/slide_008.json
+              +
+automation/templates/slide_008.html.j2
+              │
+              ▼
+         Jinja2 render
+              │
+              ▼
+PRD-PO/html/분리된 html/8번 슬라이드.html
+```
+
+---
+
+## 2.2 출력 위치 지정
+
+Build 시스템에서 지원하는 경우 출력 경로를 명시할 수 있다.
+
+```bash
+python automation/build.py --slide 008 --output "PRD-PO/html/분리된 html/8번 슬라이드.html"
+```
+
+보조 검증 산출물을 별도 위치에 생성할 경우:
+
+```bash
+python automation/build.py --slide 008 --dist
+```
+
+> 실제 CLI 옵션은 현재 `automation/build.py`의 구현을 기준으로 사용한다. 구현되지 않은 옵션을 임의로 사용하지 않는다.
+
+---
+
+# 3. Jinja2의 역할
+
+Jinja2는 HTML을 직접 디자인하는 도구가 아니다.
+
+Jinja2 Template에는 HTML 구조를 작성하고, 변경되는 콘텐츠를 변수와 반복문으로 표현한다.
+
+예:
+
+```html
+<h1>{{ title }}</h1>
+
+<p>{{ description }}</p>
+
+{% for item in items %}
+<div class="card">
+    <strong>{{ item.title }}</strong>
+    <span>{{ item.description }}</span>
+</div>
+{% endfor %}
+```
+
+JSON:
+
+```json
+{
+  "title": "Security Flow",
+  "description": "JWT Refresh Token Rotation",
+  "items": [
+    {
+      "title": "Refresh Token",
+      "description": "Token validation"
+    },
+    {
+      "title": "Replay Detection",
+      "description": "JTI state verification"
+    }
+  ]
+}
+```
+
+렌더링 결과:
+
+```html
+<h1>Security Flow</h1>
+
+<p>JWT Refresh Token Rotation</p>
+
+<div class="card">
+    <strong>Refresh Token</strong>
+    <span>Token validation</span>
+</div>
+
+<div class="card">
+    <strong>Replay Detection</strong>
+    <span>JTI state verification</span>
+</div>
+```
+
+즉:
+
+```text
+JSON
+ ↓
+Template Variables
+ ↓
+Jinja2 render()
+ ↓
+완성된 HTML
+```
+
+이다.
+
+---
+
+# 4. Python에서 Jinja2 렌더링
+
+개념적으로 Build 과정은 다음과 같다.
+
+```python
+from pathlib import Path
+import json
+from jinja2 import Environment, FileSystemLoader
+
+data_path = Path("automation/data/slide_008.json")
+template_dir = Path("automation/templates")
+
+data = json.loads(data_path.read_text(encoding="utf-8"))
+
+env = Environment(
+    loader=FileSystemLoader(template_dir)
+)
+
+template = env.get_template("slide_008.html.j2")
+
+html = template.render(**data)
+
+output_path = Path(
+    "PRD-PO/html/분리된 html/8번 슬라이드.html"
+)
+
+output_path.write_text(
+    html,
+    encoding="utf-8"
+)
+```
+
+현재 프로젝트에서는 이 역할을 `automation/build.py`가 담당한다.
+
+따라서 사용자는 Jinja2 API를 직접 호출하지 않아도 된다.
+
+```text
+사람
+ ↓
+python automation/build.py --slide 008
+ ↓
+build.py
+ ↓
+Jinja2
+ ↓
+HTML
+```
+
+---
+
+# 5. JSON과 Template의 책임
+
+## JSON
+
+JSON에는 콘텐츠와 의미론적 상태만 저장한다.
+
+허용:
+
+```json
+{
+  "title": "Refresh Token Replay",
+  "status": "VERIFY",
+  "description": "Replay detection is required"
+}
+```
+
+금지:
+
+```json
+{
+  "title": "Refresh Token Replay",
+  "color": "red",
+  "font-size": "20px",
+  "margin": "10px",
+  "padding": "12px"
+}
+```
+
+CSS 디자인은 JSON의 책임이 아니다.
+
+---
+
+# 6. Status 처리
+
+상태의 의미는 JSON에서 관리하고, 표현용 CSS 클래스는 Python Normalizer에서 결정한다.
+
+예:
+
+```text
+Domain Status
+     │
+     ▼
+"VERIFY"
+     │
+     ▼
+Normalizer
+     │
+     ▼
+"verify"
+     │
+     ▼
+Jinja2
+     │
+     ▼
+<span class="status-badge verify">
+```
+
+이렇게 하면 데이터가 CSS 구현 세부사항에 직접 결합되지 않는다.
+
+또한:
+
+```text
+IMPLEMENTED
+VERIFIED
+PENDING
+VERIFY
+PLANNED
+```
+
+등의 의미를 실제 증거에 맞게 유지해야 한다.
+
+**자동화 과정에서 상태를 임의로 승격시키지 않는다.**
+
+---
+
+# 7. 신규 슬라이드 생성 절차
+
+신규 Slide 008을 자동화한다고 가정한다.
+
+## Step 1. 원본 확인
+
+```text
+PRD-PO/html/분리된 html/8번 슬라이드.html
+PRD-PO/html/분리된 html/8번 슬라이드.css
+PRD-PO/html/분리된 html/발표용_공통.css
+PRD-PO/html/분리된 html/발표용_공통.js
+```
+
+를 확인한다.
+
+---
+
+## Step 2. Content 추출
+
+HTML에서 다음과 같은 영역을 식별한다.
+
+```text
+제목
+부제
+설명
+카드
+테이블 행
+상태
+메트릭
+Speaker Note
+```
+
+레이아웃 자체는 데이터로 옮기지 않는다.
+
+---
+
+## Step 3. JSON 작성
+
+```text
+automation/data/slide_008.json
+```
+
+을 만든다.
+
+예:
+
+```json
+{
+  "slide_meta": {
+    "number": 8,
+    "title": "Docker Network"
+  },
+  "items": [
+    {
+      "name": "Frontend",
+      "description": "React application"
+    },
+    {
+      "name": "Backend",
+      "description": "Spring Boot application"
+    }
+  ]
+}
+```
+
+---
+
+## Step 4. Jinja2 Template 작성
+
+```text
+automation/templates/slide_008.html.j2
+```
+
+을 만든다.
+
+원본 HTML의 DOM 구조와 CSS class를 유지하면서 데이터 영역만 치환한다.
+
+```html
+<h1>{{ slide_meta.title }}</h1>
+
+{% for item in items %}
+<article class="container-card">
+    <h3>{{ item.name }}</h3>
+    <p>{{ item.description }}</p>
+</article>
+{% endfor %}
+```
+
+---
+
+# 8. Build
+
+다음 명령으로 렌더링한다.
+
+```bash
+python automation/build.py --slide 008
+```
+
+결과:
+
+```text
+automation/data/slide_008.json
+        +
+automation/templates/slide_008.html.j2
+        ↓
+       Jinja2
+        ↓
+8번 슬라이드.html
+```
+
+---
+
+# 9. 검증
+
+Build 이후 다음을 확인한다.
+
+### DOM Parity
+
+원본의 주요 DOM 구조와 생성 결과가 동일한가?
+
+### Class Parity
+
+원본 CSS가 요구하는 class가 누락되지 않았는가?
+
+### ID Parity
+
+공통 발표 Runtime이 요구하는 ID가 유지되는가?
+
+예:
+
+```text
+slide-8
+presentation-viewport
+speaker-panel
+presentation-counter
+presentation-progress
+```
+
+### data-* Parity
+
+다음과 같은 runtime attribute가 유지되는가?
+
+```html
+<body data-slide="8">
+```
+
+및 speaker note 관련 attribute.
+
+### Dependency
+
+CSS:
+
+```html
+<link rel="stylesheet" href="8번 슬라이드.css">
+```
+
+JS:
+
+```html
+<script src="발표용_공통.js"></script>
+```
+
+등 기존 상대경로가 유지되는가?
+
+---
+
+# 10. Data Replacement Test
+
+Template을 수정하지 않고 JSON만 변경한다.
+
+예:
+
+```json
+{
+  "title": "Docker Network — UPDATED"
+}
+```
+
+다시 실행한다.
+
+```bash
+python automation/build.py --slide 008
+```
+
+그리고 결과 HTML에서:
+
+```text
+Docker Network — UPDATED
+```
+
+가 출력되는지 확인한다.
+
+이 테스트가 통과하면 콘텐츠 변경과 HTML 구조가 분리되어 있음을 검증할 수 있다.
+
+---
+
+# 11. Regression Test
+
+전체 슬라이드 자동화 테스트:
+
+```bash
+python -m unittest automation/tests/test_poc.py -v
+```
+
+기존 Slide 04~07이 계속 통과해야 한다.
+
+신규 Slide가 기존 슬라이드의 Build/Validation을 깨뜨리면 완료로 간주하지 않는다.
+
+---
+
+# 12. 권장 CLI 구조
+
+현재 `build.py`를 중심으로 다음과 같은 사용 구조를 유지한다.
+
+```text
+automation/
+├── build.py
+├── validate.py
+├── data/
+│   ├── slide_004.json
+│   ├── slide_005.json
+│   ├── slide_006.json
+│   ├── slide_007.json
+│   └── slide_008.json
+│
+├── templates/
+│   ├── slide_004.html.j2
+│   ├── slide_005.html.j2
+│   ├── slide_006.html.j2
+│   ├── slide_007.html.j2
+│   └── slide_008.html.j2
+│
+└── tests/
+    └── test_poc.py
+```
+
+사용자는 다음과 같이 작업한다.
+
+```bash
+# 특정 슬라이드 생성
+python automation/build.py --slide 008
+
+# 전체 회귀 테스트
+python -m unittest automation/tests/test_poc.py -v
+```
+
+---
+
+# 13. AI Agent의 위치
+
+AI Agent는 시스템의 필수 구성요소가 아니다.
+
+```text
+                 ┌──────────────┐
+                 │  AI Agent    │
+                 │  선택적 사용 │
+                 └──────┬───────┘
+                        │
+                초기 Template/Data
+                        │
+                        ▼
+Human ────────────> JSON / Jinja2
+                        │
+                        ▼
+                  build.py
+                        │
+                        ▼
+                    Jinja2
+                        │
+                        ▼
+                     HTML
+                        │
+                        ▼
+                Validate / Test
+```
+
+AI Agent를 사용하지 않아도 이미 생성된 Template과 JSON은 명령어로 재생성할 수 있어야 한다.
+
+즉 자동화 시스템의 재현성은 AI Agent에 의존하지 않는다.
+
+---
+
+# 14. 현재 시스템의 범위
+
+현재 구현된 범위:
+
+```text
+JSON
+  ↓
+Python Validate / Normalize
+  ↓
+Jinja2 Render
+  ↓
+HTML
+  ↓
+Parity / Regression
+```
+
+현재 구현되지 않은 것으로 명확히 구분해야 하는 범위:
+
+```text
+원본 HTML
+  ↓
+자동 Content 의미 분석
+  ↓
+자동 JSON 생성
+  ↓
+자동 Jinja2 Template 생성
+```
+
+후자의 자동 변환기는 별도 기능이며, Jinja2 자체가 제공하는 기능이 아니다.
+
+따라서 현재 시스템을 다음과 같이 정의한다.
+
+> **Jinja2 기반 HTML 렌더링 및 슬라이드 빌드 자동화**
+
+이며,
+
+> **임의의 기존 HTML을 완전히 자동으로 JSON/Jinja2로 변환하는 시스템**
+
+이라고 표현하지 않는다.
+
+---
+
+# 15. 파일 책임
+
+| 파일                                       | 책임                    |
+| ---------------------------------------- | --------------------- |
+| `automation/data/slide_NNN.json`         | 콘텐츠 및 도메인 상태          |
+| `automation/templates/slide_NNN.html.j2` | HTML 구조 + Jinja2 표현   |
+| `automation/validate.py`                 | 데이터 검증/정규화            |
+| `automation/build.py`                    | Build 및 Jinja2 렌더링 실행 |
+| `automation/tests/test_poc.py`           | 자동화 회귀 검증             |
+| `PRD-PO/html/분리된 html/*.css`             | 시각 스타일                |
+| `PRD-PO/html/분리된 html/발표용_공통.js`         | 발표 Runtime            |
+
+---
+
+# 16. 불변 규칙
+
+### Rule 1 — CSS를 Template에 맞추지 않는다
+
+잘못된 방향:
+
+```text
+Template이 CSS와 안 맞음
+        ↓
+CSS 수정
+```
+
+올바른 방향:
+
+```text
+기존 CSS 분석
+        ↓
+원본 DOM 구조 유지
+        ↓
+Template 작성
+```
+
+---
+
+### Rule 2 — 증거 없는 상태를 VERIFIED로 만들지 않는다
+
+```text
+PENDING
+VERIFY REQUIRED
+N/A
+```
+
+등의 상태를 자동화 편의를 위해:
+
+```text
+PASS
+VERIFIED
+```
+
+로 변경하지 않는다.
+
+---
+
+### Rule 3 — Universal Template을 만들지 않는다
+
+```text
+UniversalSlide
+BaseSlide
+GenericSlide
+```
+
+같은 공통 슬라이드 Template을 만들지 않는다.
+
+각 슬라이드는 독립적인 구조를 가진다.
+
+```text
+slide_004.html.j2
+slide_005.html.j2
+slide_006.html.j2
+...
+```
+
+---
+
+# 17. 최종 사용 모델
+
+결국 사람이 사용하는 인터페이스는 단순해야 한다.
+
+### 콘텐츠 변경
+
+```text
+automation/data/slide_008.json
+```
+
+수정.
+
+### HTML 재생성
+
+```bash
+python automation/build.py --slide 008
+```
+
+### 결과 확인
+
+```text
+PRD-PO/html/분리된 html/8번 슬라이드.html
+```
+
+### 전체 안정성 확인
+
+```bash
+python -m unittest automation/tests/test_poc.py -v
+```
+
+---
+
+## 최종 구조
+
+```text
+             HUMAN
+               │
+               │ edit
+               ▼
+       ┌─────────────────┐
+       │ JSON Data       │
+       └────────┬────────┘
+                │
+                ▼
+       ┌─────────────────┐
+       │ Jinja2 Template │
+       └────────┬────────┘
+                │
+          python build.py
+                │
+                ▼
+       ┌─────────────────┐
+       │ Jinja2 Render   │
+       └────────┬────────┘
+                │
+                ▼
+          Generated HTML
+                │
+        ┌───────┴───────┐
+        ▼               ▼
+       CSS              JS
+        │               │
+        └───────┬───────┘
+                ▼
+          Presentation
+                │
+                ▼
+      Validate / Regression
+```
+
+**핵심은 AI가 HTML을 만들어주는 것이 아니라, 사람이 데이터와 Template을 관리하고 `build.py`라는 명령어를 통해 동일한 결과를 반복 생성할 수 있다는 것이다.**

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -17,7 +17,7 @@
 
   <main id="presentation-viewport">
       <!-- Slide 05: Control -> Implementation (HOW) -->
-<section class="slide slide-05" id="slide-05" data-speaker-note="정상 API 요청과 핵심 공격(Refresh Replay, Logout Token Reuse) 시나리오별 보안 통제 지점 및 차단 메커니즘 흐름도입니다.">
+<section class="slide slide-05" id="slide-05">
 
   <div class="slide-header">
     <div class="slide-title-wrap">
@@ -47,8 +47,9 @@
 
   <div class="security-flow-grid">
 
+
     <!-- =====================================================
-         정상 API Access
+         NORMAL FLOW
          ===================================================== -->
 
     <article class="flow-card flow-normal">
@@ -66,6 +67,7 @@
 
 
       <div class="flow-track">
+
         <div class="flow-step">
           <span class="step-index">01</span>
           <div>
@@ -73,7 +75,9 @@
             <small>사용자 인증</small>
           </div>
         </div>
+
         <div class="flow-connector"></div>
+
         <div class="flow-step">
           <span class="step-index">02</span>
           <div>
@@ -81,7 +85,9 @@
             <small>Short-lived JWT</small>
           </div>
         </div>
+
         <div class="flow-connector"></div>
+
         <div class="flow-step">
           <span class="step-index">03</span>
           <div>
@@ -89,7 +95,10 @@
             <small>Authorization Header</small>
           </div>
         </div>
+
         <div class="flow-connector"></div>
+
+
         <div class="flow-control">
           <span class="control-label">CONTROL POINT</span>
 
@@ -99,7 +108,10 @@
             Spring Security Filter
           </small>
         </div>
+
         <div class="flow-connector"></div>
+
+
         <div class="flow-control">
           <span class="control-label">AUTHORIZATION</span>
 
@@ -109,7 +121,10 @@
             Endpoint + Role + Permission
           </small>
         </div>
+
         <div class="flow-connector"></div>
+
+
         <div class="flow-result success">
           <span class="result-icon">✓</span>
 
@@ -118,11 +133,14 @@
             <small>정상 요청 허용</small>
           </div>
         </div>
+
       </div>
 
     </article>
+
+
     <!-- =====================================================
-         Refresh Replay
+         REFRESH REPLAY
          ===================================================== -->
 
     <article class="flow-card flow-replay">
@@ -140,6 +158,7 @@
 
 
       <div class="flow-track">
+
         <div class="flow-step">
           <span class="step-index">01</span>
           <div>
@@ -147,7 +166,9 @@
             <small>공격자가 Token 확보</small>
           </div>
         </div>
+
         <div class="flow-connector"></div>
+
         <div class="flow-step">
           <span class="step-index">02</span>
           <div>
@@ -155,7 +176,10 @@
             <small>갱신 요청 재전송</small>
           </div>
         </div>
+
         <div class="flow-connector"></div>
+
+
         <div class="flow-control danger">
           <span class="control-label">REPLAY DETECTION</span>
 
@@ -165,7 +189,10 @@
             RTR + JTI 상태 확인
           </small>
         </div>
+
         <div class="flow-connector"></div>
+
+
         <div class="flow-decision danger">
           <span class="decision-mark">!</span>
 
@@ -174,7 +201,10 @@
             <small>Refresh Token Replay</small>
           </div>
         </div>
+
         <div class="flow-connector"></div>
+
+
         <div class="flow-result danger">
           <span class="result-icon">×</span>
 
@@ -183,11 +213,14 @@
             <small>Refresh Token 재사용 거부</small>
           </div>
         </div>
+
       </div>
 
     </article>
+
+
     <!-- =====================================================
-         Logout Token Reuse
+         LOGOUT REUSE
          ===================================================== -->
 
     <article class="flow-card flow-revocation">
@@ -205,6 +238,7 @@
 
 
       <div class="flow-track">
+
         <div class="flow-step">
           <span class="step-index">01</span>
           <div>
@@ -212,7 +246,10 @@
             <small>세션 종료 요청</small>
           </div>
         </div>
+
         <div class="flow-connector"></div>
+
+
         <div class="flow-control warning">
           <span class="control-label">REVOCATION</span>
 
@@ -222,7 +259,10 @@
             Blacklist + TTL
           </small>
         </div>
+
         <div class="flow-connector"></div>
+
+
         <div class="flow-step">
           <span class="step-index">03</span>
           <div>
@@ -230,7 +270,10 @@
             <small>Attacker Request</small>
           </div>
         </div>
+
         <div class="flow-connector"></div>
+
+
         <div class="flow-control warning">
           <span class="control-label">REVOCATION CHECK</span>
 
@@ -240,7 +283,10 @@
             JTI Blacklist 존재 여부
           </small>
         </div>
+
         <div class="flow-connector"></div>
+
+
         <div class="flow-decision danger">
           <span class="decision-mark">!</span>
 
@@ -249,7 +295,10 @@
             <small>블랙리스트 존재 확인</small>
           </div>
         </div>
+
         <div class="flow-connector"></div>
+
+
         <div class="flow-result danger">
           <span class="result-icon">×</span>
 
@@ -258,6 +307,7 @@
             <small>API Request 차단</small>
           </div>
         </div>
+
       </div>
 
     </article>
@@ -312,3 +362,5 @@
 <script src="발표용_공통.js"></script>
 </body>
 </html>
+
+

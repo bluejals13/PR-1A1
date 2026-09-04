@@ -1,0 +1,792 @@
+/* ============================================================
+   APMS.SR — SLIDE 05 ONLY
+   Security Mechanism / Threat Response Flow
+   ============================================================ */
+
+
+.slide-05 {
+  padding-top: 1.5rem;
+}
+
+
+/* ============================================================
+   TITLE
+   ============================================================ */
+
+.slide-05 .slide-title {
+  display: flex;
+  align-items: baseline;
+  gap: .45rem;
+}
+
+.slide-05 .title-divider {
+  color: var(--text-dim);
+  font-weight: 400;
+}
+
+
+/* ============================================================
+   INTRO
+   ============================================================ */
+
+.slide-05-intro {
+  display: flex;
+  align-items: center;
+
+  gap: .7rem;
+
+  margin-bottom: .8rem;
+}
+
+.intro-label {
+  color: var(--accent-cyan);
+
+  font-family: var(--font-mono);
+
+  font-size: .53rem;
+  font-weight: 700;
+
+  letter-spacing: .08em;
+}
+
+.intro-text {
+  color: var(--text-secondary);
+
+  font-size: .76rem;
+}
+
+.intro-text strong {
+  color: #cbd5e1;
+}
+
+
+/* ============================================================
+   FLOW GRID
+   ============================================================ */
+
+.security-flow-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: .85rem;
+
+  flex: 1;
+
+  min-height: 0;
+}
+
+
+/* ============================================================
+   FLOW CARD
+   ============================================================ */
+
+.flow-card {
+  min-width: 0;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(30, 41, 59, .76),
+      rgba(15, 23, 42, .92)
+    );
+
+  border:
+    1px solid
+    var(--border-soft);
+
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-card);
+}
+
+
+/* Flow accent */
+
+.flow-normal {
+  border-top:
+    3px solid
+    var(--accent-green);
+}
+
+.flow-replay {
+  border-top:
+    3px solid
+    var(--accent-red);
+}
+
+.flow-revocation {
+  border-top:
+    3px solid
+    var(--accent-amber);
+}
+
+
+/* ============================================================
+   FLOW HEADER
+   ============================================================ */
+
+.flow-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: .6rem;
+
+  padding: .8rem .9rem;
+
+  border-bottom:
+    1px solid
+    var(--border-soft);
+
+  background:
+    rgba(15, 23, 42, .45);
+}
+
+
+.flow-kicker {
+  display: block;
+
+  margin-bottom: .18rem;
+
+  color: var(--text-muted);
+
+  font-family: var(--font-mono);
+
+  font-size: .46rem;
+  font-weight: 700;
+
+  letter-spacing: .08em;
+}
+
+
+.flow-card-header h3 {
+  color: var(--text-primary);
+
+  font-size: .82rem;
+  font-weight: 700;
+
+  letter-spacing: -.015em;
+}
+
+
+/* ============================================================
+   FLOW BADGE
+   ============================================================ */
+
+.flow-badge {
+  padding: .24rem .4rem;
+
+  border-radius: 4px;
+
+  font-family: var(--font-mono);
+
+  font-size: .46rem;
+  font-weight: 700;
+}
+
+
+.flow-badge.normal {
+  color: #6ee7b7;
+
+  background:
+    rgba(16, 185, 129, .08);
+
+  border:
+    1px solid
+    rgba(16, 185, 129, .2);
+}
+
+
+.flow-badge.danger {
+  color: #fca5a5;
+
+  background:
+    rgba(239, 68, 68, .08);
+
+  border:
+    1px solid
+    rgba(239, 68, 68, .2);
+}
+
+
+/* ============================================================
+   FLOW TRACK
+   ============================================================ */
+
+.flow-track {
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+
+  flex: 1;
+
+  min-height: 0;
+
+  padding: .65rem .85rem;
+}
+
+
+/* ============================================================
+   NORMAL STEP
+   ============================================================ */
+
+.flow-step {
+  display: flex;
+  align-items: center;
+
+  gap: .55rem;
+
+  min-height: 34px;
+
+  padding: .38rem .45rem;
+
+  background:
+    rgba(15, 23, 42, .52);
+
+  border:
+    1px solid
+    rgba(148, 163, 184, .08);
+
+  border-radius: 5px;
+}
+
+
+.step-index {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 20px;
+  height: 20px;
+
+  flex-shrink: 0;
+
+  border-radius: 4px;
+
+  background:
+    rgba(56, 189, 248, .07);
+
+  color: var(--accent-cyan);
+
+  font-family: var(--font-mono);
+
+  font-size: .46rem;
+  font-weight: 700;
+}
+
+
+.flow-step strong {
+  display: block;
+
+  color: #e2e8f0;
+
+  font-family: var(--font-mono);
+
+  font-size: .58rem;
+  font-weight: 600;
+}
+
+
+.flow-step small {
+  display: block;
+
+  margin-top: .1rem;
+
+  color: var(--text-muted);
+
+  font-size: .48rem;
+}
+
+
+/* ============================================================
+   CONNECTOR
+   ============================================================ */
+
+.flow-connector {
+  position: relative;
+
+  width: 1px;
+  height: 13px;
+
+  margin: 0 auto;
+
+  background:
+    var(--border-strong);
+}
+
+
+.flow-connector::after {
+  content: "";
+
+  position: absolute;
+
+  left: 50%;
+  bottom: 0;
+
+  width: 5px;
+  height: 5px;
+
+  transform:
+    translateX(-50%)
+    rotate(45deg);
+
+  border-right:
+    1px solid
+    var(--text-muted);
+
+  border-bottom:
+    1px solid
+    var(--text-muted);
+}
+
+
+/* ============================================================
+   CONTROL POINT
+   ============================================================ */
+
+.flow-control {
+  padding: .55rem .6rem;
+
+  background:
+    rgba(56, 189, 248, .045);
+
+  border:
+    1px solid
+    rgba(56, 189, 248, .16);
+
+  border-left:
+    3px solid
+    var(--accent-cyan);
+
+  border-radius:
+    0 5px 5px 0;
+}
+
+
+.flow-control .control-label {
+  display: block;
+
+  margin-bottom: .2rem;
+
+  color: var(--accent-cyan);
+
+  font-family: var(--font-mono);
+
+  font-size: .43rem;
+  font-weight: 700;
+
+  letter-spacing: .06em;
+}
+
+
+.flow-control strong {
+  display: block;
+
+  color: #bae6fd;
+
+  font-family: var(--font-mono);
+
+  font-size: .56rem;
+}
+
+
+.flow-control small {
+  display: block;
+
+  margin-top: .15rem;
+
+  color: var(--text-muted);
+
+  font-size: .47rem;
+}
+
+
+/* Warning control */
+
+.flow-control.warning {
+  background:
+    rgba(245, 158, 11, .045);
+
+  border-color:
+    rgba(245, 158, 11, .15);
+
+  border-left-color:
+    var(--accent-amber);
+}
+
+
+.flow-control.warning .control-label {
+  color: var(--accent-amber);
+}
+
+
+.flow-control.warning strong {
+  color: #fde68a;
+}
+
+
+/* Danger control */
+
+.flow-control.danger {
+  background:
+    rgba(239, 68, 68, .045);
+
+  border-color:
+    rgba(239, 68, 68, .15);
+
+  border-left-color:
+    var(--accent-red);
+}
+
+
+.flow-control.danger .control-label {
+  color: #f87171;
+}
+
+
+.flow-control.danger strong {
+  color: #fecaca;
+}
+
+
+/* ============================================================
+   DECISION
+   ============================================================ */
+
+.flow-decision {
+  display: flex;
+  align-items: center;
+
+  gap: .55rem;
+
+  padding: .5rem .6rem;
+
+  border-radius: 5px;
+}
+
+
+.flow-decision.danger {
+  background:
+    rgba(239, 68, 68, .07);
+
+  border:
+    1px solid
+    rgba(239, 68, 68, .2);
+}
+
+
+.decision-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 20px;
+  height: 20px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background:
+    rgba(239, 68, 68, .13);
+
+  color: #f87171;
+
+  font-family: var(--font-mono);
+
+  font-size: .58rem;
+  font-weight: 800;
+}
+
+
+.flow-decision strong {
+  display: block;
+
+  color: #fca5a5;
+
+  font-family: var(--font-mono);
+
+  font-size: .55rem;
+}
+
+
+.flow-decision small {
+  display: block;
+
+  margin-top: .12rem;
+
+  color: var(--text-muted);
+
+  font-size: .46rem;
+}
+
+
+/* ============================================================
+   RESULT
+   ============================================================ */
+
+.flow-result {
+  display: flex;
+  align-items: center;
+
+  gap: .55rem;
+
+  padding: .55rem .6rem;
+
+  border-radius: 5px;
+}
+
+
+.flow-result.success {
+  background:
+    rgba(16, 185, 129, .07);
+
+  border:
+    1px solid
+    rgba(16, 185, 129, .2);
+}
+
+
+.flow-result.danger {
+  background:
+    rgba(239, 68, 68, .07);
+
+  border:
+    1px solid
+    rgba(239, 68, 68, .2);
+}
+
+
+.result-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 21px;
+  height: 21px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  font-family: var(--font-mono);
+
+  font-size: .65rem;
+  font-weight: 800;
+}
+
+
+.flow-result.success .result-icon {
+  color: #6ee7b7;
+
+  background:
+    rgba(16, 185, 129, .13);
+}
+
+
+.flow-result.danger .result-icon {
+  color: #f87171;
+
+  background:
+    rgba(239, 68, 68, .13);
+}
+
+
+.flow-result strong {
+  display: block;
+
+  font-family: var(--font-mono);
+
+  font-size: .58rem;
+}
+
+
+.flow-result.success strong {
+  color: #6ee7b7;
+}
+
+
+.flow-result.danger strong {
+  color: #fca5a5;
+}
+
+
+.flow-result small {
+  display: block;
+
+  margin-top: .12rem;
+
+  color: var(--text-muted);
+
+  font-size: .47rem;
+}
+
+
+/* ============================================================
+   BOTTOM SUMMARY
+   ============================================================ */
+
+.slide-05-summary {
+  display: flex;
+  align-items: center;
+
+  gap: .9rem;
+
+  margin-top: .65rem;
+  padding: .6rem .8rem;
+
+  background:
+    rgba(15, 23, 42, .72);
+
+  border:
+    1px solid
+    var(--border-soft);
+
+  border-radius: 6px;
+}
+
+
+.summary-label {
+  color: var(--text-muted);
+
+  font-family: var(--font-mono);
+
+  font-size: .46rem;
+  font-weight: 700;
+
+  letter-spacing: .07em;
+}
+
+
+.summary-flow {
+  display: flex;
+  align-items: center;
+
+  gap: .5rem;
+
+  font-family: var(--font-mono);
+
+  font-size: .53rem;
+  font-weight: 700;
+}
+
+
+.summary-flow b {
+  color: var(--text-dim);
+}
+
+
+.summary-flow span {
+  color: #94a3b8;
+}
+
+
+.summary-flow .summary-control {
+  color: var(--accent-cyan);
+}
+
+
+.summary-flow .summary-block {
+  color: #e2e8f0;
+}
+
+
+.summary-note {
+  margin-left: auto;
+
+  color: var(--text-muted);
+
+  font-size: .55rem;
+}
+
+
+/* ============================================================
+   SHORT SCREEN
+   ============================================================ */
+
+@media (max-height: 700px) {
+
+  .slide-05 {
+    padding-top: 1rem;
+  }
+
+  .slide-05-intro {
+    margin-bottom: .5rem;
+  }
+
+  .flow-track {
+    padding-top: .45rem;
+    padding-bottom: .45rem;
+  }
+
+  .flow-connector {
+    height: 8px;
+  }
+
+  .flow-step {
+    min-height: 29px;
+    padding: .28rem .4rem;
+  }
+
+  .flow-control,
+  .flow-decision,
+  .flow-result {
+    padding: .4rem .5rem;
+  }
+
+  .slide-05-summary {
+    margin-top: .45rem;
+    padding-top: .45rem;
+    padding-bottom: .45rem;
+  }
+
+  .summary-note {
+    display: none;
+  }
+}
+
+
+/* ============================================================
+   NARROW SCREEN
+   ============================================================ */
+
+@media (max-width: 1050px) {
+
+  .security-flow-grid {
+    gap: .6rem;
+  }
+
+  .flow-card-header {
+    padding: .65rem .7rem;
+  }
+
+  .flow-track {
+    padding-left: .6rem;
+    padding-right: .6rem;
+  }
+
+  .flow-step strong,
+  .flow-control strong,
+  .flow-result strong {
+    font-size: .52rem;
+  }
+
+  .flow-step small,
+  .flow-control small,
+  .flow-result small {
+    font-size: .43rem;
+  }
+
+  .summary-note {
+    display: none;
+  }
+}
