@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APMS.SR - Slide 04</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="4번 슬라이드.css">
+  <link rel="stylesheet" href="발표용_공통.css">
+</head>
+<body class="presentation-mode" data-slide="4">
+
+  <div id="presentation-progress"></div>
+
+  <main id="presentation-viewport">
+
+<!-- Slide 04: Threat -> Control (WHAT) -->
+<section class="slide slide-04" id="slide-04"{% if speaker_note %} data-speaker-note="{{ speaker_note }}"{% endif %}>
+
+  <div class="slide-header">
+    <div class="slide-title-wrap">
+      <span class="slide-num">{{ slide_meta.slide_num }}</span>
+
+      <h2 class="slide-title">
+        {{ slide_meta.title }} <span class="title-arrow">{{ slide_meta.title_arrow }}</span> {{ slide_meta.title_target }}
+        <span class="title-sub">{{ slide_meta.title_sub }}</span>
+      </h2>
+    </div>
+
+    <span class="tag {{ slide_meta.header_tag.class }}">
+      {{ slide_meta.header_tag.text }}
+    </span>
+  </div>
+
+
+  <!-- Intro -->
+  <div class="slide-04-intro">
+    <div class="intro-line"></div>
+
+    <p>
+      {{ intro.lead }}
+      <strong>{{ intro.control_strong }}</strong>{{ intro.rule }}
+    </p>
+  </div>
+
+
+  <!-- Threat / Control Matrix -->
+  <div class="threat-control-table-wrap">
+
+    <table class="threat-control-table">
+
+      <thead>
+        <tr>
+          <th class="col-threat">{{ columns.threat }}</th>
+          <th class="col-scenario">{{ columns.scenario }}</th>
+          <th class="col-control">{{ columns.control }}</th>
+          <th class="col-status">{{ columns.status }}</th>
+        </tr>
+      </thead>
+
+      <tbody>
+{% for item in items %}
+        <!-- {{ item.threat }} -->
+        <tr{% if item.is_warning %} class="row-warning"{% endif %}>
+          <td>
+            <div class="threat-name {{ item.threat_class }}">
+              <span class="threat-dot"></span>
+              {{ item.threat }}
+{% if item.threat_sub %}
+              <small>{{ item.threat_sub }}</small>
+{% endif %}
+            </div>
+          </td>
+
+          <td>
+            <span class="scenario-text">
+              {{ item.scenario }}
+            </span>
+          </td>
+
+          <td>
+            <div class="control-name">
+              <strong>{{ item.control_strong }}</strong>
+              <span>{{ item.control_desc }}</span>
+            </div>
+          </td>
+
+          <td class="status-cell">
+            <div class="security-status-group">
+{% for st in item.statuses %}
+              <span class="security-status {{ st.statusClass }}">
+                <span class="status-dot"></span>  {{ st.status }}  
+              </span>
+{% endfor %}
+            </div>
+          </td>
+        </tr>
+
+{% endfor %}
+      </tbody>
+
+    </table>
+
+  </div>
+
+
+  <!-- Security Principle -->
+  <div class="security-principle">
+
+    <div class="principle-icon">
+      {{ principle.icon }}
+    </div>
+
+    <div class="principle-content">
+      <span class="principle-label">
+        {{ principle.label }}
+      </span>
+
+      <strong>
+        {{ principle.strong }}
+      </strong>
+
+      <span>
+        {{ principle.desc }}
+      </span>
+    </div>
+
+  </div>
+
+</section>
+
+
+
+  </main>
+
+  <div id="speaker-panel">
+    <div class="speaker-head">
+      <span>Speaker Notes</span>
+      <button id="speaker-close" aria-label="발표 노트 닫기">✕</button>
+    </div>
+    <div id="speaker-text"></div>
+  </div>
+
+  <nav id="presentation-nav" aria-label="발표 네비게이션">
+    <div class="presentation-nav-left">
+      <span class="presentation-brand">{{ nav.brand }}</span>
+      <span class="presentation-hint">{{ nav.hint }}</span>
+    </div>
+
+    <div class="presentation-nav-right">
+      <button class="presentation-btn" id="prev-btn" aria-label="이전 슬라이드">‹</button>
+      <span id="presentation-counter">{{ nav.counter }}</span>
+      <button class="presentation-btn" id="next-btn" aria-label="다음 슬라이드">›</button>
+      <button id="speaker-toggle">SPEAKER</button>
+    </div>
+  </nav>
+
+<script src="{{ nav.runtime_script }}"></script>
+</body>
+</html>

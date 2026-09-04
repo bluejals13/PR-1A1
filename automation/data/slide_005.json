@@ -1,0 +1,197 @@
+{
+  "slide_meta": {
+    "slide_num": "SLIDE 05",
+    "title_main": "Security Mechanism",
+    "title_divider": "|",
+    "title_desc": "Security Mechanism | 요청은 어디에서 허용되고 차단되는가",
+    "header_tag": {
+      "text": "THREAT RESPONSE FLOW",
+      "class": "verified"
+    }
+  },
+  "speaker_note": "정상 API 요청과 핵심 공격(Refresh Replay, Logout Token Reuse) 시나리오별 보안 통제 지점 및 차단 메커니즘 흐름도입니다.",
+  "intro": {
+    "label": "CONTROL FLOW",
+    "lead": "정상 요청은 검증 후 통과시키고, 공격 징후는",
+    "strong": "검증 지점에서 즉시 차단",
+    "tail": "한다."
+  },
+  "flows": [
+    {
+      "id": "normal-api",
+      "card_class": "flow-normal",
+      "kicker": "01 / NORMAL",
+      "title": "정상 API Access",
+      "badge": {
+        "text": "ALLOW",
+        "class": "normal"
+      },
+      "nodes": [
+        {
+          "type": "step",
+          "index": "01",
+          "strong": "Login",
+          "small": "사용자 인증"
+        },
+        {
+          "type": "step",
+          "index": "02",
+          "strong": "Access Token 발급",
+          "small": "Short-lived JWT"
+        },
+        {
+          "type": "step",
+          "index": "03",
+          "strong": "API Request",
+          "small": "Authorization Header"
+        },
+        {
+          "type": "control",
+          "control_class": "",
+          "label": "CONTROL POINT",
+          "strong": "JWT Signature / Exp 검증",
+          "small": "Spring Security Filter"
+        },
+        {
+          "type": "control",
+          "control_class": "",
+          "label": "AUTHORIZATION",
+          "strong": "RBAC / Permission 검사",
+          "small": "Endpoint + Role + Permission"
+        },
+        {
+          "type": "result",
+          "result_class": "success",
+          "icon": "✓",
+          "strong": "Resource Access",
+          "small": "정상 요청 허용"
+        }
+      ]
+    },
+    {
+      "id": "refresh-replay",
+      "card_class": "flow-replay",
+      "kicker": "02 / ATTACK",
+      "title": "Refresh Replay",
+      "badge": {
+        "text": "BLOCK",
+        "class": "danger"
+      },
+      "nodes": [
+        {
+          "type": "step",
+          "index": "01",
+          "strong": "Refresh Token 탈취",
+          "small": "공격자가 Token 확보"
+        },
+        {
+          "type": "step",
+          "index": "02",
+          "strong": "Attacker Replay",
+          "small": "갱신 요청 재전송"
+        },
+        {
+          "type": "control",
+          "control_class": "danger",
+          "label": "REPLAY DETECTION",
+          "strong": "JTI 이미 사용됨?",
+          "small": "RTR + JTI 상태 확인"
+        },
+        {
+          "type": "decision",
+          "decision_class": "danger",
+          "mark": "!",
+          "strong": "YES · 중복 사용 감지",
+          "small": "Refresh Token Replay"
+        },
+        {
+          "type": "result",
+          "result_class": "danger",
+          "icon": "×",
+          "strong": "401 Unauthorized",
+          "small": "Refresh Token 재사용 거부"
+        }
+      ]
+    },
+    {
+      "id": "logout-reuse",
+      "card_class": "flow-revocation",
+      "kicker": "03 / ATTACK",
+      "title": "Logout Token Reuse",
+      "badge": {
+        "text": "BLOCK",
+        "class": "danger"
+      },
+      "nodes": [
+        {
+          "type": "step",
+          "index": "01",
+          "strong": "사용자 Logout",
+          "small": "세션 종료 요청"
+        },
+        {
+          "type": "control",
+          "control_class": "warning",
+          "label": "REVOCATION",
+          "strong": "Token JTI → Redis",
+          "small": "Blacklist + TTL"
+        },
+        {
+          "type": "step",
+          "index": "03",
+          "strong": "탈취 Token으로 API 요청",
+          "small": "Attacker Request"
+        },
+        {
+          "type": "control",
+          "control_class": "warning",
+          "label": "REVOCATION CHECK",
+          "strong": "Redis Revocation Check",
+          "small": "JTI Blacklist 존재 여부"
+        },
+        {
+          "type": "decision",
+          "decision_class": "danger",
+          "mark": "!",
+          "strong": "Revoked Token",
+          "small": "블랙리스트 존재 확인"
+        },
+        {
+          "type": "result",
+          "result_class": "danger",
+          "icon": "×",
+          "strong": "401 Unauthorized",
+          "small": "API Request 차단"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "label": "SECURITY BEHAVIOR",
+    "steps": [
+      {
+        "text": "REQUEST",
+        "class": ""
+      },
+      {
+        "text": "VERIFY",
+        "class": ""
+      },
+      {
+        "text": "CONTROL",
+        "class": "summary-control"
+      },
+      {
+        "text": "ALLOW / BLOCK",
+        "class": "summary-block"
+      }
+    ],
+    "note": "모든 보안 통제는 요청 처리 흐름 안에서 실제 차단 지점으로 연결된다."
+  },
+  "nav": {
+    "brand": "APMS.SR / PRESENTATION",
+    "hint": "← → 방향키 · Space 다음 · N 발표 노트",
+    "counter": "05 / 14",
+    "runtime_script": "발표용_공통.js"
+  }
+}

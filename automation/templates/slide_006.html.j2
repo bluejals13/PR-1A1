@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>APMS.SR - Slide 06</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="6번 슬라이드.css">
+  <link rel="stylesheet" href="발표용_공통.css">
+</head>
+<body class="presentation-mode" data-slide="6">
+
+  <div id="presentation-progress"></div>
+
+  <main id="presentation-viewport">
+
+<!-- Slide 06: Implementation -> Verification (PROOF) -->
+<section class="slide slide-06" id="slide-06"{% if speaker_note %} data-speaker-note="{{ speaker_note }}"{% endif %}>
+
+  <div class="slide-header">
+    <div class="slide-title-wrap">
+      <span class="slide-num">{{ slide_meta.slide_num }}</span>
+      <h2 class="slide-title">{{ slide_meta.title }}</h2>
+    </div>
+
+    <span class="tag {{ slide_meta.header_tag.class }}">{{ slide_meta.header_tag.text }}</span>
+  </div>
+
+
+  <!-- Verification Summary -->
+  <div class="verification-summary">
+
+{% for stat in summary.stats %}
+    <div class="verification-stat {{ stat.stat_class }}">
+      <span class="stat-value">{{ stat.value }}</span>
+      <span class="stat-label">{{ stat.label }}</span>
+      <span class="stat-desc">{{ stat.desc }}</span>
+    </div>
+
+{% endfor %}
+    <div class="verification-summary-message">
+      <span class="message-label">{{ summary.message.label }}</span>
+      <strong>{{ summary.message.strong }}</strong>
+      <span>
+        {{ summary.message.desc }}
+      </span>
+    </div>
+
+  </div>
+
+
+  <!-- Main Evidence Area -->
+  <div class="verification-layout">
+
+
+    <!-- =====================================================
+         SECURITY EVIDENCE
+         ===================================================== -->
+
+    <section class="evidence-panel">
+
+      <div class="panel-header">
+        <div>
+          <span class="panel-kicker">{{ evidence.kicker }}</span>
+          <h3>{{ evidence.title }}</h3>
+        </div>
+
+        <span class="evidence-count">
+          {{ evidence.count }}
+        </span>
+      </div>
+
+
+      <div class="evidence-table-wrap">
+
+        <table class="evidence-table">
+
+          <thead>
+            <tr>
+              <th class="col-id">{{ evidence.columns.id }}</th>
+              <th>{{ evidence.columns.scenario }}</th>
+              <th class="col-result">{{ evidence.columns.expected }}</th>
+              <th class="col-result">{{ evidence.columns.actual }}</th>
+              <th class="col-status">{{ evidence.columns.status }}</th>
+            </tr>
+          </thead>
+
+          <tbody>
+{% for tc in evidence.test_cases %}
+
+            <tr class="{{ tc.row_class }}">
+              <td class="test-id">{{ tc.id }}</td>
+
+              <td>
+                <strong>{{ tc.scenario }}</strong>
+                <small>{{ tc.scenario_sub }}</small>
+              </td>
+
+              <td class="result-code">{{ tc.expected }}</td>
+
+              <td class="result-code {{ tc.actual_class }}">{{ tc.actual }}</td>
+
+              <td>
+                <span class="status-badge {{ tc.badge_class }}">
+                  <i></i> {{ tc.badge_text }}
+                </span>
+              </td>
+            </tr>
+{% endfor %}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         PERFORMANCE EVIDENCE
+         ===================================================== -->
+
+    <aside class="performance-panel">
+
+      <div class="panel-header">
+        <div>
+          <span class="panel-kicker">{{ performance.kicker }}</span>
+          <h3>{{ performance.title }}</h3>
+        </div>
+
+        <span class="evidence-count">{{ performance.tool }}</span>
+      </div>
+
+
+      <div class="performance-card">
+
+        <div class="performance-card-header">
+          <span class="performance-label">
+            {{ performance.card_header.label }}
+          </span>
+
+          <span class="performance-state">
+            {{ performance.card_header.state }}
+          </span>
+        </div>
+
+
+        <div class="metric-grid">
+{% for metric in performance.metrics %}
+
+          <div class="metric">
+            <span class="metric-label">{{ metric.label }}</span>
+            <strong{% if metric.value_class %} class="{{ metric.value_class }}"{% endif %}>{{ metric.value }}{% if metric.unit %}<span> {{ metric.unit }}</span>{% endif %}</strong>
+            <small>{{ metric.sub }}</small>
+          </div>
+{% endfor %}
+
+        </div>
+
+
+        <div class="performance-divider"></div>
+
+
+        <div class="performance-observation">
+
+          <span class="observation-label">
+            {{ performance.observation.label }}
+          </span>
+
+          <p>
+            {{ performance.observation.lead }}
+            <strong>{{ performance.observation.strong }}</strong>{{ performance.observation.tail }}
+          </p>
+
+        </div>
+
+
+        <div class="performance-footnote">
+          {{ performance.footnote }}
+        </div>
+
+      </div>
+
+    </aside>
+
+  </div>
+
+
+  <!-- Bottom Evidence Principle -->
+  <div class="verification-footer">
+
+    <div class="footer-rule">
+      <span>{{ footer.rule_label }}</span>
+      <strong>{{ footer.rule_strong }}</strong>
+    </div>
+
+    <div class="footer-flow">
+{% for item in footer.flow %}
+{% if not loop.first %}
+      <b>→</b>
+{% endif %}
+      <span{% if item.is_pass %} class="footer-pass"{% endif %}>{{ item.text }}</span>
+{% endfor %}
+    </div>
+
+    <span class="footer-note">
+      {{ footer.note }}
+    </span>
+
+  </div>
+
+</section>
+    
+
+
+
+   </main>
+
+  <div id="speaker-panel">
+    <div class="speaker-head">
+      <span>Speaker Notes</span>
+      <button id="speaker-close" aria-label="발표 노트 닫기">✕</button>
+    </div>
+    <div id="speaker-text"></div>
+  </div>
+
+  <nav id="presentation-nav" aria-label="발표 네비게이션">
+    <div class="presentation-nav-left">
+      <span class="presentation-brand">{{ nav.brand }}</span>
+      <span class="presentation-hint">{{ nav.hint }}</span>
+    </div>
+
+    <div class="presentation-nav-right">
+      <button class="presentation-btn" id="prev-btn" aria-label="이전 슬라이드">‹</button>
+      <span id="presentation-counter">{{ nav.counter }}</span>
+      <button class="presentation-btn" id="next-btn" aria-label="다음 슬라이드">›</button>
+      <button id="speaker-toggle">SPEAKER</button>
+    </div>
+  </nav>
+
+<script src="{{ nav.runtime_script }}"></script>
+</body>
+</html>

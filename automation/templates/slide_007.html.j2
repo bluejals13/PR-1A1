@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>APMS.SR - Slide 07</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="7번 슬라이드.css">
+  <link rel="stylesheet" href="발표용_공통.css">
+</head>
+<body class="presentation-mode" data-slide="7">
+
+  <div id="presentation-progress"></div>
+
+  <main id="presentation-viewport">
+
+    <!-- Slide 07: Operation / Residual Risk -->
+<section class="slide slide-07" id="slide-07"{% if speaker_note %} data-speaker-note="{{ speaker_note }}"{% endif %}>
+
+  <div class="slide-header">
+    <div class="slide-title-wrap">
+      <span class="slide-num">{{ slide_meta.slide_num }}</span>
+      <h2 class="slide-title">{{ slide_meta.title }}</h2>
+    </div>
+
+    <span class="tag {{ slide_meta.header_tag.class }}">{{ slide_meta.header_tag.text }}</span>
+  </div>
+
+
+  <!-- =====================================================
+       OPERATION STATUS
+       ===================================================== -->
+
+  <div class="operation-summary">
+
+    <div class="operation-summary-title">
+      <span class="panel-kicker">{{ operation_summary.kicker }}</span>
+      <strong>{{ operation_summary.strong }}</strong>
+    </div>
+
+    <div class="operation-summary-flow">
+{% for item in operation_summary.flow %}
+{% if not loop.first %}
+      <b>→</b>
+{% endif %}
+      <span class="{{ item.class }}">{{ item.text }}</span>
+{% endfor %}
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       MAIN CONTENT
+       ===================================================== -->
+
+  <div class="operation-layout">
+
+
+    <!-- ===================================================
+         LEFT : RESOLVED / INCIDENT CASES
+         =================================================== -->
+
+    <section class="incident-panel">
+
+      <div class="panel-header">
+        <div>
+          <span class="panel-kicker">{{ incident_panel.kicker }}</span>
+          <h3>{{ incident_panel.title }}</h3>
+        </div>
+
+        <span class="evidence-count">{{ incident_panel.count }}</span>
+      </div>
+
+
+      <div class="incident-list">
+
+{% for case in incident_panel.cases %}
+
+        <!-- {{ case.id }} -->
+
+        <article class="incident-card {{ case.card_class }}">
+
+          <div class="incident-head">
+
+            <div>
+              <span class="case-id">{{ case.id }}</span>
+              <h4>{{ case.title }}</h4>
+            </div>
+
+            <span class="case-status {{ case.status_class }}">
+              <i></i> {{ case.status_text }}
+            </span>
+
+          </div>
+
+
+          <div class="incident-flow">
+
+            <div class="incident-row">
+              <span class="incident-label {{ case.threat.label_class }}">{{ case.threat.label }}</span>
+              <p>{{ case.threat.text }}</p>
+            </div>
+
+{% if case.has_impact and case.impact %}
+            <div class="incident-arrow">↓</div>
+
+            <div class="incident-row">
+              <span class="incident-label {{ case.impact.label_class }}">{{ case.impact.label }}</span>
+              <p>{{ case.impact.text }}</p>
+            </div>
+{% endif %}
+
+          </div>
+
+
+          <div class="control-box">
+
+            <div>
+              <span class="control-label">{{ case.control.label }}</span>
+              <p>
+                {{ case.control.text }}
+              </p>
+            </div>
+
+            <div>
+              <span class="control-label">{{ case.verification.label }}</span>
+              <p>
+                {{ case.verification.text }}
+              </p>
+            </div>
+
+          </div>
+
+        </article>
+
+{% endfor %}
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================
+         RIGHT : RESIDUAL RISK
+         =================================================== -->
+
+    <aside class="risk-panel">
+
+      <div class="panel-header">
+        <div>
+          <span class="panel-kicker">{{ risk_panel.kicker }}</span>
+          <h3>{{ risk_panel.title }}</h3>
+        </div>
+
+        <span class="evidence-count">{{ risk_panel.count }}</span>
+      </div>
+
+
+      <div class="risk-list">
+
+{% for risk in risk_panel.risks %}
+
+        <div class="risk-item {{ risk.item_class }}">
+          <span class="risk-state">{{ risk.state }}</span>
+
+          <div>
+            <strong>{{ risk.strong }}</strong>
+            <small>{{ risk.small }}</small>
+          </div>
+        </div>
+
+{% endfor %}
+
+      </div>
+
+    </aside>
+
+  </div>
+
+
+  <!-- =====================================================
+       NEXT ACTIONS
+       ===================================================== -->
+
+  <div class="next-action-panel">
+
+    <div class="next-action-title">
+      <span class="panel-kicker">{{ next_action_panel.kicker }}</span>
+      <h3>{{ next_action_panel.title }}</h3>
+    </div>
+
+{% for action in next_action_panel.actions %}
+
+    <div class="action-item {{ action.item_class }}">
+
+      <span class="priority-badge">{{ action.priority }}</span>
+
+      <div>
+        <strong>{{ action.strong }}</strong>
+        <small>{{ action.small }}</small>
+      </div>
+
+    </div>
+
+{% endfor %}
+
+  </div>
+
+
+  <!-- =====================================================
+       SECURITY PRINCIPLE
+       ===================================================== -->
+
+  <div class="operation-principle">
+    <span class="principle-mark">{{ principle.mark }}</span>
+
+    <strong>
+      {{ principle.strong }}
+    </strong>
+  </div>
+
+</section>
+
+
+
+
+   </main>
+
+  <div id="speaker-panel">
+    <div class="speaker-head">
+      <span>Speaker Notes</span>
+      <button id="speaker-close" aria-label="발표 노트 닫기">✕</button>
+    </div>
+    <div id="speaker-text"></div>
+  </div>
+
+  <nav id="presentation-nav" aria-label="발표 네비게이션">
+    <div class="presentation-nav-left">
+      <span class="presentation-brand">{{ nav.brand }}</span>
+      <span class="presentation-hint">{{ nav.hint }}</span>
+    </div>
+
+    <div class="presentation-nav-right">
+      <button class="presentation-btn" id="prev-btn" aria-label="이전 슬라이드">‹</button>
+      <span id="presentation-counter">{{ nav.counter }}</span>
+      <button class="presentation-btn" id="next-btn" aria-label="다음 슬라이드">›</button>
+      <button id="speaker-toggle">SPEAKER</button>
+    </div>
+  </nav>
+
+<script src="{{ nav.runtime_script }}"></script>
+</body>
+</html>

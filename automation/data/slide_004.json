@@ -1,0 +1,113 @@
+{
+  "slide_meta": {
+    "slide_num": "SLIDE 04",
+    "title": "Threat",
+    "title_arrow": "➜",
+    "title_target": "Control",
+    "title_sub": "무엇을 방어하는가",
+    "header_tag": {
+      "text": "ATTACK SURFACE MANAGEMENT",
+      "class": "verified"
+    }
+  },
+  "speaker_note": "식별된 4대 핵심 공격 시나리오(Token Theft, Refresh Replay, Unauthorized Access, BOLA)에 대한 보안 통제 및 검증 상태 매트릭스입니다. 구현 여부와 실제 검증 여부를 엄격히 분리하여, 검증되지 않은 항목은 완료로 표시하지 않는 보안 원칙을 준수합니다.",
+  "intro": {
+    "lead": "식별된 공격 시나리오마다",
+    "control_strong": "구체적인 보안 통제(Control)",
+    "rule": "를 연결하고, 검증되지 않은 항목은 완료로 간주하지 않는다."
+  },
+  "columns": {
+    "threat": "THREAT",
+    "scenario": "ATTACK SCENARIO",
+    "control": "SECURITY CONTROL",
+    "status": "STATUS"
+  },
+  "items": [
+    {
+      "id": "tokenTheft",
+      "threat": "Token Theft",
+      "threat_class": "threat-high",
+      "scenario": "탈취된 Access Token 재사용",
+      "control_strong": "Short-lived JWT",
+      "control_desc": "+ Redis Revocation",
+      "statuses": [
+        {
+          "status": "IMPLEMENTED",
+          "statusClass": "implemented"
+        },
+        {
+          "status": "VERIFIED",
+          "statusClass": "verified"
+        }
+      ]
+    },
+    {
+      "id": "refreshReplay",
+      "threat": "Refresh Replay",
+      "threat_class": "threat-high",
+      "scenario": "Refresh Token 탈취 후 반복 사용",
+      "control_strong": "RTR",
+      "control_desc": "Refresh Token Rotation + JTI",
+      "statuses": [
+        {
+          "status": "IMPLEMENTED",
+          "statusClass": "implemented"
+        },
+        {
+          "status": "VERIFIED",
+          "statusClass": "verified"
+        }
+      ]
+    },
+    {
+      "id": "unauthorizedAccess",
+      "threat": "Unauthorized Access",
+      "threat_class": "threat-high",
+      "scenario": "권한 없는 관리자 / 타겟 API 접근",
+      "control_strong": "RBAC",
+      "control_desc": "+ Permission-based Authorization",
+      "statuses": [
+        {
+          "status": "IMPLEMENTED",
+          "statusClass": "implemented"
+        },
+        {
+          "status": "VERIFIED",
+          "statusClass": "verified"
+        }
+      ]
+    },
+    {
+      "id": "bola",
+      "threat": "BOLA",
+      "threat_sub": "IDOR",
+      "threat_class": "threat-medium",
+      "scenario": "타인의 Resource ID 변조 접근",
+      "control_strong": "Object-Level Authorization",
+      "control_desc": "Resource Ownership 검증",
+      "is_warning": true,
+      "statuses": [
+        {
+          "status": "IMPLEMENTED",
+          "statusClass": "implemented"
+        },
+        {
+          "status": "VERIFY REQUIRED",
+          "statusClass": "verify-required"
+        }
+      ]
+    }
+  ],
+  "principle": {
+    "icon": "!",
+    "label": "SECURITY PRINCIPLE",
+    "strong": "검증되지 않은 보안 통제는 완료로 표시하지 않는다.",
+    "desc": "구현 여부가 아니라 실제 공격 시나리오에 대한 검증 결과를 기준으로 상태를 판단한다."
+  },
+  "nav": {
+    "brand": "APMS.SR / PRESENTATION",
+    "hint": "← → 방향키 · Space 다음 · N 발표 노트",
+    "counter": "04 / 14",
+    "runtime_script": "발표용_공통.js"
+  }
+}
