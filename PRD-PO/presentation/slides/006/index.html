@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -55,7 +55,7 @@
             <div class="seq-step normal">
               <span class="seq-num">Step 2</span>
               <div class="seq-text">
-                <strong>원자적 교체:</strong> Redis `rt:<userId>`의 `JTI_A` 삭제 및 신규 `JTI_B` 발급
+                <strong>원자적 교체:</strong> Redis `auth:refresh:user:<userId>`의 `JTI_A`를 Lua Script로 `JTI_B` 교체
               </div>
             </div>
             <div class="seq-step alert">
@@ -85,7 +85,7 @@
             <div class="seq-step normal">
               <span class="seq-num">Step 2</span>
               <div class="seq-text">
-                <strong>TTL 계산 & 적재:</strong> 남은 만료 시간(예: 35분)만큼 Redis <code>bl:&lt;token&gt;</code> 등록
+                <strong>TTL 계산 & 적재:</strong> 남은 만료 시간(예: 35분)만큼 Redis <code>blacklist:&lt;jti&gt;</code> 등록
               </div>
             </div>
             <div class="seq-step alert green-alert">

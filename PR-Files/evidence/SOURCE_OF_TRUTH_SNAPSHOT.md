@@ -1,10 +1,10 @@
 # Source of Truth Snapshot & Traceability Matrix
 
-- **Snapshot Version:** 1.1.0
-- **Snapshot Date:** 2026-08-27
-- **Primary Source 1 (Application):** `https://github.com/bluejals13/26-05adf` (Branch: `feature/auth@0603@1401`)
-- **Primary Source 2 (AI Agent / Process):** `https://github.com/bluejals13/SA-1` (Branch: `main`)
-- **Target Workspace:** `https://github.com/bluejals13/PR-1A1`
+- **Snapshot Version:** 1.2.0
+- **Snapshot Date:** 2026-09-05
+- **Primary Source 1 (Application):** `https://github.com/bluejals13/26-05adf` (Branch: `feature/auth@0603@1401`, Commit: `9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f`)
+- **Primary Source 2 (AI Agent / Process):** `https://github.com/bluejals13/SA-1` (Branch: `main`, Commit: `4a734a8edd8b670f8d29dc2a42a978ca3877a25f`)
+- **Target Workspace:** `https://github.com/bluejals13/PR-1A1` (Branch: `main`, Commit: `c9f88722ad196ef7918240ab1faaaba4a8f64676`)
 
 ---
 
@@ -25,7 +25,7 @@
 ## 2. Source of Truth 실측 팩트 요약 (Fact Base)
 
 ### 2.1 Backend & Security Architecture (`26-05adf`)
-- **프레임워크 & 런타임:** Java 17, Spring Boot 3.3.2, Spring Security 6, Spring Data JPA, JJWT (0.12.x), Flyway, MySQL 8.0, Redis 7.0 `[IMPLEMENTED]`
+- **프레임워크 & 런타임:** Java 17, Spring Boot 3.3.2, Gradle 8.14.4, Spring Security 6, Spring Data JPA, JJWT (0.11.5), Flyway, MySQL 8.0, Redis 7.0 `[IMPLEMENTED]`
 - **인증 (Authentication):**
   - Stateless JWT Access Token (유효시간: 1시간, Header `Authorization: Bearer <token>` 전달) `[IMPLEMENTED]` `[VERIFIED]`
   - Refresh Token (유효시간: 7일, HttpOnly Secure Cookie 전달, UUID JTI 기반 고유 식별) `[IMPLEMENTED]` `[VERIFIED]`
@@ -102,18 +102,18 @@
 
 ---
 
-## 3. Claim-to-Evidence Traceability Matrix (추적성 매트릭스)
+### 3. Claim-to-Evidence Traceability Matrix (추적성 매트릭스)
 
-| 영역 (Domain) | 엔지니어링 주장 (Claim) | 소스 구현 위치 (Implementation) | 검증 테스트/증거 (Verification) | 상태 |
-| :--- | :--- | :--- | :--- | :---: |
-| **Security** | Access Token 1시간 만료, Header Bearer 전송 | `com.example.demo.auth.security.JwtTokenProvider` | `JwtAuthenticationFilterTest.java` | `[VERIFIED]` |
-| **Security** | Refresh Token 7일 만료, RTR 적용 및 JTI Redis 저장 | `com.example.demo.auth.service.AuthService` | `SecurityIntegrationTest.java` | `[VERIFIED]` |
-| **Security** | 로그아웃 시 Access Token Redis Blacklist 등록 | `com.example.demo.auth.service.TokenBlacklistService` | `TokenBlacklistServiceTest.java` | `[VERIFIED]` |
-| **RBAC** | User-Role-Permission M:N 권한 계층 모델 | `com.example.demo.iam.entity.*`, Flyway `V1~V5__*.sql` | `RbacSecurityIntegrationTest.java` | `[VERIFIED]` |
-| **Performance** | 70 VUs 동시 부하 시 평균 5.64ms, P95 9.98ms, 0% Error | `k6/scenarios/load.test.js`, `thresholds.js` | k6 실행 결과 리포트 (`docs/performance/`) | `[VERIFIED]` |
-| **Infra** | Nginx Reverse Proxy 단일 진입점 및 포트 격리 | `docker-compose.yml`, `nginx/default.conf` | Docker Compose 서비스 기동 및 라우팅 | `[IMPLEMENTED]` |
-| **Incident** | Redis 단절 시 커맨드 타임아웃 2초 단축 및 방어 | Spring Data Redis 설정 (`application.yml`) | `TS-01-REDIS` 장애 보고서 및 회복 검증 | `[VERIFIED]` |
-| **Incident** | JWT Refresh 실패 시 무한 루프 차단 | 클라이언트 API 인터셉터 & AuthService | `TS-001` 장애 분석 및 예외 핸들링 검증 | `[VERIFIED]` |
-| **Incident** | Docker 네트워크 내 서비스명 기반 Redis 바인딩 | `docker-compose.yml`, `application-docker.yml` | `TS-003` 컨테이너 간 통신 검증 | `[VERIFIED]` |
-| **AI Workflow** | 8단계 AI 협업 프로세스 및 Zero-Chatter | `SA-1/conventions/rules.md`, `changelogs/` | `SA-1` 변경 이력 및 커맨드 규격서 | `[DOCUMENTED]` |
-| **Roadmap** | N+1 쿼리 최적화 및 Message Queue 도입 | 미구현 (계획 과제) | `task_progress.md` 로드맵 | `[PLANNED]` |
+| Claim ID | 영역 (Domain) | 엔지니어링 주장 (Claim) | 소스 구현 위치 (Implementation) | 검증 테스트/증거 (Verification) | 상태 |
+| :--- | :--- | :--- | :--- | :--- | :---: |
+| **CLM-SEC-001** | Security | Access Token 1시간 만료, Header Bearer 전송 | `com.example.demo.auth.jwt.JwtProvider` | `JwtAuthenticationFilterTest.java` | `[VERIFIED]` |
+| **CLM-SEC-002** | Security | Refresh Token 7일 만료, RTR 적용 및 JTI Redis 저장 | `com.example.demo.auth.security.RefreshTokenRepository` | `RefreshTokenRepositoryTest.java` | `[VERIFIED]` |
+| **CLM-SEC-003** | Security | 로그아웃 시 Access Token Redis Blacklist 등록 | `com.example.demo.auth.security.TokenBlacklistService` | `TokenBlacklistServiceTest.java` | `[VERIFIED]` |
+| **CLM-RBAC-001** | RBAC | User-Role-Permission M:N 권한 계층 모델 | `com.example.demo.iam.*.domain.*`, Flyway `V1~V5__*.sql` | `RbacSecurityIntegrationTest.java` | `[VERIFIED]` |
+| **CLM-PERF-001** | Performance | 70 VUs 동시 부하 시 평균 5.64ms, P95 9.98ms, 0% Error | `k6/scenarios/load.test.js`, `thresholds.js` | k6 실행 결과 리포트 (`docs/performance/`) | `[VERIFIED]` |
+| **CLM-INFRA-001**| Infra | Nginx Reverse Proxy 단일 진입점 및 포트 격리 | `docker-compose.yml`, `nginx/default.conf` | Docker Compose 서비스 기동 및 라우팅 | `[IMPLEMENTED]` |
+| **CLM-TS-001**   | Incident | Redis 단절 시 커맨드 타임아웃 2초 단축 및 방어 | Spring Data Redis 설정 (`application.yaml`) | `TS-01-REDIS` 장애 보고서 및 회복 검증 | `[VERIFIED]` |
+| **CLM-TS-002**   | Incident | JWT Refresh 실패 시 무한 루프 차단 | 클라이언트 API 인터셉터 (`frontend/src/api/http.ts`) | `TS-001` 장애 분석 및 예외 핸들링 검증 | `[VERIFIED]` |
+| **CLM-TS-003**   | Incident | Docker 네트워크 내 서비스명 기반 Redis 바인딩 | `docker-compose.yml` (`SPRING_REDIS_HOST: redis`) | `TS-003` 컨테이너 간 통신 검증 | `[VERIFIED]` |
+| **CLM-AI-001**   | AI Workflow | 8단계 AI 협업 프로세스 및 Zero-Chatter | `SA-1/conventions/rules.md`, `changelogs/` | `SA-1` 변경 이력 및 커맨드 규격서 | `[DOCUMENTED]` |
+| **CLM-ROAD-001** | Roadmap | N+1 쿼리 정량 벤치마크 및 Message Queue 도입 | 미구현 (계획 과제) | `task_progress.md` 로드맵 | `[PLANNED]` |

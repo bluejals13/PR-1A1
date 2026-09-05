@@ -1,0 +1,45 @@
+{
+  "claim_id": "CLM-RBAC-001",
+  "claim": "User-Role-Permission M:N 다대다 매핑 구조를 통해 인가되지 않은 엔드포인트 접근 시 403 Forbidden을 반환한다.",
+  "domain": "RBAC",
+  "status": "VERIFIED",
+  "sources": [
+    {
+      "repository": "26-05adf",
+      "branch": "feature/auth@0603@1401",
+      "commit": "9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f",
+      "path": "backend/src/main/java/com/example/demo/auth/security/UserAuthorityService.java",
+      "symbol": "UserAuthorityService"
+    },
+    {
+      "repository": "26-05adf",
+      "branch": "feature/auth@0603@1401",
+      "commit": "9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f",
+      "path": "backend/src/main/resources/db/migration/V2__init_authority_schema.sql",
+      "symbol": "roles, permissions, role_permissions"
+    }
+  ],
+  "evidence": {
+    "evidence_id": "EV-RBAC-001",
+    "bundle_path": "PR-Files/evidence/bundles/EV-RBAC-001",
+    "type": "INTEGRATION_TEST"
+  },
+  "verification": {
+    "method": "MockMvc Integration Test",
+    "test_file": "backend/src/test/java/com/example/demo/iam/rbac/RbacSecurityIntegrationTest.java",
+    "test_methods": [
+      "adminCanAssignPermissions",
+      "normalUserCannotAssignPermissions",
+      "unauthenticatedUserCannotAssignPermissions"
+    ],
+    "status": "VERIFIED"
+  },
+  "portfolio_mapping": {
+    "case_study": "CS-ENGINEERING-01 (Section 3.3)",
+    "slides": [
+      "004",
+      "006"
+    ],
+    "presentation_source": "04_AUTH_AND_RBAC.md"
+  }
+}

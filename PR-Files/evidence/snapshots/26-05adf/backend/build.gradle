@@ -1,0 +1,73 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.2'
+    id 'io.spring.dependency-management' version '1.1.3'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    // SECURITY + AUTH (JWT 포함) 
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+
+    // WEB
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // redis 
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // JPA + DB
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    
+    // flyway 적용 부분 Hibernate bbl-auto 제거
+    implementation 'org.flywaydb:flyway-core:11.0.0'
+    implementation 'org.flywaydb:flyway-mysql:11.0.0'
+    
+    // VALIDATION (DTO 검증)
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    
+    // ACTUATOR + MONITORING
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
+
+    // THYMELEAF (필요 없으면 삭제 가능)
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+
+    // TEST
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // TEST 보안 관련
+    testImplementation 'org.springframework.security:spring-security-test'
+    // TEST H2
+    testImplementation 'com.h2database:h2'
+    
+    // LOMBOK
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

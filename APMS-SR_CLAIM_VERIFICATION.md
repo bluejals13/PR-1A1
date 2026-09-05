@@ -26,10 +26,10 @@
 ### 2.1 Security & Authentication
 | # | 엔지니어링 주장 (Claim) | 소스 구현 위치 (Implementation) | 검증 테스트 / 증거 (Verification) | 판정 상태 |
 | :- | :--- | :--- | :--- | :---: |
-| 1 | Stateless JWT Access Token (1시간 만료, Header Bearer 전송) | `com.example.demo.auth.security.JwtTokenProvider` | `JwtAuthenticationFilterTest.java` | `[VERIFIED]` |
+| 1 | Stateless JWT Access Token (1시간 만료, Header Bearer 전송) | `com.example.demo.auth.jwt.JwtProvider` | `JwtAuthenticationFilterTest.java` | `[VERIFIED]` |
 | 2 | Refresh Token (7일 만료, HttpOnly Secure Cookie 전송, UUID JTI 기반) | `auth/security/RefreshTokenRepository.java` (`auth:refresh:user:{userId}`) | `RefreshTokenRepositoryTest.java` (save, delete) | `[VERIFIED]` |
 | 3 | Refresh Token Rotation (RTR): Lua Script 기반 1-RTT 원자적 JTI 교체 | `auth/security/RefreshTokenRepository.java` (Lua Script) | `RefreshTokenRepositoryTest.java` (rotateSuccess, rotateFail, rotateNull) | `[VERIFIED]` |
-| 4 | Token Blacklist: 로그아웃 시 Access Token 잔여 TTL 동안 Redis 블랙리스트 등록 | `com.example.demo.auth.service.TokenBlacklistService` | `TokenBlacklistServiceTest.java` (blacklistedToken_ShouldBeDenied) | `[VERIFIED]` |
+| 4 | Token Blacklist: 로그아웃 시 Access Token 잔여 TTL 동안 Redis 블랙리스트 등록 | `com.example.demo.auth.security.TokenBlacklistService` | `TokenBlacklistServiceTest.java` (blacklistSuccess, isBlacklistedReturnsTrue) | `[VERIFIED]` |
 | 5 | RBAC (User-Role-Permission M:N 다대다 매핑 인가 필터링) | `com.example.demo.iam.entity.*`, `UserAuthorityService` | `RbacSecurityIntegrationTest.java` (403 Forbidden 확인) | `[VERIFIED]` |
 | 6 | Flyway V1~V5 DB 마이그레이션 및 Composite PK/FK 스키마 무결성 | `src/main/resources/db/migration/V1~V5__*.sql` (`V2__init_authority_schema.sql`) | DB 구동 및 테이블 생성 로그, FK Cascade 무결성 | `[IMPLEMENTED]` |
 
@@ -52,15 +52,15 @@
 ### 2.4 Observability Pipeline
 | # | 엔지니어링 주장 (Claim) | 소스 구현 위치 (Implementation) | 검증 테스트 / 증거 (Verification) | 판정 상태 |
 | :- | :--- | :--- | :--- | :---: |
-| 15 | Prometheus 메트릭 스크랩 (`/actuator/prometheus`) | `backend/pom.xml` (micrometer), `prometheus.yml` | JVM Heap, CPU, HikariCP 메트릭 수집 확인 | `[VERIFIED]` |
+| 15 | Prometheus 메트릭 스크랩 (`/actuator/prometheus`) | `backend/build.gradle` (micrometer), `prometheus.yml` | JVM Heap, CPU, HikariCP 메트릭 수집 확인 | `[VERIFIED]` |
 | 16 | VictoriaMetrics 시계열 스토리지 영속화 | `docker-compose.yml` (victoriametrics:8428) | Prometheus Remote Write 연동 | `[IMPLEMENTED]` |
 | 17 | Grafana 모니터링 대시보드 | `docker-compose.yml` (grafana:3000) | 대시보드 컨테이너 구성 (실시간 모니터링 완전 검증은 아님) | `[PARTIAL]` |
 
 ### 2.5 Incident Troubleshooting (TS 6단계)
 | # | 엔지니어링 주장 (Claim) | 장애 원인 및 해결 위치 | 검증 결과 / 증거 | 판정 상태 |
 | :- | :--- | :--- | :--- | :---: |
-| 18 | TS-01-REDIS: Redis 타임아웃 60s 블로킹 ➔ 2s 단축 | `application.yml` (lettuce timeout 2000ms), 503 반환 | Redis 다운 시 2s 이내 503 응답 확인 | `[VERIFIED]` |
-| 19 | TS-001: JWT Refresh 갱신 실패 시 401 무한 루프 차단 | 클라이언트 Axios 인터셉터 탈출 조건 및 상태 초기화 | 401 시 1회 시도 후 세션 종료 확인 | `[VERIFIED]` |
+| 18 | TS-01-REDIS: Redis 타임아웃 블로킹 ➔ 2s 단축 정책 & 503 격리 | 장애 보고서(`01-redis-failure.md`), `JwtAuthenticationFilter`(503 격리) | `JwtAuthenticationFilterTest`(redisUnavailableReturns503) | `[VERIFIED]` |
+| 19 | TS-001: JWT Refresh 갱신 실패 시 401 무한 루프 차단 | 클라이언트 Axios/Fetch 인터셉터 탈출 조건 및 상태 초기화 | 401 시 1회 시도 후 세션 종료 확인 | `[VERIFIED]` |
 | 20 | TS-003: Docker 환경 내 Redis localhost 바인딩 실패 해결 | `application.yml` (`${SPRING_REDIS_HOST:localhost}`) | 컨테이너 내부 `redis:6379` DNS 해석 확인 | `[VERIFIED]` |
 
 ### 2.6 AI-Assisted Engineering Workflow

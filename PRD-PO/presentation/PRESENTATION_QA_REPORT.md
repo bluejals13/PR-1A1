@@ -28,7 +28,7 @@
 | **02** | Access Token(1h) + RTR + Redis Blacklist 결합으로 탈취 방어 | `source/02_PROBLEM_AND_SOLUTION.md` | `AUTH_AND_SECURITY_SPEC.md` | `26-05adf/docs/` | `[VALID]` |
 | **03** | Nginx Port 80 단일 진입점 및 내부 7개 도커 서비스 격리 | `source/03_ARCHITECTURE.md` | `ARCHITECTURE_SPEC.md` | `docker-compose.yml`, `nginx/default.conf` | `[VALID]` |
 | **04** | 불변 Record DTO 캡슐화 및 통일된 ApiResponse/GlobalExceptionHandler | `source/05_CORE_IMPLEMENTATION.md` | `AUTH_AND_SECURITY_SPEC.md` | `common/response/ApiResponse.java` | `[VALID]` |
-| **05** | Access Token(1h, Header)과 Refresh Token(7d, HttpOnly Cookie) 분리 | `source/04_AUTH_AND_RBAC.md` | `AUTH_AND_SECURITY_SPEC.md` | `JwtTokenProvider.java` | `[VALID]` |
+| **05** | Access Token(1h, Header)과 Refresh Token(7d, HttpOnly Cookie) 분리 | `source/04_AUTH_AND_RBAC.md` | `AUTH_AND_SECURITY_SPEC.md` | `JwtProvider.java` | `[VALID]` |
 | **06** | RTR(1회용 JTI 검증) 및 로그아웃 시 잔여 TTL Redis Blacklist 등록 | `source/04_AUTH_AND_RBAC.md`<br>`source/06_SECURITY.md` | `AUTH_AND_SECURITY_SPEC.md`<br>`SECURITY_VERIFICATION_REPORT.md` | `AuthService.java`<br>`TokenBlacklistService.java` | `[VALID]` |
 | **07** | User-Role-Permission M:N 정규화 모델 및 403 Forbidden 인가 | `source/04_AUTH_AND_RBAC.md` | `AUTH_AND_SECURITY_SPEC.md` | `UserAuthorityService.java`, Flyway DDL | `[VALID]` |
 | **08** | `ddl-auto: validate` 및 Flyway V1~V5 마이그레이션 DDL 형상 통제 | `source/05_CORE_IMPLEMENTATION.md` | `AUTH_AND_SECURITY_SPEC.md` | `src/main/resources/db/migration/` | `[VALID]` |

@@ -98,8 +98,8 @@
     - 인가 모델 미흡 (단순 Role 체크)
   - **AFTER (3-Layer Defense System):**
     - `Layer 1: Access Token (1h)` Header Bearer 전송 + 무상태 인가
-    - `Layer 2: Refresh Token Rotation (7d)` HttpOnly Cookie + Redis rt:<userId> JTI 1회용 소진 + Replay Attack 즉시 차단 `[VERIFIED]`
-    - `Layer 3: Redis Blacklist` 로그아웃 시 bl:<token> 잔여 TTL 저장 + 인가 필터 즉시 거부 `[VERIFIED]`
+    - `Layer 2: Refresh Token Rotation (7d)` HttpOnly Cookie + Redis auth:refresh:user:<userId> JTI 1회용 소진 + Replay Attack 즉시 차단 `[VERIFIED]`
+    - `Layer 3: Redis Blacklist` 로그아웃 시 blacklist:<jti> 잔여 TTL 저장 + 인가 필터 즉시 거부 `[VERIFIED]`
     - `Layer 4: M:N RBAC` User-Role-Permission 다대다 세부 인가 통제 `[VERIFIED]`
 - **Visual Structure:** Split Before/After Box Comparison + Security Layer Stack Diagram.
 - **Speaker Note:**
@@ -110,11 +110,11 @@
 ### Slide 05: JWT / RTR / Blacklist Core Sequence Flow
 - **Slide Title:** Security Flow: Authentication, Rotation & Revocation Lifecycle
 - **Step-by-Step Flow:**
-  1. **Login:** Client ➔ Server 인증 성공 시 Access Token(Header) + Refresh Token(Cookie, Redis `rt:user1` 저장) 발급
+  1. **Login:** Client ➔ Server 인증 성공 시 Access Token(Header) + Refresh Token(Cookie, Redis `auth:refresh:user:1` 저장) 발급
   2. **API Access:** Bearer Access Token으로 `/api/*` 요청 ➔ JwtAuthenticationFilter 검증 및 SecurityContext 주입
-  3. **RTR Refresh:** Access 만료 시 `/api/auth/refresh` 호출 ➔ 기존 JTI 검증 후 즉시 Redis에서 삭제 ➔ 신규 JTI 쌍 동시 발급
+  3. **RTR Refresh:** Access 만료 시 `/api/auth/refresh` 호출 ➔ 기존 JTI 검증 후 원자적 Lua Script로 교체 ➔ 신규 JTI 쌍 동시 발급
   4. **Replay Attack Block:** 이미 소진된 구버전 JTI로 재요청 ➔ Redis 불일치 감지 ➔ 즉시 401 `INVALID_REFRESH_TOKEN` 반환 및 세션 파기 `[VERIFIED]`
-  5. **Logout Blacklist:** `/api/auth/logout` 호출 ➔ Access Token의 잔여 TTL을 계산하여 `bl:<token>`으로 Redis 적재 ➔ 이후 요청 시 인가 필터에서 차단 `[VERIFIED]`
+  5. **Logout Blacklist:** `/api/auth/logout` 호출 ➔ Access Token의 잔여 TTL을 계산하여 `blacklist:<jti>`로 Redis 적재 ➔ 이후 요청 시 인가 필터에서 차단 `[VERIFIED]`
 - **Visual Structure:** Pure CSS/SVG Swimlane Sequence Diagram (Client / Nginx / Spring Boot / Redis).
 - **Speaker Note:**
   > "토큰 라이프사이클의 핵심은 RTR 재발급 시 기존 토큰이 즉시 무효화된다는 점입니다. 공격자가 가로챈 구버전 토큰으로 접근할 경우 서버는 즉시 401 에러를 반환하고 세션을 종료시킵니다. 로그아웃 또한 잔여 TTL만큼만 블랙리스트를 유지하여 메모리 낭비를 원천 차단합니다."
@@ -185,7 +185,7 @@
     - User ↔ Role ↔ Permission 다대다 정규화 매핑
   - **Redis 7.0 (In-Memory 고속 세션 & TTL 캐시):**
     - 고속 메모리 I/O (Sub-millisecond)
-    - Key-Value 구조 (`rt:<userId>`: JTI, `bl:<token>`: logout)
+    - Key-Value 구조 (`auth:refresh:user:<userId>`: JTI, `blacklist:<jti>`: "1")
     - 자동 만료 메커니즘 (TTL 7일 / 잔여 Access Token TTL)
 - **Visual Structure:** Side-by-Side Architectural Comparison Table with Data Flow Icons.
 - **Speaker Note:**

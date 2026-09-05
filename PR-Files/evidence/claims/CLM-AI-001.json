@@ -1,0 +1,38 @@
+{
+  "claim_id": "CLM-AI-001",
+  "claim": "SA-1 8단계 엔지니어링 라이프사이클과 Zero-Chatter 거버넌스를 통해 AI 협업 의사결정과 변경 이력을 체계적으로 관리한다.",
+  "domain": "AI_PROCESS",
+  "status": "DOCUMENTED",
+  "sources": [
+    {
+      "repository": "SA-1",
+      "branch": "main",
+      "commit": "4a734a8edd8b670f8d29dc2a42a978ca3877a25f",
+      "path": "conventions/rules.md",
+      "symbol": "5대 원칙"
+    },
+    {
+      "repository": "SA-1",
+      "branch": "main",
+      "commit": "4a734a8edd8b670f8d29dc2a42a978ca3877a25f",
+      "path": "changelogs/phase1_backend/1-2_jwt_redis_optimization.md",
+      "symbol": "Phase 1-2 Changelog"
+    }
+  ],
+  "evidence": {
+    "evidence_id": "EV-AI-001",
+    "bundle_path": "PR-Files/evidence/bundles/EV-AI-001",
+    "type": "GOVERNANCE_SPEC"
+  },
+  "verification": {
+    "method": "SA-1 Commit History & Changelog Audit",
+    "status": "DOCUMENTED"
+  },
+  "portfolio_mapping": {
+    "case_study": "CS-ENGINEERING-01 (Section 2)",
+    "slides": [
+      "012"
+    ],
+    "presentation_source": "10_AI_WORKFLOW.md"
+  }
+}

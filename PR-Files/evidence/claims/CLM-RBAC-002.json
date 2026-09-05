@@ -1,0 +1,38 @@
+{
+  "claim_id": "CLM-RBAC-002",
+  "claim": "사용자 역할(Role)에 매핑된 메뉴 권한(MENU_READ)에 따라 동적으로 메뉴 조회를 인가하고 미권한 시 403을 반환한다.",
+  "domain": "RBAC",
+  "status": "VERIFIED",
+  "sources": [
+    {
+      "repository": "26-05adf",
+      "branch": "feature/auth@0603@1401",
+      "commit": "9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f",
+      "path": "backend/src/main/java/com/example/demo/iam/menu/MenuAdminController.java",
+      "symbol": "MenuAdminController"
+    }
+  ],
+  "evidence": {
+    "evidence_id": "EV-RBAC-002",
+    "bundle_path": "PR-Files/evidence/bundles/EV-RBAC-002",
+    "type": "INTEGRATION_TEST"
+  },
+  "verification": {
+    "method": "MockMvc Security Integration Test",
+    "test_file": "backend/src/test/java/com/example/demo/menu/MenuSecurityIntegrationTest.java",
+    "test_methods": [
+      "MENU_READ_권한이_있으면_메뉴를_조회할_수_있다",
+      "MENU_READ_권한이_없으면_메뉴_조회가_거부된다",
+      "인증된_사용자라도_MENU_READ가_없으면_403이다"
+    ],
+    "status": "VERIFIED"
+  },
+  "portfolio_mapping": {
+    "case_study": "CS-ENGINEERING-01 (Section 3.3)",
+    "slides": [
+      "004",
+      "006"
+    ],
+    "presentation_source": "04_AUTH_AND_RBAC.md"
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Engineering Claim Schema",
+  "type": "object",
+  "required": [
+    "claim_id",
+    "claim",
+    "domain",
+    "sources",
+    "evidence",
+    "verification",
+    "status"
+  ],
+  "properties": {
+    "claim_id": {
+      "type": "string",
+      "pattern": "^CLM-[A-Z]+-[0-9]{3}$"
+    },
+    "claim": {
+      "type": "string"
+    },
+    "domain": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "VERIFIED",
+        "IMPLEMENTED",
+        "DOCUMENTED",
+        "PARTIAL",
+        "PLANNED",
+        "UNKNOWN"
+      ]
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "repository",
+          "path"
+        ],
+        "properties": {
+          "repository": {
+            "type": "string"
+          },
+          "branch": {
+            "type": "string"
+          },
+          "commit": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "symbol": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": [
+        "evidence_id",
+        "type"
+      ],
+      "properties": {
+        "evidence_id": {
+          "type": "string"
+        },
+        "bundle_path": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "required": [
+        "method",
+        "status"
+      ],
+      "properties": {
+        "method": {
+          "type": "string"
+        },
+        "test_file": {
+          "type": "string"
+        },
+        "test_methods": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": "string"
+        },
+        "metrics": {
+          "type": "object"
+        }
+      }
+    },
+    "portfolio_mapping": {
+      "type": "object",
+      "properties": {
+        "case_study": {
+          "type": "string"
+        },
+        "slides": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "presentation_source": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

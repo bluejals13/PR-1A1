@@ -1,0 +1,10 @@
+{
+  "evidence_id": "EV-TS-002",
+  "claim_id": "CLM-TS-002",
+  "domain": "INCIDENT",
+  "status": "VERIFIED",
+  "captured_at": "2026-09-05T06:08:00.206580+00:00",
+  "source_repository": "26-05adf",
+  "source_commit": "9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f",
+  "verification_method": "Integration Test & Client Interceptor Single Flight"
+}

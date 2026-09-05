@@ -1,0 +1,40 @@
+{
+  "snapshot_version": "1.2.0",
+  "snapshot_date": "2026-09-05",
+  "active_manifest": "SOT-2026-09-05-001",
+  "repositories": {
+    "build": {
+      "name": "26-05adf",
+      "branch": "feature/auth@0603@1401",
+      "commit": "9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f",
+      "url": "https://github.com/bluejals13/26-05adf.git",
+      "tech_stack": {
+        "java": "17",
+        "spring_boot": "3.3.2",
+        "gradle": "8.14.4",
+        "jjwt": "0.11.5",
+        "react": "18.3.1",
+        "mysql": "8.0",
+        "redis": "7.0",
+        "nginx": "1.25"
+      }
+    },
+    "process": {
+      "name": "SA-1",
+      "branch": "main",
+      "commit": "4a734a8edd8b670f8d29dc2a42a978ca3877a25f",
+      "url": "https://github.com/bluejals13/SA-1.git",
+      "governance": {
+        "lifecycle": "8-Stage Engineering Lifecycle",
+        "communication": "Zero-Chatter Policy",
+        "documentation": "Documentation-First Policy"
+      }
+    },
+    "proof": {
+      "name": "PR-1A1",
+      "branch": "main",
+      "commit": "c9f88722ad196ef7918240ab1faaaba4a8f64676",
+      "url": "https://github.com/bluejals13/PR-1A1.git"
+    }
+  }
+}

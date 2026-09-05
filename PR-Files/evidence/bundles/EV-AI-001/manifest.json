@@ -1,0 +1,10 @@
+{
+  "evidence_id": "EV-AI-001",
+  "claim_id": "CLM-AI-001",
+  "domain": "AI_PROCESS",
+  "status": "DOCUMENTED",
+  "captured_at": "2026-09-05T06:08:00.206580+00:00",
+  "source_repository": "SA-1",
+  "source_commit": "4a734a8edd8b670f8d29dc2a42a978ca3877a25f",
+  "verification_method": "SA-1 Commit History & Changelog Audit"
+}

@@ -51,23 +51,52 @@
 ## 4. Implementation (핵심 구현)
 
 ### 4.1 Redis 기반 Token Blacklist 구현
-- **Source:** `backend/src/main/java/com/example/demo/auth/service/TokenBlacklistService.java`
+- **Source:** `backend/src/main/java/com/example/demo/auth/security/TokenBlacklistService.java`
+- **Commit:** `9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f`
 ```java
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TokenBlacklistService {
-    private final StringRedisTemplate redisTemplate;
-    private static final String BLACKLIST_PREFIX = "bl:";
 
-    public void addToBlacklist(String token, long remainingTimeMs) {
-        if (remainingTimeMs > 0) {
-            String key = BLACKLIST_PREFIX + token;
-            redisTemplate.opsForValue().set(key, "logout", Duration.ofMillis(remainingTimeMs));
+    private static final String BLACKLIST_KEY_PREFIX = "blacklist:";
+    private final RedisTemplate<String, String> redisTemplate;
+
+    public void blacklist(String jti, long expirationMillis) {
+        if (jti == null || jti.isBlank() || expirationMillis <= 0) {
+            return;
+        }
+
+        try {
+            redisTemplate.opsForValue().set(
+                    buildKey(jti),
+                    "1",
+                    Duration.ofMillis(expirationMillis)
+            );
+            log.debug("Blacklisted token registered. jti={}, ttlMs={}", jti, expirationMillis);
+        } catch (DataAccessException e) {
+            log.error("Failed to register token to Redis blacklist. jti={}", jti, e);
+            throw new RedisUnavailableException("Redis is unavailable for blacklist registration", e);
         }
     }
 
-    public boolean isBlacklisted(String token) {
-        return Boolean.TRUE.equals(redisTemplate.hasKey(BLACKLIST_PREFIX + token));
+    public boolean isBlacklisted(String jti) {
+        if (jti == null || jti.isBlank()) {
+            return false;
+        }
+
+        try {
+            return Boolean.TRUE.equals(
+                    redisTemplate.hasKey(buildKey(jti))
+            );
+        } catch (DataAccessException e) {
+            log.error("Failed to check Redis blacklist. jti={}", jti, e);
+            throw new RedisUnavailableException("Redis is unavailable for blacklist check", e);
+        }
+    }
+
+    private String buildKey(String jti) {
+        return BLACKLIST_KEY_PREFIX + jti;
     }
 }
 ```
@@ -104,8 +133,7 @@ public class TokenBlacklistService {
 
 ### 6.1 TS-01-REDIS: Redis 장애 시 커맨드 타임아웃 및 블로킹 해결
 - **Symptom:** Redis 다운 시 백엔드 API가 최대 1분간 응답하지 않고 프론트엔드 흰 화면 발생.
-- **Root Cause:** Lettuce 클라이언트 기본 커맨드 타임아웃이 60초로 너무 길어 서블릿 스레드 풀 고갈.
-- **Resolution:** `application.yaml`에서 `timeout: 2000ms`로 2초 단축 및 `RedisUnavailableException` 503 에러 처리 `[VERIFIED]`.
+- **Resolution:** 장애 분석 보고서(`01-redis-failure.md`) 기반 Lettuce 타임아웃 단축(2초) 정책을 수립하고, 백엔드 `JwtAuthenticationFilter` 및 `TokenBlacklistService`에서 `RedisUnavailableException` 발생 시 503 Service Unavailable로 신속 격리하여 서블릿 스레드 풀 고갈을 방어 `[VERIFIED]`.
 
 ### 6.2 TS-001: JWT Refresh Token 갱신 실패 시 무한 루프 이슈
 - **Symptom:** 토큰 만료 후 클라이언트 인터셉터와 서버 간 초당 수십 회 401 재요청 무한 루프 발생.

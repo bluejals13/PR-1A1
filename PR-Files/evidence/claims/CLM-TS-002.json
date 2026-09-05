@@ -1,0 +1,42 @@
+{
+  "claim_id": "CLM-TS-002",
+  "claim": "토큰 재발급 실패(401) 시 프론트엔드 인터셉터에서 즉시 세션을 초기화하고 무한 재시도 루프를 차단한다.",
+  "domain": "INCIDENT",
+  "status": "VERIFIED",
+  "sources": [
+    {
+      "repository": "26-05adf",
+      "branch": "feature/auth@0603@1401",
+      "commit": "9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f",
+      "path": "frontend/src/api/http.ts",
+      "symbol": "refreshPromise & 401 exit condition"
+    },
+    {
+      "repository": "26-05adf",
+      "branch": "feature/auth@0603@1401",
+      "commit": "9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f",
+      "path": "backend/src/test/java/com/example/demo/auth/security/SecurityIntegrationTest.java",
+      "symbol": "unauthenticatedUserCannotAccessProtectedApi"
+    }
+  ],
+  "evidence": {
+    "evidence_id": "EV-TS-002",
+    "bundle_path": "PR-Files/evidence/bundles/EV-TS-002",
+    "type": "TROUBLESHOOTING_REPORT"
+  },
+  "verification": {
+    "method": "Integration Test & Client Interceptor Single Flight",
+    "test_file": "backend/src/test/java/com/example/demo/auth/security/SecurityIntegrationTest.java",
+    "test_methods": [
+      "unauthenticatedUserCannotAccessProtectedApi"
+    ],
+    "status": "VERIFIED"
+  },
+  "portfolio_mapping": {
+    "case_study": "CS-ENGINEERING-01 (Section 5)",
+    "slides": [
+      "007"
+    ],
+    "presentation_source": "09_TROUBLESHOOTING.md"
+  }
+}

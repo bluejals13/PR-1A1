@@ -11,18 +11,18 @@ Stateless JWT 이원화 수명주기 관리, Redis 기반 Refresh Token Rotation
 ## How
 - **Token Lifecycle:**
   - **Access Token:** 1시간 (3,600,000 ms), Header `Authorization: Bearer <token>` 전달, JJWT Payload에 userId, roles, permissions 포함.
-  - **Refresh Token:** 7일 (604,800,000 ms), HttpOnly/Secure Cookie 전달, UUID JTI 기반 식별 및 Redis 적재 (`rt:<userId>`).
+  - **Refresh Token:** 7일 (604,800,000 ms), HttpOnly/Secure Cookie 전달, UUID JTI 기반 식별 및 Redis 적재 (`auth:refresh:user:<userId>`).
   - **RTR (Refresh Token Rotation):** 재발급 시 기존 JTI 즉시 무효화 및 새 JTI 발급. 소진된 구버전 토큰 재시도 시 즉시 401 반환.
-  - **Token Blacklist:** 로그아웃 시 Access Token의 잔여 TTL 동안 Redis(`bl:<token>`)에 등록하여 즉시 차단.
+  - **Token Blacklist:** 로그아웃 시 Access Token의 잔여 TTL 동안 Redis(`blacklist:<jti>`)에 등록하여 즉시 차단.
 - **RBAC Data Model:**
   - `users` (N:M) `roles` (N:M) `permissions` 및 `roles` (N:M) `menus` 정규화 테이블 구조.
   - Spring Security Custom Filter 및 `UserAuthorityService`를 통한 엔드포인트 인가 검증.
 
 ## Evidence
 - `PR-Files/specification/AUTH_AND_SECURITY_SPEC.md` Section 2.1 & 2.2
-- `26-05adf/backend/src/main/java/com/example/demo/auth/security/JwtTokenProvider.java`
-- `26-05adf/backend/src/main/java/com/example/demo/auth/service/AuthService.java`
-- `26-05adf/backend/src/main/java/com/example/demo/iam/service/UserAuthorityService.java`
+- `26-05adf/backend/src/main/java/com/example/demo/auth/jwt/JwtProvider.java`
+- `26-05adf/backend/src/main/java/com/example/demo/auth/security/AuthService.java`
+- `26-05adf/backend/src/main/java/com/example/demo/auth/security/UserAuthorityService.java`
 
 ## Result
 - 토큰 탈취 Replay Attack 시나리오 100% 방어 및 401 차단 `[VERIFIED]`

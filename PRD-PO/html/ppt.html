@@ -585,7 +585,7 @@
             </div>
             <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-secondary); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-color);">
               <div>
-                <span style="font-weight: 600; color: #86efac;">Layer 3: Redis Blacklist (`bl:`)</span>
+                <span style="font-weight: 600; color: #86efac;">Layer 3: Redis Blacklist (`blacklist:`)</span>
                 <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">로그아웃 시 잔여 TTL 등록 즉시 거부</span>
               </div>
               <span class="tag verified">VERIFIED</span>
@@ -622,7 +622,7 @@
           <!-- 1. Login Flow -->
           <text x="150" y="68" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="11">1. POST /api/auth/login</text>
           <path d="M135 75 L425 75" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-blue)"/>
-          <text x="445" y="85" fill="#10b981" font-family="'JetBrains Mono', monospace" font-size="11">SET rt:user1 = JTI_1 (TTL 7d)</text>
+          <text x="445" y="85" fill="#10b981" font-family="'JetBrains Mono', monospace" font-size="11">SET auth:refresh:user:1 = JTI_1 (TTL 7d)</text>
           <path d="M425 90 L735 90" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow-green)"/>
           <path d="M425 105 L135 105" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrow-blue)"/>
           <text x="175" y="120" fill="#38bdf8" font-size="10">200 OK (Header: AccessToken / Cookie: RefreshToken)</text>
@@ -630,7 +630,7 @@
           <!-- 2. RTR Refresh Flow -->
           <text x="150" y="148" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="11">2. POST /api/auth/refresh (RTR Trigger)</text>
           <path d="M135 155 L425 155" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-blue)"/>
-          <text x="445" y="165" fill="#f59e0b" font-family="'JetBrains Mono', monospace" font-size="11">Verify & DEL JTI_1 ➔ SET JTI_2</text>
+          <text x="445" y="165" fill="#f59e0b" font-family="'JetBrains Mono', monospace" font-size="11">Verify & Lua Swap JTI_1 ➔ JTI_2</text>
           <path d="M425 170 L735 170" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#arrow-amber)"/>
           <path d="M425 185 L135 185" stroke="#10b981" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrow-green)"/>
           <text x="190" y="200" fill="#34d399" font-size="10">200 OK (New Token Pair Issued)</text>
@@ -638,7 +638,7 @@
           <!-- 3. Replay Attack Detection -->
           <text x="150" y="228" fill="#f87171" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700">3. Replay Attack (Stolen JTI_1 Re-use)</text>
           <path d="M135 235 L425 235" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-red)"/>
-          <text x="445" y="245" fill="#ef4444" font-family="'JetBrains Mono', monospace" font-size="11">GET rt:user1 ➔ Mismatch (JTI_1 != JTI_2)</text>
+          <text x="445" y="245" fill="#ef4444" font-family="'JetBrains Mono', monospace" font-size="11">GET auth:refresh:user:1 ➔ Mismatch (JTI_1 != JTI_2)</text>
           <path d="M425 250 L735 250" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrow-red)"/>
           <path d="M425 265 L135 265" stroke="#ef4444" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#arrow-red)"/>
           <text x="185" y="280" fill="#f87171" font-size="10" font-weight="700">401 UNAUTHORIZED (INVALID_REFRESH_TOKEN) [VERIFIED]</text>
@@ -646,7 +646,7 @@
           <!-- 4. Logout Blacklist -->
           <text x="150" y="308" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="11">4. POST /api/auth/logout</text>
           <path d="M135 315 L425 315" stroke="#a855f7" stroke-width="2" marker-end="url(#arrow-purple)"/>
-          <text x="445" y="325" fill="#a855f7" font-family="'JetBrains Mono', monospace" font-size="11">SET bl:AccessToken (TTL = Remaining)</text>
+          <text x="445" y="325" fill="#a855f7" font-family="'JetBrains Mono', monospace" font-size="11">SET blacklist:JTI (TTL = Remaining)</text>
           <path d="M425 330 L735 330" stroke="#a855f7" stroke-width="1.5" marker-end="url(#arrow-purple)"/>
         </svg>
       </div>

@@ -427,8 +427,8 @@
           </div>
           <div class="card-body">
             <ul>
-              <li>재발급 요청 시 Redis(`rt:<userId>`) 내 UUID JTI 검증</li>
-              <li>검증 즉시 기존 JTI 삭제 및 신규 세트 동시 발급</li>
+              <li>재발급 요청 시 Redis(`auth:refresh:user:<userId>`) 내 UUID JTI 원자적 검증</li>
+              <li>원자적 Lua Script로 교체 및 신규 세트 동시 발급</li>
               <li>이미 소진된 구버전 JTI 재요청 시 즉시 401 차단 (Replay Attack 방어)</li>
             </ul>
           </div>
@@ -441,7 +441,7 @@
           </div>
           <div class="card-body">
             <ul>
-              <li>로그아웃 시 Access Token을 `bl:<token>` 키로 Redis 등재</li>
+              <li>로그아웃 시 Access Token JTI를 `blacklist:<jti>` 키로 Redis 등재</li>
               <li>Access Token의 잔여 만료시간만큼만 TTL 부여</li>
               <li>무상태 토큰임에도 로그아웃 즉시 인가 필터에서 차단</li>
             </ul>

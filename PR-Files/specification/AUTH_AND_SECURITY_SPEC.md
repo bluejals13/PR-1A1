@@ -37,16 +37,16 @@
 │   ├── Lifetime: 604,800,000 ms (7 Days)
 │   ├── Identification: UUID JTI (JWT ID)
 │   ├── Transmission: HTTP Only, Secure, SameSite=Strict Cookie
-│   └── Storage: Redis Key (rt:<userId> -> <jti>, TTL: 7 days)
+│   └── Storage: Redis Key (auth:refresh:user:<userId> -> <jti>, TTL: 7 days)
 │
 ├── Refresh Token Rotation (RTR)
 │   ├── Trigger: /api/auth/refresh 호출
-│   ├── Action: 기존 JTI 검증 ➔ 기존 JTI 삭제 ➔ 신규 Access & Refresh Token 동시 발급
-│   └── Replay Attack Defense: 미등록/이미 사용된 JTI로 재발급 시도 시 즉시 401 및 토큰 무효화
+│   ├── Action: 기존 JTI 검증 ➔ Lua Script 기반 원자적 JTI 교체 ➔ 신규 Access & Refresh Token 동시 발급
+│   └── Replay Attack Defense: 미등록/이미 사용된 JTI로 재발급 시도 시 즉시 401 및 세션 무효화
 │
 └── Token Blacklist
     ├── Trigger: /api/auth/logout 호출
-    ├── Key: bl:<accessToken>
+    ├── Key: blacklist:<jti>
     └── TTL: Access Token의 만료까지 남은 잔여 시간 (Calculated Remaining TTL)
 ```
 
@@ -96,44 +96,53 @@ erDiagram
 ## 3. Implementation Evidence (핵심 발췌 스니펫)
 
 ### 3.1 Token Blacklist Service Implementation Evidence
-- **Source File:** `backend/src/main/java/com/example/demo/auth/service/TokenBlacklistService.java`
+- **Source File:** `backend/src/main/java/com/example/demo/auth/security/TokenBlacklistService.java`
 ```java
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TokenBlacklistService {
-    private final StringRedisTemplate redisTemplate;
-    private static final String BLACKLIST_PREFIX = "bl:";
 
-    public void addToBlacklist(String token, long remainingTimeMs) {
-        if (remainingTimeMs > 0) {
-            String key = BLACKLIST_PREFIX + token;
-            redisTemplate.opsForValue().set(key, "logout", Duration.ofMillis(remainingTimeMs));
+    private static final String BLACKLIST_KEY_PREFIX = "blacklist:";
+    private final RedisTemplate<String, String> redisTemplate;
+
+    public void blacklist(String jti, long expirationMillis) {
+        if (jti == null || jti.isBlank() || expirationMillis <= 0) {
+            return;
+        }
+        try {
+            redisTemplate.opsForValue().set(
+                    buildKey(jti),
+                    "1",
+                    Duration.ofMillis(expirationMillis)
+            );
+            log.debug("Blacklisted token registered. jti={}, ttlMs={}", jti, expirationMillis);
+        } catch (DataAccessException e) {
+            log.error("Failed to register token to Redis blacklist. jti={}", jti, e);
+            throw new RedisUnavailableException("Redis is unavailable for blacklist registration", e);
         }
     }
 
-    public boolean isBlacklisted(String token) {
-        return Boolean.TRUE.equals(redisTemplate.hasKey(BLACKLIST_PREFIX + token));
+    public boolean isBlacklisted(String jti) {
+        if (jti == null || jti.isBlank()) {
+            return false;
+        }
+        try {
+            return Boolean.TRUE.equals(redisTemplate.hasKey(buildKey(jti)));
+        } catch (DataAccessException e) {
+            log.error("Failed to check Redis blacklist. jti={}", jti, e);
+            throw new RedisUnavailableException("Redis is unavailable for blacklist verification", e);
+        }
+    }
+
+    private String buildKey(String jti) {
+        return BLACKLIST_KEY_PREFIX + jti;
     }
 }
 ```
 
 ### 3.2 Response Wrapping & Error Handling Evidence
-- **Source Files:** `backend/src/main/java/com/example/demo/common/response/ApiResponse.java`, `GlobalExceptionHandler.java`
-```java
-public record ApiResponse<T>(
-    boolean success,
-    T data,
-    String message,
-    String errorCode
-) {
-    public static <T> ApiResponse<T> ok(T data) {
-        return new ApiResponse<>(true, data, "SUCCESS", null);
-    }
-    public static <T> ApiResponse<T> error(String message, String errorCode) {
-        return new ApiResponse<>(false, null, message, errorCode);
-    }
-}
-```
+- **Source Files:** `backend/src/main/java/com/example/demo/common/dto/ApiResponse.java`, `GlobalExceptionHandler.java`
 
 ---
 
@@ -154,7 +163,7 @@ public record ApiResponse<T>(
 
 | Claim (보안 주장) | 소스 구현 위치 (Implementation) | 검증 테스트 (Verification) | 상태 |
 | :--- | :--- | :--- | :---: |
-| Access Token 1시간, Refresh Token 7일 만료 | `JwtTokenProvider.java` | `JwtAuthenticationFilterTest.java` | `[VERIFIED]` |
+| Access Token 1시간, Refresh Token 7일 만료 | `JwtProvider.java` | `JwtAuthenticationFilterTest.java` | `[VERIFIED]` |
 | Refresh Token Rotation (JTI Redis 적재) | `AuthService.java` | `SecurityIntegrationTest.java` | `[VERIFIED]` |
 | Access Token 로그아웃 Blacklist 등록 | `TokenBlacklistService.java` | `TokenBlacklistServiceTest.java` | `[VERIFIED]` |
 | User-Role-Permission M:N 권한 필터링 | `UserAuthorityService.java` | `RbacSecurityIntegrationTest.java` | `[VERIFIED]` |

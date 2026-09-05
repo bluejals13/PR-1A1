@@ -118,7 +118,7 @@ Problem (도전 과제)
 - **Visual Recommendation:** RTR 시퀀스 다이어그램 (토큰 갱신 시 JTI 교체 및 탈취 토큰 차단 흐름).
 - **Content:**
   - Refresh Token Rotation (RTR): `/api/auth/refresh` 호출 시 기존 JTI 즉시 삭제 ➔ 신규 세트 발급 ➔ 구버전 재사용 시 401 차단
-  - Redis Token Blacklist: `/api/auth/logout` 시 Access Token의 잔여 TTL 동안 `bl:<token>` 등록 ➔ 즉시 인가 거부
+  - Redis Token Blacklist: `/api/auth/logout` 시 Access Token의 잔여 TTL 동안 `blacklist:<jti>` 등록 ➔ 즉시 인가 거부
 - **Speaker Intent:** Stateless와 Stateful의 장점을 결합한 고도화된 토큰 라이프사이클 통제력 강조.
 - **Status:** `[VERIFIED]` `[DOCUMENTED]`
 

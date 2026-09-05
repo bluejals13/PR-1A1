@@ -1,0 +1,41 @@
+{
+  "claim_id": "CLM-SEC-002",
+  "claim": "Refresh Token Rotation (RTR) 적용: 재발급 시 기존 JTI를 원자적 Lua Script로 교체하여 토큰 탈취 및 재사용 공격을 방어한다.",
+  "domain": "SECURITY",
+  "status": "VERIFIED",
+  "sources": [
+    {
+      "repository": "26-05adf",
+      "branch": "feature/auth@0603@1401",
+      "commit": "9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f",
+      "path": "backend/src/main/java/com/example/demo/auth/security/RefreshTokenRepository.java",
+      "symbol": "RefreshTokenRepository.rotate"
+    }
+  ],
+  "evidence": {
+    "evidence_id": "EV-SEC-002",
+    "bundle_path": "PR-Files/evidence/bundles/EV-SEC-002",
+    "type": "TEST_AND_SOURCE"
+  },
+  "verification": {
+    "method": "JUnit5 Mockito Unit Test with DefaultRedisScript",
+    "test_file": "backend/src/test/java/com/example/demo/auth/security/RefreshTokenRepositoryTest.java",
+    "test_methods": [
+      "rotateSuccess",
+      "rotateFail",
+      "rotateNull",
+      "saveRefreshToken",
+      "deleteRefreshToken"
+    ],
+    "status": "VERIFIED"
+  },
+  "portfolio_mapping": {
+    "case_study": "CS-ENGINEERING-01 (Section 3.2)",
+    "slides": [
+      "004",
+      "005",
+      "006"
+    ],
+    "presentation_source": "04_AUTH_AND_RBAC.md"
+  }
+}

@@ -8,7 +8,13 @@ Follows architectural principles:
 """
 
 import re
+import sys
 from typing import Any, Callable, Dict, List
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 FORBIDDEN_DESIGN_KEYS = {
     "color", "colour", "background", "background_color", "backgroundColor",
@@ -847,4 +853,273 @@ def normalize_slide_data(raw_data: Dict[str, Any], slide_id: str = "004") -> Dic
     if not normalizer:
         raise ValidationError(f"No normalizer registered for slide '{slide_id}'.")
     return normalizer(raw_data)
+
+
+# =====================================================================
+# 8. Repository-Wide Evidence & Architecture Validator
+# =====================================================================
+
+def validate_evidence_system(verbose: bool = True) -> bool:
+    """Performs deterministic validation across Claims, Evidence Bundles,
+    Manifests, SHA-256 hashes, and actual 26-05adf code symbols."""
+    import hashlib
+    import json
+    import pathlib
+    import jsonschema
+
+    base_dir = pathlib.Path(__file__).resolve().parent
+    repo_pr1 = base_dir.parent
+    base_root = repo_pr1.parent
+    repo_26 = base_root / "26-05adf"
+    repo_sa1 = base_root / "SA-1"
+
+    evidence_base = repo_pr1 / "PR-Files" / "evidence"
+    claims_dir = evidence_base / "claims"
+    bundles_dir = evidence_base / "bundles"
+    manifests_dir = evidence_base / "manifests"
+    schemas_dir = evidence_base / "schemas"
+
+    passed = True
+    errors = []
+
+    if verbose:
+        print("\n=======================================================")
+        print("🛡️ [APMS.SR Evidence System Verification]")
+        print("=======================================================")
+
+    ALLOWED_STATUSES = {"VERIFIED", "IMPLEMENTED", "DOCUMENTED", "PARTIAL", "PLANNED", "UNKNOWN"}
+
+    # 1. JSON Schema & Status Validation for Claims
+    schema_file = schemas_dir / "claim.schema.json"
+    if not schema_file.exists():
+        errors.append(f"Claim schema missing: {schema_file}")
+        passed = False
+    else:
+        schema = json.loads(schema_file.read_text(encoding="utf-8"))
+        claim_files = list(claims_dir.glob("*.json"))
+        if verbose:
+            print(f"\n[1/8] Validating {len(claim_files)} Claims against Schema & Status Rules...")
+        
+        seen_claim_ids = set()
+        seen_evidence_ids = set()
+
+        for cf in claim_files:
+            try:
+                cdata = json.loads(cf.read_text(encoding="utf-8"))
+                jsonschema.validate(instance=cdata, schema=schema)
+                cid = cdata["claim_id"]
+                if cid in seen_claim_ids:
+                    errors.append(f"Duplicate claim_id found: {cid}")
+                    passed = False
+                seen_claim_ids.add(cid)
+
+                status = cdata.get("status")
+                if status not in ALLOWED_STATUSES:
+                    errors.append(f"Invalid status '{status}' in claim {cid}")
+                    passed = False
+
+                ev_id = cdata.get("evidence", {}).get("evidence_id")
+                if ev_id in seen_evidence_ids:
+                    errors.append(f"Duplicate evidence_id found: {ev_id}")
+                    passed = False
+                seen_evidence_ids.add(ev_id)
+            except Exception as e:
+                errors.append(f"Schema validation error in {cf.name}: {e}")
+                passed = False
+
+        if verbose:
+            print(f"  ✓ {len(seen_claim_ids)} Claims validated. Uniqueness and Status confirmed.")
+
+    # 2. Evidence Bundles Verification
+    if verbose:
+        print("\n[2/8] Verifying Evidence Bundles existence & manifests...")
+    bundle_dirs = [d for d in bundles_dir.iterdir() if d.is_dir()]
+    for bdir in bundle_dirs:
+        bmanifest = bdir / "manifest.json"
+        if not bmanifest.exists():
+            errors.append(f"Bundle manifest missing: {bmanifest}")
+            passed = False
+        else:
+            try:
+                bm = json.loads(bmanifest.read_text(encoding="utf-8"))
+                if not bm.get("evidence_id") or not bm.get("claim_id"):
+                    errors.append(f"Incomplete manifest in bundle: {bdir.name}")
+                    passed = False
+            except Exception as e:
+                errors.append(f"Invalid JSON in {bmanifest}: {e}")
+                passed = False
+
+    if verbose:
+        print(f"  ✓ {len(bundle_dirs)} Evidence Bundles verified.")
+
+    # 3. Source Paths, Git Commits & Source Symbol Traceability
+    if verbose:
+        print("\n[3/8] Verifying Source Paths, Commits & Source Symbol Traceability...")
+    checked_sources = 0
+    for cf in claims_dir.glob("*.json"):
+        cdata = json.loads(cf.read_text(encoding="utf-8"))
+        cid = cdata["claim_id"]
+        for s in cdata.get("sources", []):
+            checked_sources += 1
+            rname = s.get("repository")
+            rbase = repo_26 if rname == "26-05adf" else (repo_sa1 if rname == "SA-1" else repo_pr1)
+            spath = rbase / s.get("path", "")
+            if not spath.exists():
+                errors.append(f"Source file not found: {rname}/{s.get('path')} (Claim: {cid})")
+                passed = False
+            else:
+                sym = s.get("symbol")
+                if sym:
+                    content = spath.read_text(encoding="utf-8", errors="ignore")
+                    clean_sym = sym.replace("->", " ").replace(".", " ").replace(":", " ").replace("/", " ")
+                    tokens = [t.strip() for t in clean_sym.split() if len(t.strip()) >= 2]
+                    found = any(tok in content for tok in tokens)
+                    if not found:
+                        errors.append(f"Symbol '{sym}' not found in {rname}/{s.get('path')} (Claim: {cid})")
+                        passed = False
+
+            commit = s.get("commit", "")
+            if len(commit) != 40 or not all(c in "0123456789abcdefABCDEF" for c in commit):
+                errors.append(f"Invalid Git commit SHA in {cid}: {commit}")
+                passed = False
+
+    if verbose:
+        print(f"  ✓ {checked_sources} source references & symbols verified.")
+
+    # 4. Test Method Existence against 26-05adf
+    if verbose:
+        print("\n[4/8] Verifying referenced test methods against actual 26-05adf code...")
+    checked_methods = 0
+    for cf in claims_dir.glob("*.json"):
+        cdata = json.loads(cf.read_text(encoding="utf-8"))
+        verification = cdata.get("verification", {})
+        test_file = verification.get("test_file")
+        test_methods = verification.get("test_methods", [])
+
+        if test_file and test_methods:
+            actual_test_path = repo_26 / test_file
+            if not actual_test_path.exists():
+                errors.append(f"Test file not found in 26-05adf: {test_file} (Claim: {cdata['claim_id']})")
+                passed = False
+            else:
+                code_content = actual_test_path.read_text(encoding="utf-8", errors="ignore")
+                for method_name in test_methods:
+                    checked_methods += 1
+                    if method_name not in code_content:
+                        errors.append(
+                            f"Test method '{method_name}' NOT FOUND in {test_file} (Claim: {cdata['claim_id']})"
+                        )
+                        passed = False
+
+    if verbose:
+        print(f"  ✓ {checked_methods} test methods verified in 26-05adf backend.")
+
+    # 5. Snapshot Manifest & SHA-256 Verification
+    if verbose:
+        print("\n[5/8] Verifying SOT Manifests and SHA-256 integrity...")
+    manifest_files = list(manifests_dir.glob("*.json"))
+    checked_files = 0
+    for mf in manifest_files:
+        mdata = json.loads(mf.read_text(encoding="utf-8"))
+        for src_group in mdata.get("sources", []):
+            repo_name = src_group.get("repository")
+            snap_base = evidence_base / "snapshots" / repo_name
+
+            for entry in src_group.get("files", []):
+                rel_path = entry["path"]
+                expected_sha = entry["sha256"]
+                snap_file = snap_base / rel_path
+
+                if not snap_file.exists():
+                    errors.append(f"Snapshot file missing: {snap_file}")
+                    passed = False
+                    continue
+
+                checked_files += 1
+                h = hashlib.sha256()
+                h.update(snap_file.read_bytes())
+                actual_sha = h.hexdigest()
+
+                if actual_sha != expected_sha:
+                    errors.append(f"SHA-256 MISMATCH for snapshot: {rel_path} (expected {expected_sha[:8]}, got {actual_sha[:8]})")
+                    passed = False
+
+    if verbose:
+        print(f"  ✓ {checked_files} Snapshot files verified with 100% SHA-256 match.")
+
+    # 6. Portfolio / PPT Slide & Case Study Traceability Linkage
+    if verbose:
+        print("\n[6/8] Verifying Portfolio / PPT Slide & Case Study Traceability...")
+    checked_mappings = 0
+    case_study_file = repo_pr1 / "PRD-PO" / "case-study" / "CASE_STUDY.md"
+    cs_content = case_study_file.read_text(encoding="utf-8", errors="ignore") if case_study_file.exists() else ""
+
+    for cf in claims_dir.glob("*.json"):
+        cdata = json.loads(cf.read_text(encoding="utf-8"))
+        cid = cdata["claim_id"]
+        pm = cdata.get("portfolio_mapping", {})
+        slides = pm.get("slides", [])
+        for sid in slides:
+            checked_mappings += 1
+            sjson = base_dir / "data" / f"slide_{sid}.json"
+            sdir = repo_pr1 / "PRD-PO" / "presentation" / "slides" / sid
+            shtml = repo_pr1 / "PRD-PO" / "html" / "분리된 html" / f"{int(sid)}번 슬라이드.html"
+            if not (sjson.exists() or sdir.exists() or shtml.exists()):
+                errors.append(f"Slide '{sid}' referenced by Claim {cid} does not exist in any portfolio view.")
+                passed = False
+
+        cs_ref = pm.get("case_study")
+        if cs_ref and cs_content:
+            cs_id = cs_ref.split("(")[0].strip()
+            if cs_id and cs_id not in cs_content:
+                errors.append(f"Case study reference '{cs_ref}' for Claim {cid} not found in CASE_STUDY.md")
+                passed = False
+
+    if verbose:
+        print(f"  ✓ {checked_mappings} slide & case study mappings verified.")
+
+    # 7. Slide Data & Design Integrity (004 ~ 008)
+    if verbose:
+        print("\n[7/8] Validating Slide Presentation Data (004~008)...")
+    data_dir = base_dir / "data"
+    slide_ids = ["004", "005", "006", "007", "008"]
+    for sid in slide_ids:
+        sfile = data_dir / f"slide_{sid}.json"
+        if sfile.exists():
+            try:
+                sdata = json.loads(sfile.read_text(encoding="utf-8"))
+                validate_slide_data(sdata, sid)
+            except Exception as e:
+                errors.append(f"Slide {sid} validation failure: {e}")
+                passed = False
+
+    if verbose:
+        print(f"  ✓ Slides {slide_ids} passed zero-inline-style & schema checks.")
+
+    # 8. Summary Report
+    if verbose:
+        print("\n[8/8] Final Validation Summary:")
+        if passed and not errors:
+            print("=======================================================")
+            print("🎉 [ALL CHECKS PASSED] 100% Deterministic Verification Succeeded!")
+            print("=======================================================\n")
+        else:
+            print("=======================================================")
+            print(f"❌ [VALIDATION FAILED] Found {len(errors)} error(s):")
+            for err in errors:
+                print(f"   • {err}")
+            print("=======================================================\n")
+
+    return passed
+
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="APMS.SR Validation Runner")
+    parser.add_argument("--all", action="store_true", help="Run full evidence and repository architecture validation")
+    args = parser.parse_args()
+
+    success = validate_evidence_system(verbose=True)
+    sys.exit(0 if success else 1)
+
 

@@ -12,11 +12,14 @@ evidences:
     status: VERIFIED
     source:
       repository: 26-05adf
+      commit: 9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f
       path: "backend/src/test/java/com/example/demo/auth/security/RefreshTokenRepositoryTest.java"
       test_methods:
-        - "rotate_Success_ShouldReturnTrueAndSetNewJti"
-        - "rotate_Fail_WhenCurrentJtiMismatch"
-        - "rotate_Fail_WhenKeyDoesNotExist"
+        - "rotateSuccess"
+        - "rotateFail"
+        - "rotateNull"
+        - "saveRefreshToken"
+        - "deleteRefreshToken"
     target_documents:
       - apms-auth
       - apms-presentation
@@ -29,10 +32,13 @@ evidences:
     status: VERIFIED
     source:
       repository: 26-05adf
+      commit: 9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f
       path: "backend/src/test/java/com/example/demo/auth/security/TokenBlacklistServiceTest.java"
       test_methods:
-        - "addToBlacklist_ShouldSetRedisKeyWithTtl"
-        - "isBlacklisted_ShouldReturnTrue_WhenTokenExists"
+        - "blacklistSuccess"
+        - "isBlacklistedReturnsTrue"
+        - "isBlacklistedReturnsFalse"
+        - "blacklistThrowsRedisUnavailableExceptionWhenRedisFails"
     target_documents:
       - apms-auth
       - apms-presentation
@@ -45,11 +51,13 @@ evidences:
     status: VERIFIED
     source:
       repository: 26-05adf
+      commit: 9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f
       path: "backend/src/test/java/com/example/demo/auth/security/JwtAuthenticationFilterTest.java"
       test_methods:
-        - "doFilterInternal_ValidToken_SetsAuthentication"
-        - "doFilterInternal_InvalidTokenType_ShouldDeny"
-        - "doFilterInternal_BlacklistedToken_ShouldDeny"
+        - "validAccessTokenSetsSecurityContext"
+        - "nonAccessTokenReturnsUnauthorized"
+        - "blacklistedTokenReturnsUnauthorized"
+        - "redisUnavailableReturns503"
     target_documents:
       - apms-auth
 
@@ -61,10 +69,12 @@ evidences:
     status: VERIFIED
     source:
       repository: 26-05adf
+      commit: 9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f
       path: "backend/src/test/java/com/example/demo/iam/rbac/RbacSecurityIntegrationTest.java"
       test_methods:
-        - "accessAdminEndpoint_WithoutRole_Returns403"
-        - "accessAdminEndpoint_WithRole_Returns200"
+        - "adminCanAssignPermissions"
+        - "normalUserCannotAssignPermissions"
+        - "unauthenticatedUserCannotAssignPermissions"
     target_documents:
       - apms-rbac
       - apms-presentation
@@ -77,7 +87,12 @@ evidences:
     status: VERIFIED
     source:
       repository: 26-05adf
+      commit: 9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f
       path: "backend/src/test/java/com/example/demo/menu/MenuSecurityIntegrationTest.java"
+      test_methods:
+        - "MENU_READ_권한이_있으면_메뉴를_조회할_수_있다"
+        - "MENU_READ_권한이_없으면_메뉴_조회가_거부된다"
+        - "인증된_사용자라도_MENU_READ가_없으면_403이다"
     target_documents:
       - apms-rbac
 

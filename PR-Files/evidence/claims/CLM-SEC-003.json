@@ -1,0 +1,40 @@
+{
+  "claim_id": "CLM-SEC-003",
+  "claim": "로그아웃 시 Access Token 잔여 TTL 동안 Redis Blacklist에 등록하여 즉시 접근을 차단한다.",
+  "domain": "SECURITY",
+  "status": "VERIFIED",
+  "sources": [
+    {
+      "repository": "26-05adf",
+      "branch": "feature/auth@0603@1401",
+      "commit": "9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f",
+      "path": "backend/src/main/java/com/example/demo/auth/security/TokenBlacklistService.java",
+      "symbol": "TokenBlacklistService.blacklist"
+    }
+  ],
+  "evidence": {
+    "evidence_id": "EV-SEC-003",
+    "bundle_path": "PR-Files/evidence/bundles/EV-SEC-003",
+    "type": "TEST_AND_SOURCE"
+  },
+  "verification": {
+    "method": "JUnit5 Mockito Unit Test",
+    "test_file": "backend/src/test/java/com/example/demo/auth/security/TokenBlacklistServiceTest.java",
+    "test_methods": [
+      "blacklistSuccess",
+      "isBlacklistedReturnsTrue",
+      "isBlacklistedReturnsFalse",
+      "blacklistThrowsRedisUnavailableExceptionWhenRedisFails"
+    ],
+    "status": "VERIFIED"
+  },
+  "portfolio_mapping": {
+    "case_study": "CS-ENGINEERING-01 (Section 4.1)",
+    "slides": [
+      "004",
+      "005",
+      "006"
+    ],
+    "presentation_source": "06_SECURITY.md"
+  }
+}

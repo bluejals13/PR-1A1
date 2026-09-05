@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -72,7 +72,7 @@
 
           <ul class="token-spec-list">
             <li><strong>목적:</strong> Access Token 만료 시 재발급 엔드포인트(`/api/auth/refresh`) 전용</li>
-            <li><strong>식별자:</strong> 난수 UUID 기반 `jti` 식별자로 Redis(`rt:&lt;userId&gt;`) 매핑</li>
+            <li><strong>식별자:</strong> 난수 UUID 기반 `jti` 식별자로 Redis(`auth:refresh:user:&lt;userId&gt;`) 매핑</li>
             <li><strong>보안 격리:</strong> <code>HttpOnly</code> 플래그로 브라우저 JavaScript(XSS) 접근 원천 차단</li>
             <li><strong>전송 제어:</strong> `SameSite=Strict` 설정을 통해 CSRF 요청 차단</li>
           </ul>

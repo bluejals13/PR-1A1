@@ -1,0 +1,39 @@
+{
+  "claim_id": "CLM-INFRA-001",
+  "claim": "Nginx를 단일 외부 진입점(Port 80)으로 두고 내부 백엔드(8080), DB, Redis 포트를 격리하여 보안 및 리버스 프록시를 구성한다.",
+  "domain": "ARCHITECTURE",
+  "status": "IMPLEMENTED",
+  "sources": [
+    {
+      "repository": "26-05adf",
+      "branch": "feature/auth@0603@1401",
+      "commit": "9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f",
+      "path": "nginx/default.conf",
+      "symbol": "server / upstream"
+    },
+    {
+      "repository": "26-05adf",
+      "branch": "feature/auth@0603@1401",
+      "commit": "9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f",
+      "path": "docker-compose.yml",
+      "symbol": "services.nginx"
+    }
+  ],
+  "evidence": {
+    "evidence_id": "EV-INFRA-001",
+    "bundle_path": "PR-Files/evidence/bundles/EV-INFRA-001",
+    "type": "CONFIGURATION"
+  },
+  "verification": {
+    "method": "Docker Compose Topology & Nginx Proxy Validation",
+    "status": "IMPLEMENTED"
+  },
+  "portfolio_mapping": {
+    "case_study": "CS-ENGINEERING-01 (Section 4.2)",
+    "slides": [
+      "003",
+      "008"
+    ],
+    "presentation_source": "03_ARCHITECTURE.md"
+  }
+}

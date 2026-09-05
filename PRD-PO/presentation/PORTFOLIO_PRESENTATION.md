@@ -134,8 +134,8 @@
 - 사용자가 로그아웃하더라도 이미 발급된 Stateless Access Token은 만료 전까지 유효한 취약점 존재.
 
 ### 2. Technical Decision & Architecture
-- **Refresh Token Rotation (RTR):** 재발급 요청 시 Redis(`rt:<userId>`)에 저장된 UUID JTI와 일치 여부를 검증하고, 검증 즉시 기존 JTI를 삭제하며 신규 토큰 세트를 동시 발급. 이미 사용된 JTI로 재요청 시 즉시 401 반환 및 세션 파기.
-- **Redis Token Blacklist:** 로그아웃 요청 시 Access Token을 `bl:<token>` 키로 등록하고 잔여 유효시간(TTL)을 만료시간으로 설정하여 즉시 인가 차단.
+- **Refresh Token Rotation (RTR):** 재발급 요청 시 Redis(`auth:refresh:user:<userId>`)에 저장된 UUID JTI와 일치 여부를 원자적 Lua Script로 검증하고, 검증 즉시 신규 JTI로 교체하며 신규 토큰 세트를 동시 발급. 이미 사용된 구버전 JTI로 재요청 시 즉시 401 반환 및 세션 파기.
+- **Redis Token Blacklist:** 로그아웃 요청 시 Access Token JTI를 `blacklist:<jti>` 키로 등록하고 잔여 유효시간(TTL)을 만료시간으로 설정하여 즉시 인가 차단.
 
 ### 3. Verification & Result
 - `SecurityIntegrationTest.java` (소진된 토큰 재사용 시 401 차단 검증 완료) `[VERIFIED]`.

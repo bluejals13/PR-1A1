@@ -1,0 +1,54 @@
+{
+  "claim_id": "CLM-PERF-001",
+  "claim": "k6 부하 테스트 실측: 70 VU 동시 부하(1분 지속, 3회 평균)에서 평균 지연시간 5.64ms, P95 9.98ms, 처리량 463 req/s, 에러율 0.00%를 달성한다.",
+  "domain": "PERFORMANCE",
+  "status": "VERIFIED",
+  "sources": [
+    {
+      "repository": "26-05adf",
+      "branch": "feature/auth@0603@1401",
+      "commit": "9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f",
+      "path": "k6/scenarios/load.test.js",
+      "symbol": "options"
+    },
+    {
+      "repository": "26-05adf",
+      "branch": "feature/auth@0603@1401",
+      "commit": "9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f",
+      "path": "k6/config/thresholds.js",
+      "symbol": "thresholds"
+    },
+    {
+      "repository": "26-05adf",
+      "branch": "feature/auth@0603@1401",
+      "commit": "9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f",
+      "path": "docs/performance/k6-load-test.md",
+      "symbol": "스트레스 테스트 결과"
+    }
+  ],
+  "evidence": {
+    "evidence_id": "EV-PERF-001",
+    "bundle_path": "PR-Files/evidence/bundles/EV-PERF-001",
+    "type": "BENCHMARK_REPORT"
+  },
+  "verification": {
+    "method": "k6 Automated Load Test (3 repeated runs: 5th, 6th, 7th)",
+    "metrics": {
+      "vus": 70,
+      "duration": "1m",
+      "avg_latency_ms": 5.64,
+      "p95_latency_ms": 9.98,
+      "throughput_rps": 463.6,
+      "error_rate_pct": 0.0
+    },
+    "status": "VERIFIED"
+  },
+  "portfolio_mapping": {
+    "case_study": "CS-ENGINEERING-01 (Section 2)",
+    "slides": [
+      "001",
+      "010"
+    ],
+    "presentation_source": "08_PERFORMANCE.md"
+  }
+}

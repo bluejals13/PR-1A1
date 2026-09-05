@@ -1,0 +1,224 @@
+{
+  "manifest_id": "SOT-2026-09-05-001",
+  "created_at": "2026-09-05T06:07:35.992167+00:00",
+  "target_workspace": {
+    "repository": "PR-1A1",
+    "branch": "main",
+    "commit": "c9f88722ad196ef7918240ab1faaaba4a8f64676"
+  },
+  "sources": [
+    {
+      "repository": "26-05adf",
+      "role": "BUILD",
+      "branch": "feature/auth@0603@1401",
+      "commit": "9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f",
+      "file_count": 29,
+      "files": [
+        {
+          "path": "backend/build.gradle",
+          "sha256": "8c4b622d8f72ceb29dcf2359f2c4ae1c3400c8b5547f9e4b7c87711b76495ca1",
+          "size_bytes": 2094
+        },
+        {
+          "path": "backend/src/main/resources/application.yaml",
+          "sha256": "a92b787d7d6ded4501eecbc3196b4532ca6d4c26666ae29a9a88e9e224d1cbdd",
+          "size_bytes": 554
+        },
+        {
+          "path": "backend/src/main/java/com/example/demo/auth/jwt/JwtProvider.java",
+          "sha256": "78df2f405df74cfbd08b4cd397e9c6aaf2b1e8e2b5ede7d11a6c0e505c5fe7d2",
+          "size_bytes": 4435
+        },
+        {
+          "path": "backend/src/main/java/com/example/demo/auth/security/AuthService.java",
+          "sha256": "449e07d1b8a247f4640dacf45fc07600da616d9577b556046e2df18757a4925e",
+          "size_bytes": 6488
+        },
+        {
+          "path": "backend/src/main/java/com/example/demo/auth/security/RefreshTokenRepository.java",
+          "sha256": "de76462296fd72431b30e94c7e6196b0b34d53cad624bf457f1725fbe26dbd50",
+          "size_bytes": 2154
+        },
+        {
+          "path": "backend/src/main/java/com/example/demo/auth/security/TokenBlacklistService.java",
+          "sha256": "6995af318dc29cd1a97f23a1d8df3cbab0af1f1a5b53f0cf46303d2db1522ee2",
+          "size_bytes": 2114
+        },
+        {
+          "path": "backend/src/main/java/com/example/demo/auth/security/JwtAuthenticationFilter.java",
+          "sha256": "2b269603cc646921b024c216f237a17993f95298eecc73eed2f9995791368a72",
+          "size_bytes": 4644
+        },
+        {
+          "path": "backend/src/main/java/com/example/demo/auth/security/SecurityConfig.java",
+          "sha256": "5f9ab94e2b5743849a0e49e71891d2ff3611dd33b5c6fd33a02921f45d50bc2f",
+          "size_bytes": 4377
+        },
+        {
+          "path": "backend/src/main/java/com/example/demo/auth/security/UserAuthorityService.java",
+          "sha256": "ca6e97971b1188b966fb338c4db90a0c9bafb94ea6549c4d483a2337e885afdb",
+          "size_bytes": 2198
+        },
+        {
+          "path": "backend/src/main/java/com/example/demo/common/dto/ApiResponse.java",
+          "sha256": "6e6988867a276aa8175a504b27ed80d2122a68f2d698b8b66ce84d4ad959462d",
+          "size_bytes": 1147
+        },
+        {
+          "path": "backend/src/main/java/com/example/demo/common/exception/GlobalExceptionHandler.java",
+          "sha256": "8f94617e3c50ad6521428d9f37a4e9503ffedd45a38a3fa90b865d273fb8aef0",
+          "size_bytes": 3082
+        },
+        {
+          "path": "backend/src/main/java/com/example/demo/iam/user/repository/UserRepository.java",
+          "sha256": "3e6ce5130e86ac449163f3961c9998fbb0f118e0374f20d0a3e35489acf7e802",
+          "size_bytes": 1147
+        },
+        {
+          "path": "backend/src/test/java/com/example/demo/auth/security/RefreshTokenRepositoryTest.java",
+          "sha256": "be2202c36dce63179050ab5264e58efa9a6ce2914fc8e2276e0a3d5a7263f48e",
+          "size_bytes": 4625
+        },
+        {
+          "path": "backend/src/test/java/com/example/demo/auth/security/TokenBlacklistServiceTest.java",
+          "sha256": "59754f07a0afb9cd8f559c14cc81722427b3fbdc7d8ad775d14be5c454b5a679",
+          "size_bytes": 4431
+        },
+        {
+          "path": "backend/src/test/java/com/example/demo/auth/security/JwtAuthenticationFilterTest.java",
+          "sha256": "959356304c65b94fbd96c1dc9cde5f10800d1a0bdcc6c589c03ba5342e23d798",
+          "size_bytes": 8147
+        },
+        {
+          "path": "backend/src/test/java/com/example/demo/auth/security/AuthControllerTest.java",
+          "sha256": "e7ebf0dd0e2e9103174daa7515b8ffd5bd6918f4d3ece5d36c2c63a17f955f15",
+          "size_bytes": 6165
+        },
+        {
+          "path": "backend/src/test/java/com/example/demo/auth/security/AuthServiceTest.java",
+          "sha256": "48abc0fff19cb5143b354a8efdb263a8ce6c94f69cb7cb1d89c83ca15cb43691",
+          "size_bytes": 7181
+        },
+        {
+          "path": "backend/src/test/java/com/example/demo/auth/security/SecurityIntegrationTest.java",
+          "sha256": "bbdb29954107c9eeeaa7c24859e1fec3b814abb3035575404c583bb021f25d66",
+          "size_bytes": 3604
+        },
+        {
+          "path": "backend/src/test/java/com/example/demo/iam/rbac/RbacSecurityIntegrationTest.java",
+          "sha256": "3f2dea92188a53717dba84a62545e18b5ecf643fd7608218d032a15fd6779598",
+          "size_bytes": 4379
+        },
+        {
+          "path": "backend/src/test/java/com/example/demo/menu/MenuSecurityIntegrationTest.java",
+          "sha256": "c2b0b9fdef1b4a4d52663798dd31634e45ffe569ad20deea1d0e6805101630f3",
+          "size_bytes": 2195
+        },
+        {
+          "path": "frontend/src/api/http.ts",
+          "sha256": "9ad04fa6a49e7c093c63e1f59be0746057ce284c2a74ae95917da681e27e3463",
+          "size_bytes": 5552
+        },
+        {
+          "path": "frontend/src/auth/auth.bootstrap.ts",
+          "sha256": "f3cd692860b80fa6fbcd801d8fa10d7f3c174579dd72759b9d3b9214b468e2da",
+          "size_bytes": 2070
+        },
+        {
+          "path": "frontend/src/store/auth.store.ts",
+          "sha256": "8318ed82f79a6d342f6c17cecc7a0350d85e7213cf93531d8c6bba5e78745550",
+          "size_bytes": 1027
+        },
+        {
+          "path": "k6/scenarios/load.test.js",
+          "sha256": "5495dc517a1942ce6c0d1693f54b4fa82266983b6c23e75a4f31f92804f18b81",
+          "size_bytes": 441
+        },
+        {
+          "path": "k6/config/thresholds.js",
+          "sha256": "390d451407afc640f606e1f4e88fdd9713e6367d1ebad778cce8dface2d67ce7",
+          "size_bytes": 154
+        },
+        {
+          "path": "docker-compose.yml",
+          "sha256": "15f7f91566338478076f35c75ed2336e4d5e12ee579d06f99265ebeb9245f64b",
+          "size_bytes": 3364
+        },
+        {
+          "path": "nginx/default.conf",
+          "sha256": "431ec925c52fa157c944ea5ac0c39873ecf1b376f6bb5e4e6ab9a65fff3c327c",
+          "size_bytes": 1032
+        },
+        {
+          "path": "docs/performance/k6-load-test.md",
+          "sha256": "2341017126de6a0e02d4b596946700376fcf1bf76df4275c00faa556c5ef73d3",
+          "size_bytes": 6158
+        },
+        {
+          "path": "docs/troubleshooting/01-redis-failure.md",
+          "sha256": "a8d234bef3dfc87707be59b81890c27859812f48d2146158d455aeff9e04bc51",
+          "size_bytes": 4761
+        }
+      ]
+    },
+    {
+      "repository": "SA-1",
+      "role": "PROCESS",
+      "branch": "main",
+      "commit": "4a734a8edd8b670f8d29dc2a42a978ca3877a25f",
+      "file_count": 10,
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "8ffbdbf438e4d832bfff7203be1912794463cb9b33670b130ab0233e7b86c5c9",
+          "size_bytes": 3274
+        },
+        {
+          "path": "architecture/01_Architecture_and_Ports.md",
+          "sha256": "9c88e26e9f735e32e399ec1dc5b03098d7f0bf3ac6f3b950d7278c41f9fa130f",
+          "size_bytes": 6013
+        },
+        {
+          "path": "architecture/02_Quick_Start.md",
+          "sha256": "6ca50e86f5a05e70270eb1d171eb8d13417784fc416eb19e50796af6d53f8d44",
+          "size_bytes": 3692
+        },
+        {
+          "path": "conventions/03_Backend_Conventions.md",
+          "sha256": "40b55bce2d0f059374823af9e485b82536387260852f0335a2d75017edebb27c",
+          "size_bytes": 6269
+        },
+        {
+          "path": "conventions/04_Agent_Commands.md",
+          "sha256": "78eca6ab032bc2fc0eefcf6834fd632787c5835d7ab63a63010972ad216be0bb",
+          "size_bytes": 1675
+        },
+        {
+          "path": "conventions/rules.md",
+          "sha256": "5d8661403287571de9381f61f4039dc17bd7824c9a23774be7f1dff8b98e0dd2",
+          "size_bytes": 2253
+        },
+        {
+          "path": "changelogs/phase1_backend/1-2_jwt_redis_optimization.md",
+          "sha256": "c4469a9bd17ee05b223b69f21b791bd4260b2fd28f07d4f94df26469a12b465d",
+          "size_bytes": 3645
+        },
+        {
+          "path": "changelogs/phase1_backend/1-3_global_response_exception_handling.md",
+          "sha256": "5b8d60cbb60247a479f989b0a72913fee612f8314ce51cda0a6e3419da003226",
+          "size_bytes": 3162
+        },
+        {
+          "path": "changelogs/phase1_backend/1-4_jpa_n1_query_optimization.md",
+          "sha256": "69603c98e89eafc346cc10ea1274e1e1ad0d7de307edd9abb48c1ad017788fa5",
+          "size_bytes": 4514
+        },
+        {
+          "path": "changelogs/phase2_frontend/2-1_zustand_auth_optimization.md",
+          "sha256": "5158074fd05f9ed7fbb82fb4926bf6fdd2af9320ea82cf65d395c2855a2b3a12",
+          "size_bytes": 11113
+        }
+      ]
+    }
+  ]
+}

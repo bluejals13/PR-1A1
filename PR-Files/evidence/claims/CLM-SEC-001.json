@@ -1,0 +1,47 @@
+{
+  "claim_id": "CLM-SEC-001",
+  "claim": "Stateless JWT Access Token (1시간 유효기간) 서명 검증 및 Bearer Header 파싱을 통해 API 접근을 제어한다.",
+  "domain": "SECURITY",
+  "status": "VERIFIED",
+  "sources": [
+    {
+      "repository": "26-05adf",
+      "branch": "feature/auth@0603@1401",
+      "commit": "9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f",
+      "path": "backend/src/main/java/com/example/demo/auth/jwt/JwtProvider.java",
+      "symbol": "JwtProvider"
+    },
+    {
+      "repository": "26-05adf",
+      "branch": "feature/auth@0603@1401",
+      "commit": "9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f",
+      "path": "backend/src/main/java/com/example/demo/auth/security/JwtAuthenticationFilter.java",
+      "symbol": "JwtAuthenticationFilter.doFilterInternal"
+    }
+  ],
+  "evidence": {
+    "evidence_id": "EV-SEC-001",
+    "bundle_path": "PR-Files/evidence/bundles/EV-SEC-001",
+    "type": "TEST_AND_SOURCE"
+  },
+  "verification": {
+    "method": "JUnit5 Mockito & Spring Security Test",
+    "test_file": "backend/src/test/java/com/example/demo/auth/security/JwtAuthenticationFilterTest.java",
+    "test_methods": [
+      "validAccessTokenSetsSecurityContext",
+      "nonAccessTokenReturnsUnauthorized",
+      "blacklistedTokenReturnsUnauthorized",
+      "redisUnavailableReturns503"
+    ],
+    "status": "VERIFIED"
+  },
+  "portfolio_mapping": {
+    "case_study": "CS-ENGINEERING-01 (Section 3.1)",
+    "slides": [
+      "004",
+      "005",
+      "006"
+    ],
+    "presentation_source": "04_AUTH_AND_RBAC.md"
+  }
+}

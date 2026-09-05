@@ -1,0 +1,56 @@
+{
+  "claim_id": "CLM-TS-001",
+  "claim": "Redis 장애 발생 시 RedisUnavailableException 및 503 Service Unavailable로 신속 격리하여 스레드 풀 고갈을 방지하며, 장애 분석 보고서(TS-01-REDIS)를 통해 Lettuce 타임아웃 단축(2초) 정책을 수립·검증한다.",
+  "domain": "INCIDENT",
+  "status": "VERIFIED",
+  "sources": [
+    {
+      "repository": "26-05adf",
+      "branch": "feature/auth@0603@1401",
+      "commit": "9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f",
+      "path": "backend/src/main/java/com/example/demo/auth/security/JwtAuthenticationFilter.java",
+      "symbol": "RedisUnavailableException"
+    },
+    {
+      "repository": "26-05adf",
+      "branch": "feature/auth@0603@1401",
+      "commit": "9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f",
+      "path": "backend/src/main/java/com/example/demo/auth/security/RedisUnavailableException.java",
+      "symbol": "RedisUnavailableException"
+    },
+    {
+      "repository": "26-05adf",
+      "branch": "feature/auth@0603@1401",
+      "commit": "9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f",
+      "path": "backend/src/main/java/com/example/demo/auth/security/TokenBlacklistService.java",
+      "symbol": "TokenBlacklistService"
+    },
+    {
+      "repository": "26-05adf",
+      "branch": "feature/auth@0603@1401",
+      "commit": "9e6ef83d07cf3dc59e8625d78b70f45a5ad2613f",
+      "path": "docs/troubleshooting/01-redis-failure.md",
+      "symbol": "TS-01-REDIS"
+    }
+  ],
+  "evidence": {
+    "evidence_id": "EV-TS-001",
+    "bundle_path": "PR-Files/evidence/bundles/EV-TS-001",
+    "type": "TROUBLESHOOTING_REPORT"
+  },
+  "verification": {
+    "method": "JUnit5 Unit Test Exception Handling & Filter 503 Isolation",
+    "test_file": "backend/src/test/java/com/example/demo/auth/security/JwtAuthenticationFilterTest.java",
+    "test_methods": [
+      "redisUnavailableReturns503"
+    ],
+    "status": "VERIFIED"
+  },
+  "portfolio_mapping": {
+    "case_study": "CS-ENGINEERING-01 (Section 4.1, 6.1)",
+    "slides": [
+      "007"
+    ],
+    "presentation_source": "09_TROUBLESHOOTING.md"
+  }
+}

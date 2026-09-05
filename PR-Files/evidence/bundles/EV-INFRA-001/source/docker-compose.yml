@@ -1,0 +1,159 @@
+
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    ports:
+      - "${NGINX_PORT}:${NGINX_PORT}"  # Nginx는 외부 포트 80을 그대로 사용
+    networks:
+      - app-net
+
+
+  backend:
+    container_name: backend
+    build: ./backend
+    environment:
+#      JWT_SECRET: ${JWT_SECRET}
+#      JWT_EXPIRATION: ${JWT_EXPIRATION}
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+    ports:
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
+    networks:
+      - app-net
+    restart: unless-stopped
+
+
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_DATABASE: eventdb
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app-net
+    restart: unless-stopped
+
+
+  redis:
+    image: redis:7
+    networks:
+      - app-net
+
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ${PWD}/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:  # 제거
+      - "${PROMQL_PORT}:${PROMQL_PORT}"
+#    expose:
+#      - "${PROMQL_PORT}"
+    networks:
+      - app-net
+
+  victoria-metrics:
+    image: victoriametrics/victoria-metrics
+    container_name: vm
+    ports:
+      - "8428:8428"
+    command:
+      - "-storageDataPath=/storage"
+      - "-httpListenAddr=:8428"
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ID:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PW:-1234}
+    ports:
+      - "${GRAFANA_PORT}:${GRAFANA_PORT}"
+    networks:
+      - app-net
+
+  agent:
+    image: grafana/agent:latest
+    container_name: grafana-agent
+    volumes:
+      - ${PWD}/monitoring/agent.yaml:/etc/agent/agent.yaml
+    command: ["-config.file=/etc/agent/agent.yaml"]
+    ports:
+      - "12345:12345"
+    depends_on:
+      - prometheus
+
+  node-exporter:
+    image: prom/node-exporter
+    container_name: node-exporter
+    ports: []   # 제거
+    expose:
+      - "9100"
+    pid: host
+    restart: unless-stopped
+    networks:
+      - app-net
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor
+    container_name: cadvisor
+    ports: []   # 제거
+    expose:
+      - "8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    privileged: true
+    restart: unless-stopped
+    networks:
+      - app-net
+
+
+volumes:
+  mysql_data:
+  frontend_dist:
+  
+networks:
+  app-net:
+    driver: bridge
+
+#  loki:
+#    image: grafana/loki:2.9.0
+#    command: -config.file=/etc/loki/config.yml
+#    volumes:
+#      - ./logging:/etc/loki
+#    networks:
+#      - app-net
+
+#  promtail:
+#    image: grafana/promtail:2.9.0
+#    command: -config.file=/etc/promtail/config.yml
+#    volumes:
+#      - /var/lib/docker/containers:/var/lib/docker/containers
+#      - ./logging/promtail-config.yml:/etc/promtail/config.yml
+#    networks:
+#      - app-net
+
+
+#  frontend:
+#    build:
+#      context: .
+#      dockerfile: frontend/Dockerfile  # React 빌드용 Dockerfile
+#    ports:
+#      - "8081:8010"  # frontend는 외부 포트 8080을 사용
+#    depends_on:
+#      - backend
+#    networks:
+#      - app-net
+
